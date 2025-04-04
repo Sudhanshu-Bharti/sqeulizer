@@ -1,12 +1,13 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Code, Users, Lock } from "lucide-react";
+import { ArrowRight, Code, Users, Lock, Database } from "lucide-react";
 // import { Terminal } from "./terminal";
 import { TextEffect } from "@/components/motion-primitives/text-effect";
 import { GlowEffectCardBackground } from "./_components/glow-effect-card";
 import { use } from "react";
 import { useUser } from "@/lib/auth";
 import { BorderButton } from "@/components/border-butto";
+import Link from "next/link";
 
 export default function HomePage() {
   const { userPromise } = useUser();
@@ -14,11 +15,13 @@ export default function HomePage() {
 
   return (
     <main>
-      <section className="min-h-screen flex items-center bg-gradient-to-b from-white to-gray-50">
-        <div className="absolute inset-0 z-0 opacity-50">
-          <div className="absolute top-1/4 right-1/4 w-[600px] h-[600px] rounded-full bg-gradient-to-br from-orange-800 to-red-300 blur-3xl"></div>
+      <section className="min-h-screen flex items-center bg-gradient-to-b from-white to-gray-50 relative overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <div className="absolute top-1/4 right-1/4 w-[600px] h-[600px] rounded-full bg-gradient-to-br from-orange-800 to-red-300 blur-3xl opacity-50"></div>
+          <div className="absolute bottom-1/4 left-1/4 w-[400px] h-[400px] rounded-full bg-gradient-to-br from-amber-500 to-yellow-300 blur-3xl opacity-30"></div>
+          {/* <div className="absolute top-1/3 left-1/3 w-[300px] h-[300px] rounded-full bg-gradient-to-br from-orange-400 to-amber-300 blur-3xl opacity-20"></div> */}
         </div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
           <div className="lg:grid lg:grid-cols-12 lg:gap-8">
             <div className="sm:text-center md:max-w-2xl md:mx-auto lg:col-span-6 lg:text-left">
               <TextEffect
@@ -35,7 +38,7 @@ export default function HomePage() {
                 as="h2"
                 preset="blur"
                 speedSegment={0.1}
-                className=" text-5xl font-bold block tracking-tight sm:text-6xl md:text-7xl text-orange-600"
+                className="text-5xl font-bold block tracking-tight sm:text-6xl md:text-7xl text-orange-600"
               >
                 Visualization
               </TextEffect>
@@ -52,20 +55,27 @@ export default function HomePage() {
                 diagrams. Build better applications with crystal-clear database
                 understanding.
               </TextEffect>
-              <p className="mt-6 text-xl text-gray-500"></p>
               <div className="mt-10 flex flex-col sm:flex-row gap-4 sm:max-w-lg lg:mx-0">
                 {!user && (
                   <a href="/sign-up" className="z-10">
-                    <Button className="bg-amber-600 hover:bg-amber-700  text-white rounded-full text-lg px-8 py-4">
+                    <Button className="bg-amber-600 hover:bg-amber-700 text-white rounded-full text-lg px-8 py-4 shadow-lg hover:shadow-xl transition-all duration-300">
                       Start Free Trial
                       <ArrowRight className="ml-2 h-5 w-5" />
                     </Button>
                   </a>
                 )}
                 {user && (
-                  <a href="/dashboard" className="z-10">
-                    <BorderButton>Get Started</BorderButton> 
-                  </a>
+                  <div className="flex flex-row gap-4">
+                    <Link href="/live" className="z-10">
+                      <Button className="bg-orange-600 hover:bg-orange-700 text-white rounded-full text-lg px-8 py-4 shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto">
+                        Generate DB Diagram
+                        <Database className="ml-2 h-5 w-5" />
+                      </Button>
+                    </Link>
+                    <Link href="/dashboard" className="z-10">
+                      <BorderButton>Go to Dashboard</BorderButton>
+                    </Link>
+                  </div>
                 )}
               </div>
             </div>
@@ -76,8 +86,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-24 bg-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-gray-50 to-white opacity-50"></div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl">
               Everything you need to understand your data
@@ -108,11 +119,11 @@ export default function HomePage() {
                   "Track changes and maintain history of your database schema evolution",
               },
             ].map((feature, index) => (
-              <div key={index} className="text-center">
-                <div className="flex items-center justify-center h-12 w-12 rounded-xl bg-amber-600 text-white mx-auto">
+              <div key={index} className="text-center group">
+                <div className="flex items-center justify-center h-12 w-12 rounded-xl bg-amber-600 text-white mx-auto transform group-hover:scale-110 transition-transform duration-300">
                   {feature.icon}
                 </div>
-                <h3 className="mt-6 text-xl font-medium text-gray-900">
+                <h3 className="mt-6 text-xl font-medium text-gray-900 group-hover:text-orange-600 transition-colors duration-300">
                   {feature.title}
                 </h3>
                 <p className="mt-3 text-gray-500">{feature.description}</p>
@@ -122,8 +133,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="py-16 bg-amber-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-16 bg-gradient-to-br from-white-50 to-orange-50 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10"></div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="lg:grid lg:grid-cols-2 lg:gap-8 lg:items-center">
             <div>
               <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl">
@@ -135,10 +147,12 @@ export default function HomePage() {
               </p>
             </div>
             <div className="mt-8 lg:mt-0 flex justify-center lg:justify-end">
-              <Button className="bg-amber-600 hover:bg-amber-700 text-white rounded-full text-xl px-12 py-6">
-                Get Started Now
-                <ArrowRight className="ml-3 h-6 w-6" />
-              </Button>
+              <Link href={user ? "/live" : "/sign-up"}>
+                <Button className="bg-amber-600 hover:bg-amber-700 text-white rounded-full text-xl px-12 py-6 shadow-lg hover:shadow-xl transition-all duration-300">
+                  {user ? "Generate DB Diagram" : "Get Started Now"}
+                  <ArrowRight className="ml-3 h-6 w-6" />
+                </Button>
+              </Link>
             </div>
           </div>
         </div>

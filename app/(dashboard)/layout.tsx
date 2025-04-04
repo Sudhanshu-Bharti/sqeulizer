@@ -14,6 +14,22 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useUser } from "@/lib/auth";
 import { signOut } from "@/app/(login)/actions";
 import { useRouter } from "next/navigation";
+import { Metadata } from "next"
+import { Inter } from "next/font/google"
+import { cn } from "@/lib/utils"
+import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/toaster"
+import "../../app/globals.css"
+
+const inter = Inter({ subsets: ["latin"] })
+
+// export const metadata: Metadata = {
+//   title: {
+//     default: "Dashboard",
+//     template: "%s | Dashboard",
+//   },
+//   description: "Modern dashboard with beautiful UI",
+// }
 
 function UserMenu() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -92,16 +108,16 @@ function Header() {
             Home
           </Link>
           <Link
-            href="/about"
-            className="text-sm text-gray-700 hover:text-gray-900"
-          >
-            About
-          </Link>
-          <Link
             href="/services"
             className="text-sm text-gray-700 hover:text-gray-900"
           >
             Services
+          </Link>
+          <Link
+            href="/about"
+            className="text-sm text-gray-700 hover:text-gray-900"
+          >
+            About
           </Link>
           <Link
             href="/contact"
@@ -120,11 +136,37 @@ function Header() {
   );
 }
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
-    <div className="flex flex-col min-h-screen pt-16">
-      <Header />
-      {children}
-    </div>
-  );
+    <html lang="en" suppressHydrationWarning>
+      <head />
+      <body
+        className={cn(
+          "min-h-screen bg-background font-sans antialiased",
+          inter.className
+        )}
+      >
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <div className="flex flex-col min-h-screen pt-16">
+            <Header />
+            <main className="flex-1">
+              <div className="container mx-auto py-6 px-4">
+                {children}
+              </div>
+            </main>
+            <Toaster />
+          </div>
+        </ThemeProvider>
+      </body>
+    </html>
+  )
 }

@@ -1,33 +1,9 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { CustomButton } from "@/components/ui/custom-button";
 import { SyntaxTextarea } from "@/components/ui/syntax-textarea";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  ChevronRight,
-  Copy,
-  Download,
-  Sparkles,
-  Code,
-  Upload,
-  Import,
-} from "lucide-react";
-import { useTheme } from "next-themes";
+import { ChevronRight, Import } from "lucide-react";
 import Examples from "./examples";
 import { toast } from "@/components/ui/use-toast";
 import DBMLDiagram from "./components/DBMLDiagram";
@@ -41,7 +17,6 @@ import {
 
 export default function DBSchemaVisualizer() {
   const [schema, setSchema] = useState("");
-  const [dbmlCode, setDbmlCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [renderError, setRenderError] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -215,7 +190,22 @@ export default function DBSchemaVisualizer() {
       {/* Top Navigation */}
       <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
         <div className="container flex h-14 items-center justify-between">
-          <h1 className="font-semibold">Database Schema Visualizer</h1>
+          <div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => document.getElementById("sql-upload")?.click()}
+            >
+              <Import className="mr-2" size={16} /> Import SQL
+            </Button>
+            <input
+              id="sql-upload"
+              type="file"
+              accept=".sql"
+              onChange={handleFileUpload}
+              className="hidden"
+            />
+          </div>
           <div className="flex items-center gap-2">
             <Select
               value={dialect}
@@ -247,20 +237,6 @@ export default function DBSchemaVisualizer() {
           <div className="flex-none p-4 space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-medium">SQL Input</h2>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => document.getElementById("sql-upload")?.click()}
-              >
-                <Import className="mr-2" size={16} /> Import SQL
-              </Button>
-              <input
-                id="sql-upload"
-                type="file"
-                accept=".sql"
-                onChange={handleFileUpload}
-                className="hidden"
-              />
             </div>
             <div className="relative">
               <SyntaxTextarea
