@@ -1,125 +1,133 @@
-import { Metadata } from "next"
+"use client";
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Mail, Phone, MapPin } from "lucide-react"
+import { Card } from "@/components/ui/card"
+import { Mail, MessageSquare, Github, Twitter } from "lucide-react"
+import { TextEffect } from "@/components/motion-primitives/text-effect"
 
-export const metadata: Metadata = {
-  title: "Contact Us",
-  description: "Get in touch with our team",
-}
-
-const contactInfo = [
+const contactMethods = [
   {
-    title: "Email",
-    value: "contact@example.com",
-    icon: Mail,
+    title: "Email Support",
+    description: "Get help with your account or technical issues",
+    icon: <Mail className="h-6 w-6" />,
+    link: "mailto:support@dbviz.com",
+    label: "support@dbviz.com",
   },
   {
-    title: "Phone",
-    value: "+1 (555) 123-4567",
-    icon: Phone,
+    title: "Community Forum",
+    description: "Join our community and share your experiences",
+    icon: <MessageSquare className="h-6 w-6" />,
+    link: "https://community.dbviz.com",
+    label: "Visit Forum",
   },
   {
-    title: "Address",
-    value: "123 Business Street, Suite 100, City, Country",
-    icon: MapPin,
+    title: "GitHub",
+    description: "Contribute to our open-source projects",
+    icon: <Github className="h-6 w-6" />,
+    link: "https://github.com/dbviz",
+    label: "View on GitHub",
+  },
+  {
+    title: "Twitter",
+    description: "Follow us for updates and announcements",
+    icon: <Twitter className="h-6 w-6" />,
+    link: "https://twitter.com/dbviz",
+    label: "Follow @dbviz",
   },
 ]
 
 export default function ContactPage() {
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">Contact Us</h1>
-        <p className="text-xl text-gray-600">
-          Have questions? We'd love to hear from you.
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-        <div>
-          <form className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                  Name
-                </label>
-                <Input id="name" placeholder="Your name" className="border-gray-300" />
-              </div>
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                  Email
-                </label>
-                <Input id="email" type="email" placeholder="your@email.com" className="border-gray-300" />
-              </div>
-            </div>
-            <div>
-              <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
-                Subject
-              </label>
-              <Input id="subject" placeholder="Subject" className="border-gray-300" />
-            </div>
-            <div>
-              <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
-                Message
-              </label>
-              <Textarea
-                id="message"
-                placeholder="Your message"
-                className="min-h-[150px] border-gray-300"
-              />
-            </div>
-            <Button className="w-full bg-orange-600 hover:bg-orange-700">
-              Send Message
-            </Button>
-          </form>
+    <main className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+      <section className="py-20 relative overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <div className="absolute top-1/4 right-1/4 w-[600px] h-[600px] rounded-full bg-gradient-to-br from-orange-600/20 to-amber-500/20 blur-3xl"></div>
+          <div className="absolute bottom-1/4 left-1/4 w-[400px] h-[400px] rounded-full bg-gradient-to-br from-orange-400/20 to-amber-300/20 blur-3xl"></div>
         </div>
 
-        <div className="space-y-6">
-          {contactInfo.map((info, index) => {
-            const Icon = info.icon
-            return (
-              <Card key={index} className="border border-gray-200">
-                <CardHeader>
-                  <div className="flex items-center gap-4">
-                    <div className="p-3 bg-orange-100 rounded-full">
-                      <Icon className="h-6 w-6 text-orange-600" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-lg text-gray-900">{info.title}</CardTitle>
-                      <p className="text-gray-600">{info.value}</p>
-                    </div>
-                  </div>
-                </CardHeader>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center mb-16">
+            <TextEffect
+              per="char"
+              as="h1"
+              preset="blur"
+              speedSegment={0.1}
+              className="text-4xl font-bold text-gray-900 sm:text-5xl md:text-6xl"
+            >
+              Contact Us
+            </TextEffect>
+            <TextEffect
+              per="word"
+              as="p"
+              preset="fade"
+              delay={3}
+              speedSegment={0.7}
+              className="mt-6 text-lg text-gray-600 max-w-2xl mx-auto"
+            >
+              We're here to help! Choose the best way to get in touch with our team
+            </TextEffect>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            {contactMethods.map((method, index) => (
+              <Card key={index} className="p-6 group hover:shadow-lg transition-all duration-200">
+                <div className="flex items-center justify-center h-12 w-12 rounded-lg bg-orange-100 text-orange-600 mb-4 group-hover:scale-110 transition-transform duration-200">
+                  {method.icon}
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2 group-hover:text-orange-600 transition-colors duration-200">
+                  {method.title}
+                </h3>
+                <p className="text-gray-600 mb-4">{method.description}</p>
+                <a
+                  href={method.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center text-orange-600 hover:text-orange-700 font-medium"
+                >
+                  {method.label}
+                  <svg
+                    className="ml-2 h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M14 5l7 7m0 0l-7 7m7-7H3"
+                    />
+                  </svg>
+                </a>
               </Card>
-            )
-          })}
+            ))}
+          </div>
 
-          <Card className="border border-gray-200">
-            <CardHeader>
-              <CardTitle className="text-lg text-gray-900">Business Hours</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-gray-700">Monday - Friday</span>
-                  <span className="text-gray-600">9:00 AM - 6:00 PM</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-700">Saturday</span>
-                  <span className="text-gray-600">10:00 AM - 4:00 PM</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-700">Sunday</span>
-                  <span className="text-gray-600">Closed</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <div className="mt-20 text-center">
+            <TextEffect
+              per="char"
+              as="h2"
+              preset="blur"
+              speedSegment={0.1}
+              className="text-3xl font-bold text-gray-900 sm:text-4xl mb-6"
+            >
+              Need More Help?
+            </TextEffect>
+            <TextEffect
+              per="word"
+              as="p"
+              preset="fade"
+              delay={3}
+              speedSegment={0.7}
+              className="text-lg text-gray-600 max-w-2xl mx-auto mb-8"
+            >
+              Check out our documentation or join our community forum for additional support
+            </TextEffect>
+            <Button className="bg-orange-600 hover:bg-orange-700 text-white rounded-lg text-base px-6 py-3 shadow-sm hover:shadow transition-all duration-200">
+              View Documentation
+            </Button>
+          </div>
         </div>
-      </div>
-    </div>
+      </section>
+    </main>
   )
 } 

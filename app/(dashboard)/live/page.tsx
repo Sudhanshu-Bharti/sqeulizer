@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { SyntaxTextarea } from "@/components/ui/syntax-textarea";
-import { ChevronRight, Import } from "lucide-react";
+import { ChevronRight, Import, Database, Code2, Download, Share2, Copy } from "lucide-react";
 import Examples from "./examples";
 import { toast } from "@/components/ui/use-toast";
 import DBMLDiagram from "./components/DBMLDiagram";
@@ -14,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { TextEffect } from "@/components/motion-primitives/text-effect";
 
 export default function DBSchemaVisualizer() {
   const [schema, setSchema] = useState("");
@@ -186,15 +187,16 @@ export default function DBSchemaVisualizer() {
   };
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="h-screen flex flex-col bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
       {/* Top Navigation */}
-      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
+      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 dark:border-gray-800">
         <div className="container flex h-14 items-center justify-between">
           <div>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => document.getElementById("sql-upload")?.click()}
+              className="hover:bg-orange-100 hover:text-orange-600 dark:hover:bg-orange-900/50 dark:hover:text-orange-400 transition-colors"
             >
               <Import className="mr-2" size={16} /> Import SQL
             </Button>
@@ -213,7 +215,7 @@ export default function DBSchemaVisualizer() {
                 setDialect(v)
               }
             >
-              <SelectTrigger className="w-[140px]">
+              <SelectTrigger className="w-[140px] hover:border-orange-200 dark:hover:border-orange-600 dark:border-gray-700">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -222,10 +224,19 @@ export default function DBSchemaVisualizer() {
                 <SelectItem value="mssql">MS SQL Server</SelectItem>
               </SelectContent>
             </Select>
-            <Button variant="outline" size="sm">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="hover:border-orange-200 dark:hover:border-orange-600 dark:border-gray-700"
+            >
               Save
             </Button>
-            <Button size="sm">Share</Button>
+            <Button 
+              size="sm" 
+              className="bg-orange-600 hover:bg-orange-700 text-white dark:bg-orange-700 dark:hover:bg-orange-800"
+            >
+              Share
+            </Button>
           </div>
         </div>
       </header>
@@ -233,51 +244,52 @@ export default function DBSchemaVisualizer() {
       {/* Main Content */}
       <div className="flex-1 grid grid-cols-[320px_1fr] overflow-hidden">
         {/* Left Sidebar */}
-        <div className="border-r bg-muted/10 flex flex-col h-[calc(100vh-3.5rem)] overflow-hidden">
+        <div className="border-r bg-muted/10 flex flex-col h-[calc(100vh-3.5rem)] overflow-hidden dark:border-gray-800 dark:bg-gray-900/50">
           <div className="flex-none p-4 space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-sm font-medium">SQL Input</h2>
+              <h2 className="text-sm font-medium text-gray-900 dark:text-gray-100">SQL Input</h2>
             </div>
             <div className="relative">
               <SyntaxTextarea
                 placeholder="Enter your SQL schema here..."
                 value={schema}
                 onValueChange={setSchema}
-                className="min-h-[300px] resize-none font-mono text-sm"
+                className="min-h-[300px] resize-none font-mono text-sm border-gray-200 hover:border-orange-200 focus:border-orange-300 focus:ring-orange-200 dark:border-gray-700 dark:hover:border-orange-600 dark:focus:border-orange-500 dark:focus:ring-orange-500/20 dark:bg-gray-800/50 dark:text-gray-100"
               />
             </div>
             <Button
-              className="w-full"
+              className="w-full bg-orange-600 hover:bg-orange-700 text-white dark:bg-orange-700 dark:hover:bg-orange-800"
               onClick={generateDiagram}
               disabled={!schema.trim()}
               isLoading={isLoading}
               variant="default"
             >
               {isLoading ? "Generating..." : "Generate Diagram"}
+              <Database className="ml-2 h-4 w-4" />
             </Button>
           </div>
 
-          <div className="flex-1 overflow-y-auto border-t bg-background/50">
+          <div className="flex-1 overflow-y-auto border-t bg-background/50 dark:border-gray-800 dark:bg-gray-900/30">
             <div className="p-4">
-              <h2 className="text-sm font-medium mb-3">Example Schemas</h2>
+              <h2 className="text-sm font-medium mb-3 text-gray-900 dark:text-gray-100">Example Schemas</h2>
               <Examples onSelectExample={handleExampleSelect} vertical />
             </div>
           </div>
         </div>
 
-        <div className="relative bg-background/50 overflow-hidden">
+        <div className="relative bg-background/50 overflow-hidden dark:bg-gray-900/30">
           {renderError ? (
-            <div className="flex items-center justify-center h-full p-4 text-destructive">
+            <div className="flex items-center justify-center h-full p-4 text-red-500 dark:text-red-400">
               <p>{renderError}</p>
             </div>
           ) : isGenerating ? (
             <div className="flex items-center justify-center h-full">
-              <div className="loading-skeleton h-full w-full" />
+              <div className="loading-skeleton h-full w-full dark:bg-gray-800/50" />
             </div>
           ) : !dbmlStructure.nodes.length ? (
-            <div className="flex flex-col items-center justify-center h-full text-muted-foreground gap-3">
-              <div className="bg-muted p-4 rounded-full">
-                <ChevronRight className="h-10 w-10" />
+            <div className="flex flex-col items-center justify-center h-full text-gray-500 dark:text-gray-400 gap-3">
+              <div className="bg-orange-100 dark:bg-orange-900/50 p-4 rounded-full">
+                <ChevronRight className="h-10 w-10 text-orange-600 dark:text-orange-400" />
               </div>
               <p>Enter your SQL schema and click Generate</p>
             </div>

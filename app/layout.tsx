@@ -1,35 +1,39 @@
-import './globals.css';
-import type { Metadata, Viewport } from 'next';
-import { Manrope } from 'next/font/google';
-import { UserProvider } from '@/lib/auth';
-import { getUser } from '@/lib/db/queries';
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
+import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/toaster";
+import { getUser } from "@/lib/db/queries";
+import { UserProvider } from "@/lib/auth";
 
 export const metadata: Metadata = {
   title: "Mermaid DB",
   description: "Visualize your database schema like never before",
 };
 
+const inter = Inter({ subsets: ["latin"] });
 
-export const viewport: Viewport = {
-  maximumScale: 1,
-};
-
-const manrope = Manrope({ subsets: ['latin'] });
-
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  let userPromise = getUser();
+  const userPromise = getUser();
 
   return (
-    <html
-      lang="en"
-      className={`bg-white dark:bg-gray-950 text-black dark:text-white ${manrope.className}`}
-    >
-      <body className="min-h-[100dvh] bg-gray-50">
-        <UserProvider userPromise={userPromise}>{children}</UserProvider>
+    <html lang="en" suppressHydrationWarning>
+      <body className={inter.className}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <UserProvider userPromise={userPromise}>
+            {children}
+            <Toaster />
+          </UserProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
