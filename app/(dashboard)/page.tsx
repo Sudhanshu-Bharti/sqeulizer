@@ -56,7 +56,7 @@ export default function HomePage() {
               <div className="mt-10 flex flex-col sm:flex-row gap-4 sm:max-w-lg lg:mx-0">
                 {!user && (
                   <a href="/sign-up" className="z-10">
-                    <Button className="bg-blue-600 hover:bg-blue-700  text-white rounded-full text-lg px-8 py-4">
+                    <Button className="bg-amber-600 hover:bg-amber-700  text-white rounded-full text-lg px-8 py-4">
                       Start Free Trial
                       <ArrowRight className="ml-2 h-5 w-5" />
                     </Button>
@@ -109,7 +109,7 @@ export default function HomePage() {
               },
             ].map((feature, index) => (
               <div key={index} className="text-center">
-                <div className="flex items-center justify-center h-12 w-12 rounded-xl bg-blue-600 text-white mx-auto">
+                <div className="flex items-center justify-center h-12 w-12 rounded-xl bg-amber-600 text-white mx-auto">
                   {feature.icon}
                 </div>
                 <h3 className="mt-6 text-xl font-medium text-gray-900">
@@ -122,7 +122,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="py-16 bg-blue-50">
+      <section className="py-16 bg-amber-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="lg:grid lg:grid-cols-2 lg:gap-8 lg:items-center">
             <div>
@@ -135,7 +135,7 @@ export default function HomePage() {
               </p>
             </div>
             <div className="mt-8 lg:mt-0 flex justify-center lg:justify-end">
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-full text-xl px-12 py-6">
+              <Button className="bg-amber-600 hover:bg-amber-700 text-white rounded-full text-xl px-12 py-6">
                 Get Started Now
                 <ArrowRight className="ml-3 h-6 w-6" />
               </Button>
