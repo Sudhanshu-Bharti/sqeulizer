@@ -22,6 +22,11 @@ import {
   History,
   Layout,
   Settings,
+  Key,
+  Hash,
+  Link2,
+  CircleDot,
+  Lock,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -38,7 +43,6 @@ import {
   DatabaseSchemaTableRow,
   DatabaseSchemaTableCell,
 } from "@/components/database-schema-node";
-import { LabeledHandle } from "@/components/labeled-handle";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -62,7 +66,7 @@ interface TableNode {
 
 interface DBMLDiagramProps {
   nodes: TableNode[];
-  edges: Edge[];
+  edges: any[];
 }
 
 interface DiagramControls {
@@ -73,98 +77,70 @@ interface DiagramControls {
   animate: boolean;
 }
 
-function processEdges(inputEdges: any[]) {
-  if (!inputEdges || !Array.isArray(inputEdges)) {
-    console.warn("Invalid edges input:", inputEdges);
-    return [];
-  }
-
-  return inputEdges.map((edge) => {
-    const sourceHandleId = `${edge.source}-${edge.sourceField}`;
-    const targetHandleId = `${edge.target}-${edge.targetField}`;
-
-    return {
-      id: `${edge.source}-${edge.target}-${edge.sourceField}`,
-      source: edge.source,
-      target: edge.target,
-      sourceHandle: sourceHandleId,
-      targetHandle: targetHandleId,
-      type: "smoothstep",
-      animated: true,
-      style: {
-        strokeWidth: 2,
-        stroke: "hsl(var(--primary))",
-      },
-      label: (
-        <div className="bg-background/95 backdrop-blur-sm px-2 py-1 rounded-lg border shadow-sm">
-          <div className="text-[10px] font-medium">
-            {edge.relationshipType.type === "one-to-one" ? (
-              <span className="flex items-center gap-1">
-                <div className="w-1.5 h-1.5 bg-primary rounded-full" />
-                1:1
-              </span>
-            ) : (
-              <span className="flex items-center gap-1">
-                <div className="w-1.5 h-1.5 bg-primary rounded-full" />
-                1:N
-              </span>
-            )}
-          </div>
-          <div className="text-[9px] text-muted-foreground">
-            {edge.sourceField} → {edge.targetField}
-          </div>
-        </div>
-      ),
-    };
-  });
-}
-
 const SchemaNode = memo(
   ({ data, selected }: { data: any; selected?: boolean }) => {
-    console.log("Rendering node:", data.label, data.schema);
-
     return (
       <DatabaseSchemaNode selected={selected}>
         <DatabaseSchemaNodeHeader>
-          <div className="flex items-center justify-between">
-            <span>{data.label}</span>
-            <span className="text-xs bg-primary/10 px-2 py-1 rounded-full">
-              {data.schema.length} fields
+          <div className="flex items-center justify-between p-3 bg-muted/50">
+            <div className="flex items-center gap-2">
+              <Hash className="h-4 w-4 text-muted-foreground" />
+              <span className="font-semibold text-base">{data.label}</span>
+            </div>
+            <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
+              {data.schema.length} columns
             </span>
           </div>
         </DatabaseSchemaNodeHeader>
         <DatabaseSchemaNodeBody>
-          {data.schema.map((field: any) => {
-            const handleId = `${data.label}-${field.title}`;
-
-            console.log("Creating handles for field:", {
-              nodeId: data.label,
-              fieldName: field.title,
-              handleId,
-            });
-
-            return (
-              <DatabaseSchemaTableRow key={field.title}>
-                <DatabaseSchemaTableCell className="pl-1 pr-6">
-                  <LabeledHandle
-                    id={handleId}
-                    title={field.title}
-                    type="target"
-                    position={Position.Left}
-                  />
-                </DatabaseSchemaTableCell>
-                <DatabaseSchemaTableCell className="pr-1">
-                  <LabeledHandle
-                    id={handleId}
-                    title={field.type}
-                    type="source"
-                    position={Position.Right}
-                    labelClassName="text-right w-full pr-3"
-                  />
-                </DatabaseSchemaTableCell>
-              </DatabaseSchemaTableRow>
-            );
-          })}
+          {data.schema.map((field: any) => (
+            <DatabaseSchemaTableRow key={field.title}>
+              <DatabaseSchemaTableCell className="flex items-center gap-2 px-4 py-2 hover:bg-muted/50 rounded-md group transition-colors">
+                <div className="flex items-center gap-1.5 min-w-[20px]">
+                  {field.constraints?.includes("pk") && (
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Key className="h-3.5 w-3.5 text-amber-500" />
+                      </TooltipTrigger>
+                      <TooltipContent>Primary Key</TooltipContent>
+                    </Tooltip>
+                  )}
+                  {field.constraints?.includes("fk") && (
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Link2 className="h-3.5 w-3.5 text-blue-500" />
+                      </TooltipTrigger>
+                      <TooltipContent>Foreign Key</TooltipContent>
+                    </Tooltip>
+                  )}
+                  {field.constraints?.includes("unique") && (
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <CircleDot className="h-3.5 w-3.5 text-violet-500" />
+                      </TooltipTrigger>
+                      <TooltipContent>Unique</TooltipContent>
+                    </Tooltip>
+                  )}
+                  {field.constraints?.includes("not null") && (
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <CircleDot className="h-3.5 w-3.5 text-gray-500" />
+                      </TooltipTrigger>
+                      <TooltipContent>Not Null</TooltipContent>
+                    </Tooltip>
+                  )}
+                </div>
+                <div className="flex-1">
+                  <span className="font-medium text-sm group-hover:text-primary transition-colors">
+                    {field.title}
+                  </span>
+                  <span className="ml-2 text-xs text-muted-foreground font-mono">
+                    {field.type}
+                  </span>
+                </div>
+              </DatabaseSchemaTableCell>
+            </DatabaseSchemaTableRow>
+          ))}
         </DatabaseSchemaNodeBody>
       </DatabaseSchemaNode>
     );
@@ -179,7 +155,7 @@ const nodeTypes = {
 
 function getLayoutedElements(
   nodes: TableNode[],
-  edges: Edge[],
+  edges: any[],
   direction = "LR"
 ) {
   const dagreGraph = new dagre.graphlib.Graph();
@@ -201,8 +177,6 @@ function getLayoutedElements(
     edgesep: 150,
     marginx: 100,
     marginy: 100,
-    acyclicer: "greedy",
-    ranker: "network-simplex",
   });
 
   // Add nodes with calculated dimensions
@@ -213,7 +187,9 @@ function getLayoutedElements(
 
   // Add edges
   edges.forEach((edge) => {
-    dagreGraph.setEdge(edge.source, edge.target);
+    if (edge.source && edge.target) {
+      dagreGraph.setEdge(edge.source, edge.target);
+    }
   });
 
   // Layout the graph
@@ -222,6 +198,24 @@ function getLayoutedElements(
   // Create the positioned nodes
   const layoutedNodes = nodes.map((node) => {
     const nodeWithPosition = dagreGraph.node(node.id);
+    if (!nodeWithPosition) {
+      return {
+        id: node.id,
+        type: "schemaNode",
+        data: {
+          label: node.name,
+          schema: node.fields.map((field) => ({
+            title: field.name,
+            type: field.type,
+            constraints: field.constraints,
+          })),
+        },
+        position: { x: 0, y: 0 },
+        sourcePosition: Position.Right,
+        targetPosition: Position.Left,
+      };
+    }
+
     const { width, height } = calculateNodeDimensions(node);
 
     return {
@@ -232,6 +226,7 @@ function getLayoutedElements(
         schema: node.fields.map((field) => ({
           title: field.name,
           type: field.type,
+          constraints: field.constraints,
         })),
       },
       position: {
@@ -247,35 +242,42 @@ function getLayoutedElements(
     };
   });
 
-  // Collision detection and adjustment
-  for (let i = 0; i < layoutedNodes.length; i++) {
-    for (let j = i + 1; j < layoutedNodes.length; j++) {
-      const nodeA = layoutedNodes[i];
-      const nodeB = layoutedNodes[j];
-
-      const dx = nodeA.position.x - nodeB.position.x;
-      const dy = nodeA.position.y - nodeB.position.y;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-      const minDistance = 350;
-
-      if (distance < minDistance) {
-        const angle = Math.atan2(dy, dx);
-        const overlap = minDistance - distance;
-
-        nodeB.position.x -= Math.cos(angle) * overlap * 0.5;
-        nodeB.position.y -= Math.sin(angle) * overlap * 0.5;
-        nodeA.position.x += Math.cos(angle) * overlap * 0.5;
-        nodeA.position.y += Math.sin(angle) * overlap * 0.5;
-      }
-    }
-  }
-
   return layoutedNodes;
+}
+
+function processEdges(inputEdges: any[]) {
+  if (!inputEdges?.length) return [];
+
+  return inputEdges.map((edge) => ({
+    id: `${edge.source}-${edge.target}-${edge.sourceField || "relation"}`,
+    source: edge.source,
+    target: edge.target,
+    type: "smoothstep",
+    animated: true,
+    style: {
+      strokeWidth: 2,
+      stroke: "hsl(var(--primary))",
+    },
+    markerEnd: {
+      type: MarkerType.ArrowClosed,
+      color: "hsl(var(--primary))",
+    },
+    label: (
+      <div className="bg-background/95 backdrop-blur-sm px-2 py-1 rounded-lg border shadow-sm">
+        <div className="flex items-center gap-2 text-[10px]">
+          <Link2 className="h-3 w-3 text-muted-foreground" />
+          <span className="font-medium">{edge.sourceField || ""}</span>
+          <span className="text-muted-foreground">→</span>
+          <span className="font-medium">{edge.targetField || ""}</span>
+        </div>
+      </div>
+    ),
+  }));
 }
 
 const FullscreenDialog = ({ children }: { children: React.ReactNode }) => (
   <DialogContent
-    className="w-screen h-screen max-w-none !max-w-none sm:!max-w-none md:!max-w-none lg:!max-w-none p-0 m-0 rounded-none border-none"
+    className="w-screen h-screen !max-w-none sm:!max-w-none md:!max-w-none lg:!max-w-none p-0 m-0 rounded-none border-none"
     style={{ maxWidth: "100vw" }}
   >
     {children}
@@ -283,43 +285,47 @@ const FullscreenDialog = ({ children }: { children: React.ReactNode }) => (
 );
 
 export default function DBMLDiagram({ nodes, edges }: DBMLDiagramProps) {
-  const [zoom, setZoom] = useState(1);
-  const [isFullscreen, setIsFullscreen] = useState(false);
+  // const [zoom, setZoom] = useState(1);
+  // const [isFullscreen, setIsFullscreen] = useState(false);
   const [showZoomDialog, setShowZoomDialog] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
+  const [showTip, setShowTip] = useState(true);
   const [controls, setControls] = useState<DiagramControls>({
-    layout: "LR",
+    layout: "BT",
     theme: "system",
     showMinimap: true,
     showGrid: true,
     animate: true,
   });
 
-  useEffect(() => {
-    console.log("Initial nodes:", nodes);
-    console.log("Initial edges:", edges);
-  }, [nodes, edges]);
+  const safeNodes = useMemo(() => {
+    return Array.isArray(nodes) ? nodes : [];
+  }, [nodes]);
 
-  const processedEdges = useMemo(() => {
-    return processEdges(edges || []);
+  const safeEdges = useMemo(() => {
+    return Array.isArray(edges) ? edges : [];
   }, [edges]);
 
-  const layoutedNodes = useMemo(() => {
-    if (!nodes || !edges) return [];
-    return getLayoutedElements(nodes, edges);
-  }, [nodes, edges]);
+  useEffect(() => {
+    console.log("Initial nodes:", safeNodes);
+    console.log("Initial edges:", safeEdges);
+  }, [safeNodes, safeEdges]);
 
-  const handleFullscreen = () => {
-    const element = document.querySelector(".diagram-container");
-    if (!element) return;
-
-    if (!isFullscreen) {
-      element.requestFullscreen?.();
-    } else {
-      document.exitFullscreen?.();
+  useEffect(() => {
+    if (showTip) {
+      const timer = setTimeout(() => setShowTip(false), 5000);
+      return () => clearTimeout(timer);
     }
-    setIsFullscreen(!isFullscreen);
-  };
+  }, [showTip]);
+
+  const processedEdges = useMemo(() => {
+    return processEdges(safeEdges);
+  }, [safeEdges]);
+
+  const layoutedNodes = useMemo(() => {
+    if (!safeNodes.length) return [];
+    return getLayoutedElements(safeNodes, safeEdges, controls.layout);
+  }, [safeNodes, safeEdges, controls.layout]);
 
   const InfoPanel = () => (
     <div className="bg-background/95 backdrop-blur-sm p-4 rounded-lg border shadow-lg w-80">
@@ -327,125 +333,24 @@ export default function DBMLDiagram({ nodes, edges }: DBMLDiagramProps) {
       <div className="space-y-3 text-sm">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 flex items-center justify-center border rounded">
-            <div className="w-2 h-2 bg-primary rounded-full" />
+            <Key className="h-4 w-4 text-amber-500" />
           </div>
-          <span>Required (1)</span>
+          <span>Primary Key</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 flex items-center justify-center border rounded">
-            <svg width="20" height="20" viewBox="0 0 20 20">
-              <path
-                d="M2 10h16M2 6v8"
-                stroke="currentColor"
-                strokeWidth="2"
-                fill="none"
-              />
-            </svg>
+            <Link2 className="h-4 w-4 text-blue-500" />
           </div>
-          <span>One-to-One Relationship</span>
+          <span>Foreign Key Relationship</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 flex items-center justify-center border rounded">
-            <svg width="20" height="20" viewBox="0 0 20 20">
-              <path
-                d="M2 10h16M18 6v8M2 6v8"
-                stroke="currentColor"
-                strokeWidth="2"
-                fill="none"
-              />
-            </svg>
+            <CircleDot className="h-4 w-4 text-violet-500" />
           </div>
-          <span>One-to-Many Relationship</span>
+          <span>Unique Constraint</span>
         </div>
       </div>
     </div>
-  );
-
-  const DiagramToolbar = () => (
-    <Panel position="top-right" className="flex items-center gap-2">
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="icon" className="bg-background">
-            <Layout className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuLabel>Layout Direction</DropdownMenuLabel>
-          <DropdownMenuItem
-            onClick={() => setControls((c) => ({ ...c, layout: "LR" }))}
-          >
-            Left to Right
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => setControls((c) => ({ ...c, layout: "TB" }))}
-          >
-            Top to Bottom
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="icon" className="bg-background">
-            <Settings className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuLabel>Visualization</DropdownMenuLabel>
-          <DropdownMenuItem
-            onClick={() =>
-              setControls((c) => ({ ...c, showMinimap: !c.showMinimap }))
-            }
-          >
-            {controls.showMinimap ? "Hide" : "Show"} Minimap
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() =>
-              setControls((c) => ({ ...c, showGrid: !c.showGrid }))
-            }
-          >
-            {controls.showGrid ? "Hide" : "Show"} Grid
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => setControls((c) => ({ ...c, animate: !c.animate }))}
-          >
-            {controls.animate ? "Disable" : "Enable"} Animation
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-
-      <Button
-        variant="outline"
-        size="icon"
-        className="bg-background"
-        onClick={() => setShowHelp(!showHelp)}
-      >
-        <Info className="h-4 w-4" />
-      </Button>
-
-      <Button
-        variant="outline"
-        size="icon"
-        className="bg-background"
-        onClick={() => setShowZoomDialog(true)}
-      >
-        <Maximize2 className="h-4 w-4" />
-      </Button>
-
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="icon" className="bg-background">
-            <Download className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuLabel>Export</DropdownMenuLabel>
-          <DropdownMenuItem>PNG Image</DropdownMenuItem>
-          <DropdownMenuItem>SVG Vector</DropdownMenuItem>
-          <DropdownMenuItem>PDF Document</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </Panel>
   );
 
   return (
@@ -455,21 +360,12 @@ export default function DBMLDiagram({ nodes, edges }: DBMLDiagramProps) {
           nodes={layoutedNodes}
           edges={processedEdges}
           nodeTypes={nodeTypes}
-          connectionMode={ConnectionMode.Strict}
+          connectionMode={ConnectionMode.Loose}
           fitView
-          fitViewOptions={{ padding: 0.5 }}
+          fitViewOptions={{ padding: 0.2 }}
           defaultEdgeOptions={{
             type: "smoothstep",
             animated: true,
-          }}
-          onNodesChange={(changes) => {
-            console.log("Nodes changed:", changes);
-          }}
-          onEdgesChange={(changes) => {
-            console.log("Edges changed:", changes);
-          }}
-          onError={(error) => {
-            console.error("ReactFlow error:", error);
           }}
         >
           <Background
@@ -479,9 +375,10 @@ export default function DBMLDiagram({ nodes, edges }: DBMLDiagramProps) {
             style={{ opacity: 0.2 }}
           />
           <Controls
-            className="bg-background border"
+            className="bg-background border flex flex-row"
+            position="top-center"
             showInteractive={true}
-            fitViewOptions={{ padding: 0.5 }}
+            fitViewOptions={{ padding: 1 }}
           />
           {controls.showMinimap && (
             <MiniMap
@@ -490,23 +387,52 @@ export default function DBMLDiagram({ nodes, edges }: DBMLDiagramProps) {
             />
           )}
 
-          <DiagramToolbar />
-
-          {/* Top Toolbar */}
           <Panel position="top-right" className="flex items-center gap-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="icon" className="bg-background">
+                  <Layout className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuLabel>Layout Direction</DropdownMenuLabel>
+                <DropdownMenuItem
+                  onClick={() => setControls((c) => ({ ...c, layout: "LR" }))}
+                >
+                  Left to Right
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => setControls((c) => ({ ...c, layout: "TB" }))}
+                >
+                  Top to Bottom
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => setControls((c) => ({ ...c, layout: "RL" }))}
+                >
+                  Right to Left
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => setControls((c) => ({ ...c, layout: "BT" }))}
+                >
+                  Bottom to Top
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
             <Button
               variant="outline"
               size="icon"
-              onClick={() => setShowHelp(!showHelp)}
               className="bg-background"
+              onClick={() => setShowHelp(!showHelp)}
             >
               <Info className="h-4 w-4" />
             </Button>
+
             <Button
               variant="outline"
               size="icon"
-              onClick={() => setShowZoomDialog(true)}
               className="bg-background"
+              onClick={() => setShowZoomDialog(true)}
             >
               <Maximize2 className="h-4 w-4" />
             </Button>
@@ -527,10 +453,34 @@ export default function DBMLDiagram({ nodes, edges }: DBMLDiagramProps) {
             <div className="flex flex-col gap-1">
               <div className="text-sm font-medium">Schema Overview</div>
               <div className="text-xs text-muted-foreground">
-                {nodes.length} Tables • {edges.length} Relationships
+                {safeNodes.length} Tables • {safeEdges.length} Relationships
               </div>
             </div>
           </Panel>
+
+          {/* Zoom Tip */}
+          {showTip && (
+            <Panel position="bottom-center" className="mb-4">
+              <div className="bg-background/95 backdrop-blur-sm px-3 py-2 rounded-lg border shadow-sm flex items-center gap-2 text-sm animate-fade-in-up">
+                <div className="flex items-center gap-1 bg-muted px-2 py-1 rounded">
+                  <span className="font-medium">Ctrl</span>
+                  <span>+</span>
+                  <ZoomIn className="h-3.5 w-3.5" />
+                </div>
+                <span className="text-muted-foreground">
+                  Use mouse wheel to zoom in/out
+                </span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-6 ml-2"
+                  onClick={() => setShowTip(false)}
+                >
+                  <XIcon className="h-3.5 w-3.5" />
+                </Button>
+              </div>
+            </Panel>
+          )}
         </ReactFlow>
       </div>
 
@@ -577,7 +527,7 @@ export default function DBMLDiagram({ nodes, edges }: DBMLDiagramProps) {
                 className="bg-background/95 backdrop-blur-sm p-3 rounded-lg border shadow-sm"
               >
                 <div className="text-sm font-medium">
-                  {nodes.length} Tables • {edges.length} Relationships
+                  {safeNodes.length} Tables • {safeEdges.length} Relationships
                 </div>
               </Panel>
             </ReactFlow>

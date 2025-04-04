@@ -1,8 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { ChevronRight, Database, Server, Table2 } from "lucide-react";
+import { Database, Server, Table2 } from "lucide-react";
 
 type ExampleSchema = {
   title: string;
@@ -15,7 +14,7 @@ const EXAMPLE_SCHEMAS: ExampleSchema[] = [
   {
     title: "Blog System",
     description: "A simple blog with users, posts, comments and categories",
-    icon: <Table2 className="h-5 w-5" />,
+    icon: <Table2 className="h-5 w-5 text-cyan-600" />,
     schema: `CREATE TABLE users (
   id SERIAL PRIMARY KEY,
   username VARCHAR(50) NOT NULL,
@@ -52,7 +51,7 @@ CREATE TABLE comments (
   {
     title: "E-commerce",
     description: "Online store with products, orders and customers",
-    icon: <Server className="h-5 w-5" />,
+    icon: <Server className="h-5 w-5 text-green-600" />,
     schema: `CREATE TABLE customers (
   id SERIAL PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
@@ -96,7 +95,7 @@ CREATE TABLE order_items (
   {
     title: "Task Management",
     description: "Project management with tasks, teams and assignments",
-    icon: <Database className="h-5 w-5" />,
+    icon: <Database className="h-5 w-5 text-pink-600" />,
     schema: `CREATE TABLE users (
   id SERIAL PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
@@ -148,19 +147,19 @@ interface ExamplesProps {
 
 export default function Examples({ onSelectExample, vertical }: ExamplesProps) {
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 text-wrapping break-words flex flex-col items-start gap-2 ">
       {EXAMPLE_SCHEMAS.map((example, index) => (
         <Button
           key={index}
-          variant="ghost"
-          className="w-full h-auto p-3 text-left flex flex-col items-start gap-1 hover:bg-muted"
+          variant="outline"
+          className="w-48 h-auto p-3 text-left flex flex-col items-start gap-1 hover:bg-muted"
           onClick={() => onSelectExample(example.schema)}
         >
           <div className="flex items-center gap-2 font-medium">
             {example.icon}
             {example.title}
           </div>
-          <p className="text-xs text-muted-foreground">{example.description}</p>
+          {/* <p className="text-xs text-muted-foreground">{example.description}</p> */}
         </Button>
       ))}
     </div>

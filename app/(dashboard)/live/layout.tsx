@@ -7,8 +7,7 @@ export const metadata: Metadata = {
 
 export default function LiveLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex-1 flex flex-col min-h-[calc(100vh-80px)]">
-      
+    <div className="flex-1 flex flex-col  p-2">
       {children}
     </div>
   );

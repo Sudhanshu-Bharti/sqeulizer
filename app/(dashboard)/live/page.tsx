@@ -18,7 +18,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ChevronRight, Copy, Download, Sparkles, Code } from "lucide-react";
+import {
+  ChevronRight,
+  Copy,
+  Download,
+  Sparkles,
+  Code,
+  Upload,
+  Import,
+} from "lucide-react";
 import { useTheme } from "next-themes";
 import Examples from "./examples";
 import { toast } from "@/components/ui/use-toast";
@@ -44,7 +52,6 @@ export default function DBSchemaVisualizer() {
     "postgres"
   );
 
-  // Function to handle file upload
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file && file.name.endsWith(".sql")) {
@@ -96,19 +103,20 @@ export default function DBSchemaVisualizer() {
       }
       formData.append("dialect", dialect);
 
-      const result = await Promise.race([
+      const result = (await Promise.race([
         fetch("/api/generate", {
           method: "POST",
           body: formData,
         }),
         timeoutPromise,
-      ]);
+      ])) as Response;
 
       if (!result.ok) {
         throw new Error("Failed to generate DBML");
       }
 
       const data = await result.json();
+      console.log("DBML data:", data);
       if (data.dbml) {
         setDbmlStructure(data.dbml);
         setRenderError(null);
@@ -117,7 +125,7 @@ export default function DBSchemaVisualizer() {
       }
     } catch (error) {
       console.error("Error generating DBML:", error);
-      if (error.message === "Generation timed out") {
+      if (error instanceof Error && error.message === "Generation timed out") {
         setTimeoutError(true);
         setRenderError(
           "Generation timed out. The SQL might be too complex or invalid."
@@ -138,26 +146,26 @@ export default function DBSchemaVisualizer() {
     }
   };
 
-  const copyToClipboard = () => {
-    if (!dbmlCode) return;
+  // const copyToClipboard = () => {
+  //   if (!dbmlCode) return;
 
-    navigator.clipboard
-      .writeText(dbmlCode)
-      .then(() => {
-        toast({
-          title: "Copied!",
-          description: "DBML code copied to clipboard",
-        });
-      })
-      .catch((err) => {
-        console.error("Failed to copy:", err);
-        toast({
-          title: "Copy Failed",
-          description: "Could not copy to clipboard",
-          variant: "destructive",
-        });
-      });
-  };
+  //   navigator.clipboard
+  //     .writeText(dbmlCode)
+  //     .then(() => {
+  //       toast({
+  //         title: "Copied!",
+  //         description: "DBML code copied to clipboard",
+  //       });
+  //     })
+  //     .catch((err) => {
+  //       console.error("Failed to copy:", err);
+  //       toast({
+  //         title: "Copy Failed",
+  //         description: "Could not copy to clipboard",
+  //         variant: "destructive",
+  //       });
+  //     });
+  // };
 
   const handleExampleSelect = (exampleSchema: string) => {
     setSchema("");
@@ -209,7 +217,12 @@ export default function DBSchemaVisualizer() {
         <div className="container flex h-14 items-center justify-between">
           <h1 className="font-semibold">Database Schema Visualizer</h1>
           <div className="flex items-center gap-2">
-            <Select value={dialect} onValueChange={(v) => setDialect(v)}>
+            <Select
+              value={dialect}
+              onValueChange={(v: "mysql" | "postgres" | "mssql") =>
+                setDialect(v)
+              }
+            >
               <SelectTrigger className="w-[140px]">
                 <SelectValue />
               </SelectTrigger>
@@ -235,11 +248,11 @@ export default function DBSchemaVisualizer() {
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-medium">SQL Input</h2>
               <Button
-                variant="ghost"
+                variant="outline"
                 size="sm"
                 onClick={() => document.getElementById("sql-upload")?.click()}
               >
-                Upload SQL
+                <Import className="mr-2" size={16} /> Import SQL
               </Button>
               <input
                 id="sql-upload"
@@ -276,7 +289,6 @@ export default function DBSchemaVisualizer() {
           </div>
         </div>
 
-        {/* Main Diagram Area */}
         <div className="relative bg-background/50 overflow-hidden">
           {renderError ? (
             <div className="flex items-center justify-center h-full p-4 text-destructive">
