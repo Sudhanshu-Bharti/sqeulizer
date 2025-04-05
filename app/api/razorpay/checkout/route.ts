@@ -92,7 +92,8 @@ export async function GET(request: NextRequest) {
           razorpaySubscriptionId: subscriptionId,
           razorpayPlanId: plan.id,
           planName: plan.item.name,
-          subscriptionStatus: subscription.status,
+          subscriptionStatus:
+            subscription.status === "created" ? "active" : "inactive",
           updatedAt: new Date(),
         })
         .where(eq(teams.id, userTeam[0].teamId))
@@ -110,7 +111,10 @@ export async function GET(request: NextRequest) {
         .where(eq(teams.id, userTeam[0].teamId))
         .returning();
 
-      console.log("Team payment details updated successfully:", updateResult[0]);
+      console.log(
+        "Team payment details updated successfully:",
+        updateResult[0]
+      );
     }
 
     console.log("Setting user session");
