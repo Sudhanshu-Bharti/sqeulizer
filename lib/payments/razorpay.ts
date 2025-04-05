@@ -32,6 +32,7 @@ export async function createCheckoutSession({
 
     // Fetch plan details first
     const plan = await razorpay.plans.fetch(planId);
+    console.log("Fetched plan details:", plan);
 
     const options = {
       amount: plan.item.amount,
@@ -45,18 +46,22 @@ export async function createCheckoutSession({
     };
 
     const order = await razorpay.orders.create(options);
+    console.log("Created order:", order);
 
-    // Create a subscription if it's a recurring plan
-    if (planId.includes("subscription")) {
+    // Create a subscription if it's a recurring plan (checking plan properties)
+    if (plan.period === "monthly" || plan.period === "yearly") {
+      console.log("Creating subscription for recurring plan");
       const subscription = await razorpay.subscriptions.create({
         plan_id: planId,
         customer_notify: 1,
-        total_count: 12, // 1 year subscription
+        total_count: plan.period === "monthly" ? 12 : 1, // 12 months for monthly, 1 year for yearly
         notes: {
           userId: user.id.toString(),
           teamId: team.id.toString(),
         },
       });
+
+      console.log("Created subscription:", subscription);
 
       return {
         orderId: order.id,
