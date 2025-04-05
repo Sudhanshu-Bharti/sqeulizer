@@ -5,8 +5,33 @@ import { getRazorpayPlans, getRazorpayProducts } from "@/lib/payments/razorpay";
 import { SubmitButton } from "./submit-button";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { getUser } from "@/lib/db/queries";
+import { redirect } from "next/navigation";
+import { eq } from "drizzle-orm";
+import { db } from "@/lib/db/drizzle";
+import { teamMembers, teams } from "@/lib/db/schema";
 
 export default async function PricingPage() {
+  const user = await getUser();
+  if (!user) {
+    redirect("/sign-in");
+  }
+
+  // Get user's team with complete team data
+  const userTeam = await db
+    .select({
+      team: teams,
+    })
+    .from(teamMembers)
+    .innerJoin(teams, eq(teams.id, teamMembers.teamId))
+    .where(eq(teamMembers.userId, user.id))
+    .limit(1);
+
+  if (!userTeam.length) {
+    redirect("/sign-up");
+  }
+
+  const currentTeam = userTeam[0].team;
   const [plans, products] = await Promise.all([
     getRazorpayPlans(),
     getRazorpayProducts(),
@@ -30,7 +55,7 @@ export default async function PricingPage() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto mt-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto mt-12">
           {basePlan && (
             <PricingCard
               name="Base"
@@ -43,8 +68,12 @@ export default async function PricingPage() {
                 "Email support",
               ]}
               planId={basePlan.id}
-              action={checkoutAction} // Pass the server action
-              className="hover:shadow-lg transition-all duration-300 hover:scale-[1.02]"
+              action={checkoutAction}
+              className={cn(
+                "hover:shadow-lg transition-all duration-300 hover:scale-[1.02]",
+                currentTeam.planName === "Base" && "border-primary"
+              )}
+              isCurrentPlan={currentTeam.planName === "Base"}
             />
           )}
 
@@ -61,9 +90,13 @@ export default async function PricingPage() {
                 "Custom integrations",
               ]}
               planId={plusPlan.id}
-              action={checkoutAction} // Pass the server action
-              className="border-primary/20 hover:shadow-lg transition-all duration-300 hover:scale-[1.02] relative"
+              action={checkoutAction}
+              className={cn(
+                "border-primary/20 hover:shadow-lg transition-all duration-300 hover:scale-[1.02] relative",
+                currentTeam.planName === "Plus" && "border-primary"
+              )}
               popular
+              isCurrentPlan={currentTeam.planName === "Plus"}
             />
           )}
         </div>
@@ -79,9 +112,10 @@ function PricingCard({
   trialDays,
   features,
   planId,
-  action, // Add action prop
+  action,
   className,
   popular,
+  isCurrentPlan,
 }: {
   name: string;
   price: number;
@@ -89,9 +123,10 @@ function PricingCard({
   trialDays: number;
   features: string[];
   planId?: string;
-  action?: (formData: FormData) => Promise<any>; // Define action prop type
+  action?: (formData: FormData) => Promise<any>;
   className?: string;
   popular?: boolean;
+  isCurrentPlan?: boolean;
 }) {
   return (
     <Card
@@ -99,13 +134,18 @@ function PricingCard({
         "relative flex flex-col p-6 bg-background border rounded-lg",
         className,
         {
-          "border-primary": popular,
+          "border-primary": popular || isCurrentPlan,
         }
       )}
     >
       {popular && (
         <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-gradient-to-br from-orange-500 to-amber-500 text-white text-sm rounded-full">
           Popular
+        </div>
+      )}
+      {isCurrentPlan && (
+        <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-primary text-white text-sm rounded-full">
+          Current Plan
         </div>
       )}
       <div className="text-xl font-semibold mb-2">{name}</div>
@@ -126,7 +166,7 @@ function PricingCard({
       <form action={action} className="pt-4">
         <input type="hidden" name="planId" value={planId} />
         <SubmitButton action={action} className="w-full">
-          {price === 0 ? "Start Free Trial" : "Get Started"}
+          {isCurrentPlan ? "Current Plan" : price === 0 ? "Start Free Trial" : "Get Started"}
         </SubmitButton>
       </form>
     </Card>

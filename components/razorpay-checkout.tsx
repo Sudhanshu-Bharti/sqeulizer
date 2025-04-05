@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Script from "next/script";
+import { useRouter } from "next/navigation";
 
 declare global {
   interface Window {
@@ -27,6 +28,7 @@ export function RazorpayCheckout({
   onSuccess,
 }: RazorpayCheckoutProps) {
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     // Only initialize Razorpay when the script is loaded and we have all required props
@@ -44,7 +46,16 @@ export function RazorpayCheckout({
       handler: function (response: any) {
         // Handle successful payment
         if (response.razorpay_payment_id) {
-          onSuccess();
+          // Construct the checkout URL with payment details
+          const checkoutUrl = new URL("/api/razorpay/checkout", window.location.origin);
+          checkoutUrl.searchParams.append("order_id", orderId);
+          checkoutUrl.searchParams.append("razorpay_payment_id", response.razorpay_payment_id);
+          if (subscriptionId) {
+            checkoutUrl.searchParams.append("subscription_id", subscriptionId);
+          }
+          
+          // Redirect to checkout route
+          window.location.href = checkoutUrl.toString();
         }
       },
       prefill: {
