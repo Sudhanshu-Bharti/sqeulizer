@@ -1,84 +1,147 @@
-import { stripe } from '../payments/stripe';
-import { db } from './drizzle';
-import { users, teams, teamMembers } from './schema';
-import { hashPassword } from '@/lib/auth/session';
+import { razorpay } from "../payments/razorpay";
+import { db } from "./drizzle";
+import { users, teams, teamMembers } from "./schema";
+import { hashPassword } from "@/lib/auth/session";
+import { eq } from "drizzle-orm";
 
-async function createStripeProducts() {
-  console.log('Creating Stripe products and prices...');
+async function createRazorpayPlans() {
+  console.log("Creating Razorpay plans...");
 
-  const baseProduct = await stripe.products.create({
-    name: 'Base',
-    description: 'Base subscription plan',
-  });
+  try {
+    console.log("Razorpay credentials check:", {
+      keyIdExists: !!process.env.RAZORPAY_KEY_ID,
+      secretExists: !!process.env.RAZORPAY_KEY_SECRET,
+    });
 
-  await stripe.prices.create({
-    product: baseProduct.id,
-    unit_amount: 800, // $8 in cents
-    currency: 'usd',
-    recurring: {
-      interval: 'month',
-      trial_period_days: 7,
-    },
-  });
+    // First check if we can fetch existing plans
+    console.log("Checking existing plans...");
+    try {
+      const existingPlans = await razorpay.plans.all();
+      console.log("Existing plans:", existingPlans);
+    } catch (error) {
+      console.error("Error fetching existing plans:", error);
+      if (error.statusCode === 400) {
+        console.error(
+          "Subscriptions feature may not be enabled in your Razorpay account."
+        );
+        console.error(
+          "Please enable Subscriptions in your Razorpay Dashboard before running this script."
+        );
+        throw new Error("Razorpay Subscriptions feature not enabled");
+      }
+      throw error;
+    }
 
-  const plusProduct = await stripe.products.create({
-    name: 'Plus',
-    description: 'Plus subscription plan',
-  });
+    // Create free plan
+    console.log("Creating free plan...");
+    const freePlan = await razorpay.plans.create({
+      period: "monthly",
+      interval: 1,
+      item: {
+        name: "Free",
+        description: "Free plan with basic features",
+        amount: 0,
+        currency: "INR",
+      },
+    });
+    console.log("Free plan created:", freePlan.id);
 
-  await stripe.prices.create({
-    product: plusProduct.id,
-    unit_amount: 1200, // $12 in cents
-    currency: 'usd',
-    recurring: {
-      interval: 'month',
-      trial_period_days: 7,
-    },
-  });
+    // Create paid plans
+    console.log("Creating base plan...");
+    const basePlan = await razorpay.plans.create({
+      period: "monthly",
+      interval: 1,
+      item: {
+        name: "Base",
+        description: "Base subscription plan",
+        amount: 20000, // ₹200 in paise
+        currency: "INR",
+      },
+    });
+    console.log("Base plan created:", basePlan.id);
 
-  console.log('Stripe products and prices created successfully.');
+    console.log("Creating plus plan...");
+    const plusPlan = await razorpay.plans.create({
+      period: "monthly",
+      interval: 1,
+      item: {
+        name: "Plus",
+        description: "Plus subscription plan",
+        amount: 120000, // ₹1200 in paise
+        currency: "INR",
+      },
+    });
+    console.log("Plus plan created:", plusPlan.id);
+
+    console.log("All Razorpay plans created successfully.");
+  } catch (error) {
+    console.error("Error creating Razorpay plans:", error);
+    throw error;
+  }
 }
 
 async function seed() {
-  const email = 'test@test.com';
-  const password = 'admin123';
-  const passwordHash = await hashPassword(password);
+  try {
+    const email = "test@test.com";
 
-  const [user] = await db
-    .insert(users)
-    .values([
-      {
-        email: email,
-        passwordHash: passwordHash,
+    // Check if user exists
+    const existingUser = await db
+      .select()
+      .from(users)
+      .where(eq(users.email, email))
+      .limit(1);
+
+    let user = existingUser[0];
+
+    if (!user) {
+      console.log("Creating initial user...");
+      const password = "admin123";
+      const passwordHash = await hashPassword(password);
+
+      [user] = await db
+        .insert(users)
+        .values([
+          {
+            email: email,
+            passwordHash: passwordHash,
+            role: "owner",
+          },
+        ])
+        .returning();
+
+      console.log("Initial user created.");
+
+      const [team] = await db
+        .insert(teams)
+        .values({
+          name: "Test Team",
+          planName: "Free",
+          subscriptionStatus: "active",
+        })
+        .returning();
+
+      await db.insert(teamMembers).values({
+        teamId: team.id,
+        userId: user.id,
         role: "owner",
-      },
-    ])
-    .returning();
+      });
+    } else {
+      console.log("Initial user already exists, skipping user creation.");
+    }
 
-  console.log('Initial user created.');
-
-  const [team] = await db
-    .insert(teams)
-    .values({
-      name: 'Test Team',
-    })
-    .returning();
-
-  await db.insert(teamMembers).values({
-    teamId: team.id,
-    userId: user.id,
-    role: 'owner',
-  });
-
-  await createStripeProducts();
+    await createRazorpayPlans();
+  } catch (error) {
+    console.error("Seed process failed:", error);
+    throw error;
+  }
 }
 
 seed()
   .catch((error) => {
-    console.error('Seed process failed:', error);
+    console.error("Seed process failed:", error);
     process.exit(1);
   })
   .finally(() => {
-    console.log('Seed process finished. Exiting...');
+    console.log("Seed process finished. Exiting...");
     process.exit(0);
   });

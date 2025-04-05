@@ -147,35 +147,22 @@ volumes:
   }
 }
 
-async function getStripeSecretKey(): Promise<string> {
-  console.log('Step 3: Getting Stripe Secret Key');
+async function getRazorpayKeys() {
+  console.log('Step 3: Getting Razorpay Keys');
   console.log(
-    'You can find your Stripe Secret Key at: https://dashboard.stripe.com/test/apikeys'
+    'You can find your Razorpay Keys at: https://dashboard.razorpay.com/app/keys'
   );
-  return await question('Enter your Stripe Secret Key: ');
+  const keyId = await question('Enter your Razorpay Key ID: ');
+  const keySecret = await question('Enter your Razorpay Key Secret: ');
+  return { keyId, keySecret };
 }
 
-async function createStripeWebhook(): Promise<string> {
-  console.log('Step 4: Creating Stripe webhook...');
-  try {
-    const { stdout } = await execAsync('stripe listen --print-secret');
-    const match = stdout.match(/whsec_[a-zA-Z0-9]+/);
-    if (!match) {
-      throw new Error('Failed to extract Stripe webhook secret');
-    }
-    console.log('Stripe webhook created.');
-    return match[0];
-  } catch (error) {
-    console.error(
-      'Failed to create Stripe webhook. Check your Stripe CLI installation and permissions.'
-    );
-    if (os.platform() === 'win32') {
-      console.log(
-        'Note: On Windows, you may need to run this script as an administrator.'
-      );
-    }
-    throw error;
-  }
+async function getRazorpayWebhookSecret() {
+  console.log('Step 4: Getting Razorpay Webhook Secret');
+  console.log(
+    'You can find your Razorpay Webhook Secret at: https://dashboard.razorpay.com/app/webhooks'
+  );
+  return await question('Enter your Razorpay Webhook Secret: ');
 }
 
 function generateAuthSecret(): string {
@@ -194,18 +181,17 @@ async function writeEnvFile(envVars: Record<string, string>) {
 }
 
 async function main() {
-  await checkStripeCLI();
-
   const POSTGRES_URL = await getPostgresURL();
-  const STRIPE_SECRET_KEY = await getStripeSecretKey();
-  const STRIPE_WEBHOOK_SECRET = await createStripeWebhook();
+  const { keyId, keySecret } = await getRazorpayKeys();
+  const RAZORPAY_WEBHOOK_SECRET = await getRazorpayWebhookSecret();
   const BASE_URL = 'http://localhost:3000';
   const AUTH_SECRET = generateAuthSecret();
 
   await writeEnvFile({
     POSTGRES_URL,
-    STRIPE_SECRET_KEY,
-    STRIPE_WEBHOOK_SECRET,
+    RAZORPAY_KEY_ID: keyId,
+    RAZORPAY_KEY_SECRET: keySecret,
+    RAZORPAY_WEBHOOK_SECRET,
     BASE_URL,
     AUTH_SECRET,
   });

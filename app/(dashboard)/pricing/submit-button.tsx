@@ -1,29 +1,72 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { ArrowRight, Loader2 } from 'lucide-react';
-import { useFormStatus } from 'react-dom';
+import { useState, useTransition } from "react";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { RazorpayCheckout } from "@/components/razorpay-checkout";
+import { cn } from "@/lib/utils";
 
-export function SubmitButton() {
-  const { pending } = useFormStatus();
+interface SubmitButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?:
+    | "default"
+    | "destructive"
+    | "outline"
+    | "secondary"
+    | "ghost"
+    | "link";
+  action?: (formData: FormData) => Promise<any>; // Add action prop
+}
+
+export function SubmitButton({
+  children,
+  className,
+  variant = "default",
+  action, // Accept the server action as a prop
+  ...props
+}: SubmitButtonProps) {
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+  const [checkoutData, setCheckoutData] = useState<any>(null);
 
   return (
-    <Button
-      type="submit"
-      disabled={pending}
-      className="w-full bg-white hover:bg-gray-100 text-black border border-gray-200 rounded-full flex items-center justify-center"
-    >
-      {pending ? (
-        <>
-          <Loader2 className="animate-spin mr-2 h-4 w-4" />
-          Loading...
-        </>
-      ) : (
-        <>
-          Get Started
-          <ArrowRight className="ml-2 h-4 w-4" />
-        </>
+    <>
+      <Button
+        type="submit"
+        className={cn(className)}
+        variant={variant}
+        aria-disabled={isPending}
+        onClick={(e) => {
+          const form = (e.target as HTMLButtonElement).closest("form");
+          if (form && action) {
+            // Check if action is provided
+            e.preventDefault();
+            const formData = new FormData(form);
+            startTransition(async () => {
+              const data = await action(formData); // Call the action directly
+              if (data) {
+                setCheckoutData(data);
+              }
+            });
+          }
+        }}
+        {...props}
+      >
+        {isPending ? "Loading..." : children}
+      </Button>
+
+      {checkoutData && (
+        <RazorpayCheckout
+          orderId={checkoutData.orderId}
+          amount={checkoutData.amount}
+          currency={checkoutData.currency}
+          razorpayKey={checkoutData.key}
+          subscriptionId={checkoutData.subscriptionId}
+          onSuccess={() => {
+            router.push("/dashboard");
+          }}
+        />
       )}
-    </Button>
+    </>
   );
 }

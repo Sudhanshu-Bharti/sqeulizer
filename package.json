@@ -49,6 +49,7 @@
     "node-sql-parser": "^5.3.8",
     "postcss": "^8.5.3",
     "postgres": "^3.4.5",
+    "razorpay": "^2.9.6",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "reactflow": "^11.11.4",
