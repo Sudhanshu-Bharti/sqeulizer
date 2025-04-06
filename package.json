@@ -41,6 +41,7 @@
     "dotenv": "^16.4.7",
     "drizzle-kit": "^0.30.5",
     "drizzle-orm": "^0.40.0",
+    "html-to-image": "^1.11.13",
     "jose": "^6.0.8",
     "lucide-react": "^0.479.0",
     "motion": "^12.5.0",

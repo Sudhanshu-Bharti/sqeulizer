@@ -54,7 +54,7 @@ async function createRazorpayPlans() {
       item: {
         name: "Base",
         description: "Base subscription plan",
-        amount: 20000, // ₹200 in paise
+        amount: 20000, 
         currency: "INR",
       },
     });
@@ -67,7 +67,7 @@ async function createRazorpayPlans() {
       item: {
         name: "Plus",
         description: "Plus subscription plan",
-        amount: 120000, // ₹1200 in paise
+        amount: 120000, 
         currency: "INR",
       },
     });

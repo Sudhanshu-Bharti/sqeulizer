@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { SyntaxTextarea } from "@/components/ui/syntax-textarea";
-import { ChevronRight, Import, Database, Code2, Download, Share2, Copy } from "lucide-react";
+import { ChevronRight, Import, Database } from "lucide-react";
 import Examples from "./examples";
 import { toast } from "@/components/ui/use-toast";
 import DBMLDiagram from "./components/DBMLDiagram";
@@ -14,9 +14,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { TextEffect } from "@/components/motion-primitives/text-effect";
+import { ShareDialog } from "@/components/share-dialog";
 
 export default function DBSchemaVisualizer() {
+  const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
   const [schema, setSchema] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [renderError, setRenderError] = useState<string | null>(null);
@@ -234,6 +235,7 @@ export default function DBSchemaVisualizer() {
             <Button 
               size="sm" 
               className="bg-orange-600 hover:bg-orange-700 text-white dark:bg-orange-700 dark:hover:bg-orange-800"
+              onClick={() => setIsShareDialogOpen(true)}
             >
               Share
             </Button>
@@ -294,13 +296,20 @@ export default function DBSchemaVisualizer() {
               <p>Enter your SQL schema and click Generate</p>
             </div>
           ) : (
-            <DBMLDiagram
-              nodes={dbmlStructure.nodes}
-              edges={dbmlStructure.edges}
-            />
+              <DBMLDiagram
+                nodes={dbmlStructure.nodes}
+                edges={dbmlStructure.edges}
+              />
           )}
         </div>
       </div>
+
+      <ShareDialog
+        isOpen={isShareDialogOpen}
+        onClose={() => setIsShareDialogOpen(false)}
+        schema={schema}
+        dialect={dialect}
+      />
     </div>
   );
 }
