@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { signOut } from "@/app/(login)/actions"
-import { useRouter } from "next/navigation"
-import { User } from "lucide-react"
+import { signOut } from "@/app/(login)/actions";
+import { useRouter } from "next/navigation";
+import { User } from "lucide-react";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,38 +12,38 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 
 export function UserMenu() {
-  const router = useRouter()
+  const router = useRouter();
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon">
-          <User className="h-[1.2rem] w-[1.2rem]" />
+        <Button variant="outline" size="icon" className="rounded-full">
+          <User className="h-[1.2rem] w-[1.2rem] text-amber-500" />
           <span className="sr-only">User menu</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => router.push("/profile")}>
-          Profile
+        <DropdownMenuItem onClick={() => router.push("/dashboard")}>
+          Dashboard
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => router.push("/settings")}>
+        {/* <DropdownMenuItem onClick={() => router.push("/settings")}>
           Settings
-        </DropdownMenuItem>
+        </DropdownMenuItem> */}
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={async () => {
-            await signOut()
-            router.push("/login")
+            await signOut();
+            router.push("/login");
           }}
         >
           Log out
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
-} 
+  );
+}

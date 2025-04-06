@@ -225,15 +225,15 @@ export default function DBSchemaVisualizer() {
                 <SelectItem value="mssql">MS SQL Server</SelectItem>
               </SelectContent>
             </Select>
-            <Button 
-              variant="outline" 
-              size="sm" 
+            <Button
+              variant="outline"
+              size="sm"
               className="hover:border-orange-200 dark:hover:border-orange-600 dark:border-gray-700"
             >
               Save
             </Button>
-            <Button 
-              size="sm" 
+            <Button
+              size="sm"
               className="bg-orange-600 hover:bg-orange-700 text-white dark:bg-orange-700 dark:hover:bg-orange-800"
               onClick={() => setIsShareDialogOpen(true)}
             >
@@ -249,7 +249,9 @@ export default function DBSchemaVisualizer() {
         <div className="border-r bg-muted/10 flex flex-col h-[calc(100vh-3.5rem)] overflow-hidden dark:border-gray-800 dark:bg-gray-900/50">
           <div className="flex-none p-4 space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-sm font-medium text-gray-900 dark:text-gray-100">SQL Input</h2>
+              <h2 className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                SQL Input
+              </h2>
             </div>
             <div className="relative">
               <SyntaxTextarea
@@ -273,13 +275,15 @@ export default function DBSchemaVisualizer() {
 
           <div className="flex-1 overflow-y-auto border-t bg-background/50 dark:border-gray-800 dark:bg-gray-900/30">
             <div className="p-4">
-              <h2 className="text-sm font-medium mb-3 text-gray-900 dark:text-gray-100">Example Schemas</h2>
+              <h2 className="text-sm font-medium mb-3 text-gray-900 dark:text-gray-100">
+                Example Schemas
+              </h2>
               <Examples onSelectExample={handleExampleSelect} vertical />
             </div>
           </div>
         </div>
 
-        <div className="relative bg-background/50 overflow-hidden dark:bg-gray-900/30">
+        <div className="relative overflow-hidden dark:bg-transparent">
           {renderError ? (
             <div className="flex items-center justify-center h-full p-4 text-red-500 dark:text-red-400">
               <p>{renderError}</p>
@@ -296,10 +300,10 @@ export default function DBSchemaVisualizer() {
               <p>Enter your SQL schema and click Generate</p>
             </div>
           ) : (
-              <DBMLDiagram
-                nodes={dbmlStructure.nodes}
-                edges={dbmlStructure.edges}
-              />
+            <DBMLDiagram
+              nodes={dbmlStructure.nodes}
+              edges={dbmlStructure.edges}
+            />
           )}
         </div>
       </div>

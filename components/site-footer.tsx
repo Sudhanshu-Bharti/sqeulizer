@@ -1,69 +1,80 @@
-import Link from "next/link"
+import Link from "next/link";
+import { cn } from "@/lib/utils";
+import { Database } from "lucide-react";
 
-const footerLinks = [
-  {
-    title: "Product",
-    links: [
-      { name: "Features", href: "/features" },
-      { name: "Pricing", href: "/pricing" },
-      { name: "Documentation", href: "/docs" },
-    ],
-  },
-  {
-    title: "Company",
-    links: [
-      { name: "About", href: "/about" },
-      { name: "Blog", href: "/blog" },
-      { name: "Careers", href: "/careers" },
-    ],
-  },
-  {
-    title: "Resources",
-    links: [
-      { name: "Community", href: "/community" },
-      { name: "Help Center", href: "/help" },
-      { name: "Contact", href: "/contact" },
-    ],
-  },
-]
-
-export function SiteFooter() {
+export function SiteFooter({ className }: { className?: string }) {
   return (
-    <footer className="border-t">
-      <div className="container py-12 md:py-16">
-        <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
-          <div className="col-span-2 md:col-span-1">
-            <Link href="/" className="text-xl font-bold">
-              ACME
+    <footer className={cn("mt-auto p-6", className)}>
+      <div className="container py-16">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="space-y-4">
+            <Link href="/" className="flex items-center gap-2">
+              <Database className="h-6 w-6 text-white" />
+              <span className="font-semibold text-lg text-white">
+                dbdiagram
+              </span>
             </Link>
-            <p className="mt-4 text-sm text-muted-foreground">
-              Modern solutions for modern problems.
+            <p className="text-sm text-white/60 max-w-xs">
+              Transform your database schema into beautiful, interactive
+              diagrams
             </p>
           </div>
-          {footerLinks.map((section) => (
-            <div key={section.title}>
-              <h3 className="text-sm font-semibold">{section.title}</h3>
-              <ul className="mt-4 space-y-2">
-                {section.links.map((link) => (
-                  <li key={link.name}>
-                    <Link
-                      href={link.href}
-                      className="text-sm text-muted-foreground hover:text-foreground"
-                    >
-                      {link.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+
+          <div>
+            <h3 className="font-medium text-white mb-4">Product</h3>
+            <ul className="space-y-3">
+              {["Features", "Pricing", "Documentation"].map((item) => (
+                <li key={item}>
+                  <Link
+                    href={`/${item.toLowerCase()}`}
+                    className="text-sm text-white/60 hover:text-white transition-colors"
+                  >
+                    {item}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="font-medium text-white mb-4">Company</h3>
+            <ul className="space-y-3">
+              {["About", "Blog", "Careers"].map((item) => (
+                <li key={item}>
+                  <Link
+                    href={`/${item.toLowerCase()}`}
+                    className="text-sm text-white/60 hover:text-white transition-colors"
+                  >
+                    {item}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="font-medium text-white mb-4">Legal</h3>
+            <ul className="space-y-3">
+              {["Privacy", "Terms", "Cookie Policy"].map((item) => (
+                <li key={item}>
+                  <Link
+                    href={`/${item.toLowerCase().replace(" ", "-")}`}
+                    className="text-sm text-white/60 hover:text-white transition-colors"
+                  >
+                    {item}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
-        <div className="mt-12 border-t pt-8">
-          <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} ACME. All rights reserved.
-          </p>
+
+        <div className="mt-16 pt-8 border-t border-white/10">
+          <div className="text-center text-sm text-white/60">
+            © {new Date().getFullYear()} dbdiagram. All rights reserved.
+          </div>
         </div>
       </div>
     </footer>
-  )
-} 
+  );
+}

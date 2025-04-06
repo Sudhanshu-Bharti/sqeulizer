@@ -1,58 +1,55 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { ModeToggle } from "@/components/mode-toggle"
-import { UserMenu } from "@/components/user-menu"
+import Link from "next/link";
+import { UserMenu } from "@/components/user-menu";
+import { cn } from "@/lib/utils";
+import { Database } from "lucide-react";
 
-const navigation = [
-  { name: "Home", href: "/" },
-  { name: "Services", href: "/services" },
-  { name: "About", href: "/about" },
-  { name: "Contact", href: "/contact" },
-]
-
-export function SiteHeader() {
-  const pathname = usePathname()
+export function SiteHeader({ className }: { className?: string }) {
+  const navItems = [
+    { label: "Dashboard", href: "/dashboard" },
+    { label: "Pricing", href: "/pricing" },
+    { label: "Documentation", href: "/docs" },
+  ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-14 items-center">
-        <div className="mr-4 hidden md:flex">
-          <Link href="/" className="mr-6 flex items-center space-x-2">
-            <span className="hidden font-bold sm:inline-block">
-              ACME
-            </span>
-          </Link>
-          <nav className="flex items-center space-x-6 text-sm font-medium">
-            {navigation.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  "transition-colors hover:text-foreground/80",
-                  pathname === item.href
-                    ? "text-foreground"
-                    : "text-foreground/60"
-                )}
-              >
-                {item.name}
-              </Link>
-            ))}
-          </nav>
-        </div>
-        <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
-          <div className="w-full flex-1 md:w-auto md:flex-none">
-            {/* Add search component here if needed */}
+    <header className={cn("z-50", className)}>
+      <nav className="container flex h-16 items-center justify-between p-6">
+        <Link href="/" className="flex items-center gap-2 group">
+          <div className="relative ml-8">
+            <div className="absolute -inset-0.5 rounded-lg bg-gradient-to-r from-blue-600 to-emerald-600 opacity-20 blur transition-opacity group-hover:opacity-40" />
+            <div className="relative flex items-center justify-center h-8 w-8 bg-slate-900 rounded-lg border border-slate-800 ">
+              <Database className="h-4 w-4 text-blue-400" />
+            </div>
           </div>
-          <nav className="flex items-center space-x-2">
-            <ModeToggle />
-            <UserMenu />
-          </nav>
+          <span className="font-semibold text-lg ">
+            <span className="text-white">db</span>
+            <span className="text-blue-400">diagram</span>
+          </span>
+        </Link>
+
+        <div className="hidden md:flex items-center gap-1 ml-8">
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="relative px-3 py-2 text-sm text-slate-400 hover:text-white transition-colors rounded-md hover:bg-slate-800/50"
+            >
+              {item.label}
+            </Link>
+          ))}
+          <Link href="/live" className="ml-2 relative group">
+            <div className="absolute -inset-0.5 rounded-lg bg-gradient-to-r from-blue-600 to-emerald-600 opacity-20 blur group-hover:opacity-40 transition-opacity" />
+            <div className="relative px-3 py-2 bg-slate-900 rounded-md border border-slate-800 text-sm font-medium text-white">
+              Try Live Demo
+            </div>
+          </Link>
         </div>
-      </div>
+
+        <div className="flex items-center gap-4">
+          <UserMenu />
+        </div>
+      </nav>
     </header>
-  )
-} 
+  );
+}

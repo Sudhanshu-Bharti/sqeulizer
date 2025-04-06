@@ -41,21 +41,25 @@ export default async function PricingPage() {
   const plusPlan = products.find((plan) => plan.name === "Plus");
 
   return (
-    <div className="py-14 px-6">
-      <div className="relative">
-        <div className="absolute top-1/4 right-1/4 w-[600px] h-[600px] rounded-full bg-gradient-to-br from-orange-600/20 to-amber-500/20 blur-3xl" />
-        <div className="absolute bottom-1/4 left-1/4 w-[400px] h-[400px] rounded-full bg-gradient-to-br from-orange-400/20 to-amber-300/20 blur-3xl" />
+    <div className="py-8 md:py-14 px-4 md:px-6">
+      <div className="relative max-w-7xl mx-auto">
+        {/* Gradient effects */}
+        <div className="absolute top-1/4 right-1/4 w-[300px] md:w-[600px] h-[300px] md:h-[600px] rounded-full bg-gradient-to-br from-orange-600/20 to-amber-500/20 blur-3xl" />
+        <div className="absolute bottom-1/4 left-1/4 w-[200px] md:w-[400px] h-[200px] md:h-[400px] rounded-full bg-gradient-to-br from-orange-400/20 to-amber-300/20 blur-3xl" />
 
-        <div className="text-center relative">
-          <h2 className="text-4xl font-bold mb-4">
+        {/* Header */}
+        <div className="text-center relative mb-12">
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">
             Simple, transparent pricing
-          </h2>
-          <p className="text-muted-foreground">
-            Choose the plan that's right for you
+          </h1>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Choose the plan that's right for you. All plans include a free
+            trial.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto mt-12">
+        {/* Pricing Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 max-w-5xl mx-auto mt-8 relative z-10">
           {basePlan && (
             <PricingCard
               name="Base"
@@ -66,6 +70,8 @@ export default async function PricingPage() {
                 "Up to 5 team members",
                 "Basic analytics",
                 "Email support",
+                "Core features",
+                "24/7 customer service",
               ]}
               planId={basePlan.id}
               action={checkoutAction}
@@ -88,11 +94,14 @@ export default async function PricingPage() {
                 "Advanced analytics",
                 "Priority support",
                 "Custom integrations",
+                "Advanced security",
+                "Dedicated account manager",
+                "Custom branding options",
               ]}
               planId={plusPlan.id}
               action={checkoutAction}
               className={cn(
-                "border-primary/20 hover:shadow-lg transition-all duration-300 hover:scale-[1.02] relative",
+                "border-primary/20 hover:shadow-lg transition-all duration-300 hover:scale-[1.02]",
                 currentTeam.planName === "Plus" && "border-primary"
               )}
               popular
@@ -131,44 +140,74 @@ function PricingCard({
   return (
     <Card
       className={cn(
-        "relative flex flex-col p-6 bg-background border rounded-lg",
+        "relative flex flex-col p-6 md:p-8 bg-background border rounded-lg shadow-sm",
         className,
         {
-          "border-primary": popular || isCurrentPlan,
+          "border-primary border-2": popular || isCurrentPlan,
+          "hover:border-primary/50": !isCurrentPlan,
         }
       )}
     >
       {popular && (
-        <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-gradient-to-br from-orange-500 to-amber-500 text-white text-sm rounded-full">
+        <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-br from-orange-500 to-amber-500 text-white text-sm font-medium rounded-full shadow-sm">
           Popular
         </div>
       )}
       {isCurrentPlan && (
-        <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-primary text-white text-sm rounded-full">
+        <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-primary text-gray-700 text-sm font-medium rounded-full shadow-sm">
           Current Plan
         </div>
       )}
-      <div className="text-xl font-semibold mb-2">{name}</div>
-      <div className="flex items-baseline mb-8">
-        <span className="text-4xl font-bold text-foreground">₹{price}</span>
-        <span className="text-muted-foreground ml-2">/user/{interval}</span>
+
+      <div className="space-y-6">
+        {/* Plan name and price */}
+        <div>
+          <h3 className="text-2xl font-bold mb-2">{name}</h3>
+          <div className="flex items-baseline">
+            <span className="text-4xl font-bold tracking-tight">₹{price}</span>
+            <span className="text-muted-foreground ml-2 text-sm">
+              /user/{interval}
+            </span>
+          </div>
+          {trialDays > 0 && (
+            <p className="text-sm text-muted-foreground mt-2">
+              {trialDays} days free trial
+            </p>
+          )}
+        </div>
+
+        {/* Features list */}
+        <ul className="space-y-3 flex-1">
+          {features.map((feature, index) => (
+            <li key={index} className="flex items-start">
+              <Check className="h-5 w-5 text-primary shrink-0 mr-3" />
+              <span className="text-sm text-muted-foreground">{feature}</span>
+            </li>
+          ))}
+        </ul>
+
+        {/* Action button */}
+        <form action={action} className="mt-auto">
+          <input type="hidden" name="planId" value={planId} />
+          <SubmitButton
+            action={action}
+            className={cn(
+              "w-full shadow-sm text-sm font-medium",
+              popular && !isCurrentPlan
+                ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white hover:from-orange-600 hover:to-amber-600"
+                : ""
+            )}
+          >
+            {isCurrentPlan ? (
+              "Current Plan"
+            ) : price === 0 ? (
+              "Start Free Trial"
+            ) : (
+              <>Get Started{trialDays > 0 && " - Free Trial"}</>
+            )}
+          </SubmitButton>
+        </form>
       </div>
-
-      <ul className="mt-8 space-y-4">
-        {features.map((feature, index) => (
-          <li key={index} className="flex items-start">
-            <Check className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
-            <span className="text-foreground">{feature}</span>
-          </li>
-        ))}
-      </ul>
-
-      <form action={action} className="pt-4">
-        <input type="hidden" name="planId" value={planId} />
-        <SubmitButton action={action} className="w-full">
-          {isCurrentPlan ? "Current Plan" : price === 0 ? "Start Free Trial" : "Get Started"}
-        </SubmitButton>
-      </form>
     </Card>
   );
 }

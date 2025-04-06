@@ -355,7 +355,7 @@ export default function DBMLDiagram({ nodes, edges }: DBMLDiagramProps) {
 
   return (
     <>
-      <div className="diagram-container w-full h-[800px] border rounded-lg overflow-hidden relative">
+      <div className="diagram-container w-full h-[800px] border rounded-lg overflow-hidden relative bg-white dark:bg-gray-900">
         <ReactFlow
           nodes={layoutedNodes}
           edges={processedEdges}
@@ -372,7 +372,7 @@ export default function DBMLDiagram({ nodes, edges }: DBMLDiagramProps) {
             gap={20}
             size={1.5}
             color="hsl(var(--primary))"
-            style={{ opacity: 0.2 }}
+            style={{ opacity: 0.1 }}
           />
           <Controls
             className="bg-background border flex flex-row"
