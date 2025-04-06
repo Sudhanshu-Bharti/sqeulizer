@@ -31,7 +31,9 @@ export const teams = pgTable("teams", {
   razorpaySubscriptionId: text("razorpay_subscription_id").unique(),
   razorpayPlanId: text("razorpay_plan_id"),
   planName: varchar("plan_name", { length: 50 }).default("Free"),
-  subscriptionStatus: varchar("subscription_status", { length: 20 }).default("active"),
+  subscriptionStatus: varchar("subscription_status", { length: 20 }).default(
+    "active"
+  ),
 });
 
 export const teamMembers = pgTable("team_members", {
@@ -93,6 +95,14 @@ export const diagramVersions = pgTable("diagram_versions", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const diagramGenerations = pgTable("diagram_generations", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id),
+  generatedAt: timestamp("generated_at").notNull().defaultNow(),
+});
+
 export const teamsRelations = relations(teams, ({ many }) => ({
   teamMembers: many(teamMembers),
   activityLogs: many(activityLogs),
@@ -136,6 +146,16 @@ export const activityLogsRelations = relations(activityLogs, ({ one }) => ({
     references: [users.id],
   }),
 }));
+
+export const diagramGenerationsRelations = relations(
+  diagramGenerations,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [diagramGenerations.userId],
+      references: [users.id],
+    }),
+  })
+);
 
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;

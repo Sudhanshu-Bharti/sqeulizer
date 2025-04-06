@@ -15,6 +15,13 @@
       "when": 1743886449230,
       "tag": "0001_curvy_golden_guardian",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1743955961045,
+      "tag": "0002_clammy_exiles",
+      "breakpoints": true
     }
   ]
 }
