@@ -9,6 +9,7 @@ import ReactFlow, {
   MarkerType,
   Position,
   MiniMap,
+  Handle,
 } from "reactflow";
 import {
   ZoomIn,
@@ -79,6 +80,9 @@ interface DiagramControls {
 
 const SchemaNode = memo(
   ({ data, selected }: { data: any; selected?: boolean }) => {
+    // Log node data for debugging handles
+    // console.log(`SchemaNode Render: ${data.label}`, data);
+
     return (
       <DatabaseSchemaNode selected={selected}>
         <DatabaseSchemaNodeHeader>
@@ -93,54 +97,85 @@ const SchemaNode = memo(
           </div>
         </DatabaseSchemaNodeHeader>
         <DatabaseSchemaNodeBody>
-          {data.schema.map((field: any) => (
-            <DatabaseSchemaTableRow key={field.title}>
-              <DatabaseSchemaTableCell className="flex items-center gap-2 px-4 py-2 hover:bg-muted/50 rounded-md group transition-colors">
-                <div className="flex items-center gap-1.5 min-w-[20px]">
-                  {field.constraints?.includes("pk") && (
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <Key className="h-3.5 w-3.5 text-amber-500" />
-                      </TooltipTrigger>
-                      <TooltipContent>Primary Key</TooltipContent>
-                    </Tooltip>
-                  )}
-                  {field.constraints?.includes("fk") && (
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <Link2 className="h-3.5 w-3.5 text-blue-500" />
-                      </TooltipTrigger>
-                      <TooltipContent>Foreign Key</TooltipContent>
-                    </Tooltip>
-                  )}
-                  {field.constraints?.includes("unique") && (
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <CircleDot className="h-3.5 w-3.5 text-violet-500" />
-                      </TooltipTrigger>
-                      <TooltipContent>Unique</TooltipContent>
-                    </Tooltip>
-                  )}
-                  {field.constraints?.includes("not null") && (
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <CircleDot className="h-3.5 w-3.5 text-gray-500" />
-                      </TooltipTrigger>
-                      <TooltipContent>Not Null</TooltipContent>
-                    </Tooltip>
-                  )}
-                </div>
-                <div className="flex-1">
-                  <span className="font-medium text-sm group-hover:text-primary transition-colors">
-                    {field.title}
-                  </span>
-                  <span className="ml-2 text-xs text-muted-foreground font-mono">
-                    {field.type}
-                  </span>
-                </div>
-              </DatabaseSchemaTableCell>
-            </DatabaseSchemaTableRow>
-          ))}
+          {data.schema.map((field: any) => {
+            const targetHandleId = `${data.label}-${field.title}-target`;
+            const sourceHandleId = `${data.label}-${field.title}-source`;
+            // Log exact handle IDs being rendered
+            // console.log(`  Field: ${field.title}, Target ID: ${targetHandleId}, Source ID: ${sourceHandleId}`);
+
+            return (
+              <div key={field.title} className="relative">
+                <DatabaseSchemaTableRow>
+                  <DatabaseSchemaTableCell className="flex items-center gap-2 px-4 py-2 hover:bg-muted/50 rounded-md group transition-colors">
+                    <div className="flex items-center gap-1.5 min-w-[20px]">
+                      {field.constraints?.includes("composite-pk") && (
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <Key className="h-3.5 w-3.5 text-amber-500" />
+                          </TooltipTrigger>
+                          <TooltipContent>Part of Composite Primary Key</TooltipContent>
+                        </Tooltip>
+                      )}
+                      {field.constraints?.includes("pk") && !field.constraints?.includes("composite-pk") && (
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <Key className="h-3.5 w-3.5 text-amber-500" />
+                          </TooltipTrigger>
+                          <TooltipContent>Primary Key</TooltipContent>
+                        </Tooltip>
+                      )}
+                      {field.constraints?.includes("fk") && (
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <Link2 className="h-3.5 w-3.5 text-blue-500" />
+                          </TooltipTrigger>
+                          <TooltipContent>Foreign Key</TooltipContent>
+                        </Tooltip>
+                      )}
+                      {field.constraints?.includes("unique") && (
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <CircleDot className="h-3.5 w-3.5 text-violet-500" />
+                          </TooltipTrigger>
+                          <TooltipContent>Unique</TooltipContent>
+                        </Tooltip>
+                      )}
+                      {field.constraints?.includes("not null") && (
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <CircleDot className="h-3.5 w-3.5 text-gray-500" />
+                          </TooltipTrigger>
+                          <TooltipContent>Not Null</TooltipContent>
+                        </Tooltip>
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <span className="font-medium text-sm group-hover:text-primary transition-colors">
+                        {field.title}
+                      </span>
+                      <span className="ml-2 text-xs text-muted-foreground font-mono">
+                        {field.type}
+                      </span>
+                    </div>
+                  </DatabaseSchemaTableCell>
+                </DatabaseSchemaTableRow>
+                <Handle
+                  type="target"
+                  position={Position.Left}
+                  id={targetHandleId}
+                  style={{ background: "#555", top: "50%", transform: "translateY(-50%)" }}
+                  isConnectable={true}
+                />
+                <Handle
+                  type="source"
+                  position={Position.Right}
+                  id={sourceHandleId}
+                  style={{ background: "#555", top: "50%", transform: "translateY(-50%)" }}
+                  isConnectable={true}
+                />
+              </div>
+            );
+          })}
         </DatabaseSchemaNodeBody>
       </DatabaseSchemaNode>
     );
@@ -211,8 +246,6 @@ function getLayoutedElements(
           })),
         },
         position: { x: 0, y: 0 },
-        sourcePosition: Position.Right,
-        targetPosition: Position.Left,
       };
     }
 
@@ -233,8 +266,6 @@ function getLayoutedElements(
         x: nodeWithPosition.x - width / 2,
         y: nodeWithPosition.y - height / 2,
       },
-      sourcePosition: Position.Right,
-      targetPosition: Position.Left,
       style: {
         width: `${width}px`,
         height: `${height}px`,
@@ -249,18 +280,20 @@ function processEdges(inputEdges: any[]) {
   if (!inputEdges?.length) return [];
 
   return inputEdges.map((edge) => ({
-    id: `${edge.source}-${edge.target}-${edge.sourceField || "relation"}`,
+    id: `edge-${edge.source}-${edge.sourceField}-${edge.target}-${edge.targetField}`,
     source: edge.source,
     target: edge.target,
+    sourceHandle: `${edge.source}-${edge.sourceField}-source`,
+    targetHandle: `${edge.target}-${edge.targetField}-target`,
     type: "smoothstep",
     animated: true,
     style: {
       strokeWidth: 2,
-      stroke: "hsl(var(--primary))",
+      stroke: "#FFC6A21",
     },
     markerEnd: {
       type: MarkerType.ArrowClosed,
-      color: "hsl(var(--primary))",
+      color: "#FFC6A21",
     },
     label: (
       <div className="bg-background/95 backdrop-blur-sm px-2 py-1 rounded-lg border shadow-sm">
@@ -285,6 +318,10 @@ const FullscreenDialog = ({ children }: { children: React.ReactNode }) => (
 );
 
 export default function DBMLDiagram({ nodes, edges }: DBMLDiagramProps) {
+  // Log raw props (without stringify)
+  console.log("Raw props nodes:", nodes);
+  console.log("Raw props edges:", edges);
+
   // const [zoom, setZoom] = useState(1);
   // const [isFullscreen, setIsFullscreen] = useState(false);
   const [showZoomDialog, setShowZoomDialog] = useState(false);
@@ -319,7 +356,10 @@ export default function DBMLDiagram({ nodes, edges }: DBMLDiagramProps) {
   }, [showTip]);
 
   const processedEdges = useMemo(() => {
-    return processEdges(safeEdges);
+    const result = processEdges(safeEdges);
+    // Log processed edges (without stringify)
+    console.log("Processed Edges for React Flow:", result);
+    return result;
   }, [safeEdges]);
 
   const layoutedNodes = useMemo(() => {
