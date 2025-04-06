@@ -209,16 +209,16 @@ export default function DBSchemaVisualizer() {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
+    <div className="h-screen flex flex-col bg-gradient-to-b from-gray-900 to-gray-800">
       {/* Top Navigation */}
-      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 dark:border-gray-800">
+      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 border-gray-800">
         <div className="container flex h-14 items-center justify-between">
           <div>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => document.getElementById("sql-upload")?.click()}
-              className="hover:bg-orange-100 hover:text-orange-600 dark:hover:bg-orange-900/50 dark:hover:text-orange-400 transition-colors"
+              className="hover:bg-orange-900/50 dark:hover:text-orange-400 transition-colors"
             >
               <Import className="mr-2" size={16} /> Import SQL
             </Button>
@@ -236,7 +236,7 @@ export default function DBSchemaVisualizer() {
                 variant="outline"
                 size="sm"
                 onClick={() => setShowQuotaDialog(true)}
-                className="flex items-center gap-2 hover:border-orange-200 dark:hover:border-orange-600 dark:border-gray-700"
+                className="flex items-center gap-2  hover:border-orange-600 border-gray-700"
               >
                 <Gauge className="h-4 w-4" />
                 <span className="font-medium">
@@ -250,7 +250,7 @@ export default function DBSchemaVisualizer() {
               value={dialect}
               onValueChange={(v: "mysql" | "postgres" | "mssql") => setDialect(v)}
             >
-              <SelectTrigger className="w-[140px] hover:border-orange-200 dark:hover:border-orange-600 dark:border-gray-700">
+              <SelectTrigger className="w-[140px] hover:border-orange-600 border-gray-700">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -262,13 +262,13 @@ export default function DBSchemaVisualizer() {
             <Button
               variant="outline"
               size="sm"
-              className="hover:border-orange-200 dark:hover:border-orange-600 dark:border-gray-700"
+              className="hover:border-orange-600 border-gray-700"
             >
               Save
             </Button>
             <Button
               size="sm"
-              className="bg-orange-600 hover:bg-orange-700 text-white dark:bg-orange-700 dark:hover:bg-orange-800"
+              className=" bg-orange-700 hover:bg-orange-800"
               onClick={() => setIsShareDialogOpen(true)}
             >
               Share
@@ -280,10 +280,10 @@ export default function DBSchemaVisualizer() {
       {/* Main Content */}
       <div className="flex-1 grid grid-cols-[320px_1fr] overflow-hidden">
         {/* Left Sidebar */}
-        <div className="border-r bg-muted/10 flex flex-col h-[calc(100vh-3.5rem)] overflow-hidden dark:border-gray-800 dark:bg-gray-900/50">
+        <div className="border-r  flex flex-col h-[calc(100vh-3.5rem)] overflow-hidden border-gray-800 bg-gray-900/50">
           <div className="flex-none p-4 space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-sm font-medium text-gray-900 dark:text-gray-100">
+              <h2 className="text-sm font-medium text-gray-100">
                 SQL Input
               </h2>
             </div>
@@ -292,11 +292,11 @@ export default function DBSchemaVisualizer() {
                 placeholder="Enter your SQL schema here..."
                 value={schema}
                 onValueChange={setSchema}
-                className="min-h-[300px] resize-none font-mono text-sm border-gray-200 hover:border-orange-200 focus:border-orange-300 focus:ring-orange-200 dark:border-gray-700 dark:hover:border-orange-600 dark:focus:border-orange-500 dark:focus:ring-orange-500/20 dark:bg-gray-800/50 dark:text-gray-100"
+                className="min-h-[300px] resize-none font-mono text-sm  border-gray-700 hover:border-orange-600 focus:border-orange-500 focus:ring-orange-500/20 bg-gray-800/50 text-gray-100"
               />
             </div>
             <Button
-              className="w-full bg-orange-600 hover:bg-orange-700 text-white dark:bg-orange-700 dark:hover:bg-orange-800"
+              className="w-full  bg-orange-700 hover:bg-orange-800"
               onClick={generateDiagram}
               disabled={!schema.trim()}
               isLoading={isLoading}
@@ -321,17 +321,17 @@ export default function DBSchemaVisualizer() {
           <div className="flex flex-col lg:flex-row gap-4">
             <div className="flex-1 min-h-[500px] relative">
               {renderError ? (
-                <div className="flex items-center justify-center h-full p-4 text-red-500 dark:text-red-400">
+                <div className="flex items-center justify-center h-full p-4 text-red-400">
                   <p>{renderError}</p>
                 </div>
               ) : isGenerating ? (
                 <div className="flex items-center justify-center h-full">
-                  <div className="loading-skeleton h-full w-full dark:bg-gray-800/50" />
+                  <div className="loading-skeleton h-full w-full bg-gray-800/50" />
                 </div>
               ) : !dbmlStructure.nodes.length ? (
-                <div className="flex flex-col items-center justify-center h-full text-gray-500 dark:text-gray-400 gap-3">
-                  <div className="bg-orange-100 dark:bg-orange-900/50 p-4 rounded-full">
-                    <ChevronRight className="h-10 w-10 text-orange-600 dark:text-orange-400" />
+                <div className="flex flex-col items-center justify-center h-full text-gray-400 gap-3">
+                  <div className="bg-orange-900/50 p-4 rounded-full">
+                    <ChevronRight className="h-10 w-10 text-orange-400" />
                   </div>
                   <p>Enter your SQL schema and click Generate</p>
                 </div>

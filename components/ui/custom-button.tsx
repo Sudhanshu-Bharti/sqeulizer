@@ -4,9 +4,9 @@ import React from "react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { GlowEffect } from "../motion-primitives/glow-effect";
+import { HTMLMotionProps } from "framer-motion";
 
-interface CustomButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface CustomButtonProps extends HTMLMotionProps<"button"> {
   variant?: "default" | "outline" | "ghost";
   size?: "default" | "sm" | "lg";
   children: React.ReactNode;

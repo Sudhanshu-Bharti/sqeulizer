@@ -1,12 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import DBMLDiagram from "@/app/(dashboard)/live/components/DBMLDiagram";
 import { toast } from "@/components/ui/use-toast";
 import { ChevronRight } from "lucide-react";
-import { ThemeProvider } from "@/components/theme-provider";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 interface TableNode {
   id: string;
@@ -18,7 +16,7 @@ interface TableNode {
   }[];
 }
 
-export default function SharePage() {
+function SharePageContent() {
   const searchParams = useSearchParams();
   const [nodes, setNodes] = useState<TableNode[]>([]);
   const [edges, setEdges] = useState<any[]>([]);
@@ -79,28 +77,40 @@ export default function SharePage() {
   }, [searchParams]);
 
   return (
-      <div className="h-screen flex flex-col">
-        {/* Main Content */}
-        <div className="flex-1 relative bg-background/50 overflow-hidden">
-          {isLoading ? (
-            <div className="flex items-center justify-center h-full">
-              <div className="loading-skeleton h-full w-full" />
+    <div className="h-screen flex flex-col">
+      {/* Main Content */}
+      <div className="flex-1 relative bg-background/50 overflow-hidden">
+        {isLoading ? (
+          <div className="flex items-center justify-center h-full">
+            <div className="loading-skeleton h-full w-full" />
+          </div>
+        ) : error ? (
+          <div className="flex items-center justify-center h-full p-4 text-red-500 dark:text-red-400">
+            <p>{error}</p>
+          </div>
+        ) : !nodes.length ? (
+          <div className="flex flex-col items-center justify-center h-full gap-3">
+            <div className="bg-orange-100  p-4 rounded-full">
+              <ChevronRight className="h-10 w-10 text-orange-600 dark:text-orange-400" />
             </div>
-          ) : error ? (
-            <div className="flex items-center justify-center h-full p-4 text-red-500 dark:text-red-400">
-              <p>{error}</p>
-            </div>
-          ) : !nodes.length ? (
-            <div className="flex flex-col items-center justify-center h-full gap-3">
-              <div className="bg-orange-100  p-4 rounded-full">
-                <ChevronRight className="h-10 w-10 text-orange-600 dark:text-orange-400" />
-              </div>
-              <p>No diagram data available</p>
-            </div>
-          ) : (
-            <DBMLDiagram nodes={nodes} edges={edges} />
-          )}
-        </div>
+            <p>No diagram data available</p>
+          </div>
+        ) : (
+          <DBMLDiagram nodes={nodes} edges={edges} />
+        )}
       </div>
+    </div>
+  );
+}
+
+export default function SharePage() {
+  return (
+    <main className="min-h-screen bg-background">
+      <div className="container py-4">
+        <Suspense fallback={<div>Loading...</div>}>
+          <SharePageContent />
+        </Suspense>
+      </div>
+    </main>
   );
 }

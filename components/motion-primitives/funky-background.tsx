@@ -194,6 +194,7 @@ export function FunkyBackground() {
       color: string,
       intensity: number = 0.5
     ) {
+      if (!ctx) return;
       const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
       const alphaVal = Math.floor(intensity * 255)
         .toString(16)
@@ -209,6 +210,7 @@ export function FunkyBackground() {
     }
 
     function drawShape(shape: DbShape) {
+      if (!ctx) return;
       ctx.save();
       ctx.translate(shape.x, shape.y);
       ctx.rotate(shape.rotation);
@@ -452,7 +454,7 @@ export function FunkyBackground() {
           const dx = target.x - shape.x;
           const dy = target.y - shape.y;
           const distance = Math.sqrt(dx * dx + dy * dy);
-
+          if (!canvas) return;
           // Only draw connections within reasonable distance
           if (distance < canvas.width / (dpr * 2)) {
             // Determine if this connection should be highlighted
@@ -466,6 +468,7 @@ export function FunkyBackground() {
             const midY = (shape.y + target.y) / 2 - controlPointOffset;
 
             // Draw connection with bezier curve
+            if (!ctx) return;
             ctx.beginPath();
             ctx.moveTo(shape.x, shape.y);
             ctx.quadraticCurveTo(midX, midY, target.x, target.y);
@@ -552,6 +555,7 @@ export function FunkyBackground() {
         const margin = shape.size;
         const bounceStrength = 0.5;
 
+        if (!canvas || !ctx) return;
         if (shape.x < margin) {
           shape.speedX = Math.abs(shape.speedX) * bounceStrength;
           shape.x = margin;
@@ -603,9 +607,8 @@ export function FunkyBackground() {
 
     function animate() {
       time++;
-
-      // Clear with better fade effect for SaaS look
-      ctx.fillStyle = theme.background + "20"; // More transparent for longer trails
+      if (!canvas || !ctx) return;
+      ctx.fillStyle = theme.background + "20";
       ctx.fillRect(0, 0, canvas.width / dpr, canvas.height / dpr);
 
       // Add subtle background gradient

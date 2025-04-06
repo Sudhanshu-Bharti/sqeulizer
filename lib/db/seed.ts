@@ -20,7 +20,7 @@ async function createRazorpayPlans() {
       console.log("Existing plans:", existingPlans);
     } catch (error) {
       console.error("Error fetching existing plans:", error);
-      if (error.statusCode === 400) {
+      if (typeof error === 'object' && error && 'statusCode' in error && error.statusCode === 400) {
         console.error(
           "Subscriptions feature may not be enabled in your Razorpay account."
         );

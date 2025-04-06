@@ -1,7 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Copy, Check } from "lucide-react";
@@ -14,11 +19,21 @@ interface ShareDialogProps {
   dialect: string;
 }
 
-export function ShareDialog({ isOpen, onClose, schema, dialect }: ShareDialogProps) {
+export function ShareDialog({
+  isOpen,
+  onClose,
+  schema,
+  dialect,
+}: ShareDialogProps) {
   const [copied, setCopied] = useState(false);
-  
-  // Generate shareable URL
-  const shareUrl = `${window.location.origin}/share?schema=${encodeURIComponent(schema)}&dialect=${encodeURIComponent(dialect)}`;
+
+  // Generate shareable URL only on client-side
+  const shareUrl =
+    typeof window !== "undefined"
+      ? `${window.location.origin}/share?schema=${encodeURIComponent(
+          schema
+        )}&dialect=${encodeURIComponent(dialect)}`
+      : "";
 
   const handleCopy = async () => {
     try {
@@ -46,11 +61,7 @@ export function ShareDialog({ isOpen, onClose, schema, dialect }: ShareDialogPro
         </DialogHeader>
         <div className="space-y-4">
           <div className="flex items-center space-x-2">
-            <Input
-              value={shareUrl}
-              readOnly
-              className="flex-1"
-            />
+            <Input value={shareUrl} readOnly className="flex-1" />
             <Button
               variant="outline"
               size="icon"
@@ -65,10 +76,11 @@ export function ShareDialog({ isOpen, onClose, schema, dialect }: ShareDialogPro
             </Button>
           </div>
           <p className="text-sm text-muted-foreground">
-            Share this URL with others to let them view your database schema visualization.
+            Share this URL with others to let them view your database schema
+            visualization.
           </p>
         </div>
       </DialogContent>
     </Dialog>
   );
-} 
+}

@@ -1,27 +1,42 @@
 import Link from 'next/link';
-import { CircleIcon } from 'lucide-react';
+import { AlertTriangle } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export default function NotFound() {
   return (
-    <div className="flex items-center justify-center min-h-[100dvh]">
-      <div className="max-w-md space-y-8 p-4 text-center">
-        <div className="flex justify-center">
-          <CircleIcon className="size-12 text-orange-500" />
-        </div>
-        <h1 className="text-4xl font-bold text-gray-900 tracking-tight">
-          Page Not Found
-        </h1>
-        <p className="text-base text-gray-500">
-          The page you are looking for might have been removed, had its name
-          changed, or is temporarily unavailable.
-        </p>
-        <Link
-          href="/"
-          className="max-w-48 mx-auto flex justify-center py-2 px-4 border border-gray-300 rounded-full shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
-        >
-          Back to Home
-        </Link>
-      </div>
+    <div className="flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center bg-background p-4">
+      <Card className="w-full max-w-md text-center">
+        <CardHeader>
+          <div className="mb-4 flex justify-center">
+            <AlertTriangle className="size-12 text-destructive" />
+          </div>
+          <CardTitle className="text-3xl font-bold tracking-tight">
+            404 - Page Not Found
+          </CardTitle>
+          <CardDescription>
+            Oops! The page you're looking for doesn't seem to exist.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground">
+            It might have been moved, deleted, or maybe the URL was mistyped.
+            Please check the address and try again.
+          </p>
+        </CardContent>
+        <CardFooter className="flex justify-center">
+          <Button asChild>
+            <Link href="/">Go Back Home</Link>
+          </Button>
+        </CardFooter>
+      </Card>
     </div>
   );
 }
