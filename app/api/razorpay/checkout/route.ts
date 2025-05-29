@@ -75,6 +75,7 @@ export async function GET(request: NextRequest) {
       console.log("Processing subscription payment");
       const subscription = await razorpay.subscriptions.fetch(subscriptionId);
       const plan = await razorpay.plans.fetch(subscription.plan_id);
+      const activeStatuses = ["active", "authenticated"];
 
       console.log("Subscription and plan details:", {
         subscriptionId,
@@ -92,8 +93,9 @@ export async function GET(request: NextRequest) {
           razorpaySubscriptionId: subscriptionId,
           razorpayPlanId: plan.id,
           planName: plan.item.name,
-          subscriptionStatus:
-            subscription.status === "created" ? "active" : "inactive",
+          subscriptionStatus: activeStatuses.includes(subscription.status)
+            ? "active"
+            : "inactive",
           updatedAt: new Date(),
         })
         .where(eq(teams.id, userTeam[0].teamId))
