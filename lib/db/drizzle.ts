@@ -11,15 +11,36 @@ if (!process.env.POSTGRES_URL) {
   throw new Error("POSTGRES_URL environment variable is not set");
 }
 
-const caCert = fs
-  .readFileSync(path.join(process.cwd(), "isrgrootx1.pem"))
-  .toString();
+// Check if we're in production/Vercel environment
+const isProduction = process.env.NODE_ENV === "production";
+const isVercel = process.env.VERCEL === "1";
+
+let sslConfig;
+
+if (isProduction || isVercel) {
+  sslConfig = {
+    rejectUnauthorized: true,
+  };
+} else {
+  // In development, try to use the certificate file if it exists
+  const certPath = path.join(process.cwd(), "isrgrootx1.pem");
+
+  if (fs.existsSync(certPath)) {
+    const caCert = fs.readFileSync(certPath).toString();
+    sslConfig = {
+      rejectUnauthorized: true,
+      ca: caCert,
+    };
+  } else {
+    // Fallback for development without certificate
+    sslConfig = {
+      rejectUnauthorized: false,
+    };
+  }
+}
 
 export const client = postgres(process.env.POSTGRES_URL, {
-  ssl: {
-    rejectUnauthorized: true,
-    ca: caCert,
-  },
+  ssl: sslConfig,
 });
 
 export const db = drizzle(client, { schema });
