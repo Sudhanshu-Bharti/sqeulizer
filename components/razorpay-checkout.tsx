@@ -41,7 +41,7 @@ export function RazorpayCheckout({
       currency: currency,
       order_id: orderId,
       subscription_id: subscriptionId,
-      name: "Your Company Name",
+      name: "PandaView",
       description: "Payment for subscription",
       handler: function (response: any) {
         // Handle successful payment

@@ -46,9 +46,7 @@ export async function createCheckoutSession({
     };
 
     const order = await razorpay.orders.create(options);
-    console.log("Created order:", order);
-
-    // Create a subscription if it's a recurring plan (checking plan properties)
+    console.log("Created order:", order);    // Create a subscription if it's a recurring plan (checking plan properties)
     if (plan.period === "monthly" || plan.period === "yearly") {
       console.log("Creating subscription for recurring plan");
       const subscription = await razorpay.subscriptions.create({
@@ -68,6 +66,7 @@ export async function createCheckoutSession({
         subscriptionId: subscription.id,
         amount: order.amount,
         currency: order.currency,
+        short_url: subscription.short_url, // Return the subscription's short_url
       };
     }
 

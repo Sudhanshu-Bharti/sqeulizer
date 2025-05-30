@@ -43,9 +43,15 @@ export function SubmitButton({
             e.preventDefault();
             const formData = new FormData(form);
             startTransition(async () => {
-              const data = await action(formData); // Call the action directly
-              if (data) {
-                setCheckoutData(data);
+              try {
+                const data = await action(formData); // Call the action directly
+                // If we get data back (non-subscription plans), show checkout
+                if (data && data.orderId) {
+                  setCheckoutData(data);
+                }
+                // If no data is returned, it means we were redirected to short_url
+              } catch (error) {
+                console.error("Error during checkout:", error);
               }
             });
           }

@@ -34,12 +34,17 @@ export async function checkoutAction(formData: FormData): Promise<void> {
   }
 
   const team = userTeam[0].team;
-
   const checkout = await createCheckoutSession({
     team,
     planId,
   });
 
+  // If we have a short_url (for subscriptions), redirect to it
+  if (checkout.short_url) {
+    redirect(checkout.short_url);
+  }
+
+  // For non-subscription plans or if no short_url, return checkout data for integrated payment
   return {
     orderId: checkout.orderId,
     amount: checkout.amount,

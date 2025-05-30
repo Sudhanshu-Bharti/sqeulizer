@@ -39,6 +39,7 @@ export default async function PricingPage() {
 
   const basePlan = products.find((plan) => plan.name === "Base");
   const plusPlan = products.find((plan) => plan.name === "Plus");
+  const testPlan = products.find((plan) => plan.name === "Test");
 
   return (
     <div className="py-8 md:py-14 px-4 md:px-6">
@@ -106,6 +107,23 @@ export default async function PricingPage() {
               )}
               popular
               isCurrentPlan={currentTeam.planName === "Plus"}
+            />
+          )}
+          {testPlan && (
+            <PricingCard
+              name="Plus"
+              price={testPlan.amount / 100}
+              interval={testPlan.interval}
+              trialDays={testPlan.trialPeriodDays || 0}
+              features={[
+                "Test ",
+              ]}
+              planId={testPlan.id}
+              action={checkoutAction}
+              className={cn(
+                "border-primary/20 hover:shadow-lg transition-all duration-300 hover:scale-[1.02]",
+                currentTeam.planName === "Plus" && "border-primary"
+              )}
             />
           )}
         </div>
