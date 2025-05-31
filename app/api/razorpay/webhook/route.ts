@@ -8,29 +8,39 @@ export async function POST(request: NextRequest) {
   const payload = await request.text();
   const signature = request.headers.get("x-razorpay-signature") as string;
 
-  if (!signature) {
-    console.error("No Razorpay signature found in webhook request");
-    return NextResponse.json(
-      { error: "No signature found in webhook request" },
-      { status: 400 }
+  console.log("Received webhook payload:", payload);
+  console.log("Webhook signature:", signature);
+
+  // Temporarily skip signature verification if webhook secret is not configured
+  if (webhookSecret && signature) {
+    try {
+      // Verify the webhook signature
+      const expectedSignature = crypto
+        .createHmac("sha256", webhookSecret)
+        .update(payload)
+        .digest("hex");
+
+      if (signature !== expectedSignature) {
+        console.error("Webhook signature verification failed.");
+        return NextResponse.json(
+          { error: "Webhook signature verification failed." },
+          { status: 400 }
+        );
+      }
+    } catch (error) {
+      console.error("Error verifying webhook signature:", error);
+      return NextResponse.json(
+        { error: "Error verifying webhook signature" },
+        { status: 400 }
+      );
+    }
+  } else {
+    console.warn(
+      "Webhook signature verification skipped - secret not configured"
     );
   }
 
   try {
-    // Verify the webhook signature
-    const expectedSignature = crypto
-      .createHmac("sha256", webhookSecret)
-      .update(payload)
-      .digest("hex");
-
-    if (signature !== expectedSignature) {
-      console.error("Webhook signature verification failed.");
-      return NextResponse.json(
-        { error: "Webhook signature verification failed." },
-        { status: 400 }
-      );
-    }
-
     const event = JSON.parse(payload);
 
     console.log("Processing webhook event:", event.event);

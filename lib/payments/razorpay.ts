@@ -8,8 +8,28 @@ import {
 } from "@/lib/db/queries";
 
 // Add logging to debug credentials
+console.log("=== RAZORPAY ENVIRONMENT DEBUG ===");
+console.log(
+  "RAZORPAY_KEY_ID:",
+  process.env.RAZORPAY_KEY_ID?.substring(0, 12) + "..."
+);
+console.log(
+  "NEXT_PUBLIC_RAZORPAY_KEY_ID:",
+  process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID?.substring(0, 12) + "..."
+);
+console.log("RAZORPAY_MODE:", process.env.RAZORPAY_MODE);
+console.log("NODE_ENV:", process.env.NODE_ENV);
+console.log(
+  "Key starts with live?",
+  process.env.RAZORPAY_KEY_ID?.startsWith("rzp_live")
+);
+console.log(
+  "Key starts with test?",
+  process.env.RAZORPAY_KEY_ID?.startsWith("rzp_test")
+);
 console.log("Razorpay Key ID exists:", !!process.env.RAZORPAY_KEY_ID);
 console.log("Razorpay Secret exists:", !!process.env.RAZORPAY_KEY_SECRET);
+console.log("================================");
 
 export const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID!,
@@ -24,6 +44,14 @@ export async function createCheckoutSession({
   planId: string;
 }) {
   try {
+    console.log("=== CREATE CHECKOUT SESSION DEBUG ===");
+    console.log("Creating checkout for planId:", planId);
+    console.log("Using Razorpay mode:", process.env.RAZORPAY_MODE);
+    console.log(
+      "Using key ID:",
+      process.env.RAZORPAY_KEY_ID?.substring(0, 12) + "..."
+    );
+
     const user = await getUser();
 
     if (!team || !user) {
@@ -31,9 +59,15 @@ export async function createCheckoutSession({
     }
 
     // Fetch plan details first
+    console.log("Fetching plan details from Razorpay...");
     const plan = await razorpay.plans.fetch(planId);
-    console.log("Fetched plan details:", plan);
-
+    console.log("Fetched plan details:", {
+      id: plan.id,
+      name: plan.item?.name,
+      amount: plan.item?.amount,
+      currency: plan.item?.currency,
+      period: plan.period,
+    });
     const options = {
       amount: plan.item.amount,
       currency: plan.item.currency,
@@ -45,21 +79,37 @@ export async function createCheckoutSession({
       },
     };
 
+    console.log("Creating Razorpay order with options:", options);
     const order = await razorpay.orders.create(options);
-    console.log("Created order:", order);    // Create a subscription if it's a recurring plan (checking plan properties)
+    console.log("Created order successfully:", {
+      id: order.id,
+      amount: order.amount,
+      currency: order.currency,
+      status: order.status,
+    }); // Create a subscription if it's a recurring plan (checking plan properties)
     if (plan.period === "monthly" || plan.period === "yearly") {
       console.log("Creating subscription for recurring plan");
-      const subscription = await razorpay.subscriptions.create({
+      const subscriptionOptions = {
         plan_id: planId,
-        customer_notify: 1,
+        customer_notify: 1 as const,
         total_count: plan.period === "monthly" ? 12 : 1, // 12 months for monthly, 1 year for yearly
         notes: {
           userId: user.id.toString(),
           teamId: team.id.toString(),
         },
-      });
+      };
 
-      console.log("Created subscription:", subscription);
+      console.log("Creating subscription with options:", subscriptionOptions);
+      const subscription = await razorpay.subscriptions.create(
+        subscriptionOptions
+      );
+
+      console.log("Created subscription successfully:", {
+        id: subscription.id,
+        status: subscription.status,
+        plan_id: subscription.plan_id,
+        short_url: subscription.short_url,
+      });
 
       return {
         orderId: order.id,
@@ -77,6 +127,19 @@ export async function createCheckoutSession({
     };
   } catch (error) {
     console.error("Error creating checkout session:", error);
+
+    // Add more detailed error logging for live mode debugging
+    if (error instanceof Error) {
+      console.error("Error name:", error.name);
+      console.error("Error message:", error.message);
+      console.error("Error stack:", error.stack);
+    }
+
+    // Check if it's a Razorpay API error
+    if (error && typeof error === "object" && "error" in error) {
+      console.error("Razorpay error details:", JSON.stringify(error, null, 2));
+    }
+
     throw error;
   }
 }

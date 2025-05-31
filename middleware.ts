@@ -3,6 +3,7 @@ import type { NextRequest } from "next/server";
 import { signToken, verifyToken } from "@/lib/auth/session";
 
 const protectedRoutes = ["/dashboard", "/live"];
+// Don't include admin routes in middleware - they have their own auth
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -10,6 +11,11 @@ export async function middleware(request: NextRequest) {
   const isProtectedRoute = protectedRoutes.some((route) =>
     pathname.startsWith(route)
   );
+
+  // Skip middleware for admin routes - they handle their own authentication
+  if (pathname.startsWith("/admin")) {
+    return NextResponse.next();
+  }
 
   if (isProtectedRoute && !sessionCookie) {
     return NextResponse.redirect(new URL("/sign-in", request.url));

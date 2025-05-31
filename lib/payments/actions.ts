@@ -9,7 +9,7 @@ import { db } from "@/lib/db/drizzle";
 import { eq } from "drizzle-orm";
 import { teams, teamMembers } from "@/lib/db/schema";
 
-export async function checkoutAction(formData: FormData): Promise<void> {
+export async function checkoutAction(formData: FormData): Promise<any> {
   "use server";
 
   const planId = formData.get("planId") as string;
@@ -32,26 +32,26 @@ export async function checkoutAction(formData: FormData): Promise<void> {
   if (!userTeam.length) {
     redirect("/sign-up?redirect=checkout&planId=" + planId);
   }
-
   const team = userTeam[0].team;
+
+  console.log("Starting checkout for planId:", planId);
+  console.log("Team details:", { id: team.id, name: team.name });
+
   const checkout = await createCheckoutSession({
     team,
     planId,
   });
-
-  // If we have a short_url (for subscriptions), redirect to it
-  if (checkout.short_url) {
-    redirect(checkout.short_url);
-  }
-
-  // For non-subscription plans or if no short_url, return checkout data for integrated payment
+  console.log("Checkout result:", checkout);
+  // Always return checkout data for integrated payment (including subscriptions)
+  // This ensures users go through the Razorpay modal and get redirected back properly
   return {
     orderId: checkout.orderId,
     amount: checkout.amount,
     currency: checkout.currency,
     subscriptionId: checkout.subscriptionId,
+    short_url: checkout.short_url, // Include short_url for payment option selector
     key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID!,
-  } as any; // Using any to satisfy the Promise<void> return type requirement
+  };
 }
 
 export const customerPortalAction = withTeam(async (_, team) => {

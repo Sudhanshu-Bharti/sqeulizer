@@ -8,7 +8,11 @@
     "db:seed": "npx tsx lib/db/seed.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "switch-env": "node scripts/switch-env.js",
+    "env:test": "node scripts/switch-env.js test",
+    "env:live": "node scripts/switch-env.js live",
+    "env:status": "node scripts/switch-env.js status"
   },
   "dependencies": {
     "@dbml/core": "3.11.0-alpha-0",
