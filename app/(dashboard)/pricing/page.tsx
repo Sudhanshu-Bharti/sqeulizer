@@ -39,7 +39,7 @@ export default async function PricingPage() {
 
   const basePlan = products.find((plan) => plan.name === "Base");
   const plusPlan = products.find((plan) => plan.name === "Plus");
-  const testPlan = products.find((plan) => plan.name === "Test");
+  // const testPlan = products.find((plan) => plan.name === "Test");
 
   return (
     <div className="py-8 md:py-14 px-4 md:px-6">
@@ -109,7 +109,7 @@ export default async function PricingPage() {
               isCurrentPlan={currentTeam.planName === "Plus"}
             />
           )}
-          {testPlan && (
+          {/* {testPlan && (
             <PricingCard
               name="Plus"
               price={testPlan.amount / 100}
@@ -125,7 +125,7 @@ export default async function PricingPage() {
                 currentTeam.planName === "Plus" && "border-primary"
               )}
             />
-          )}
+          )} */}
         </div>
       </div>
     </div>
