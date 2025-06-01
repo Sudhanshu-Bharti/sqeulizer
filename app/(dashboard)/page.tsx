@@ -21,18 +21,15 @@ export default function HomePage() {
               <Code2 className="h-4 w-4" />
               <span>Built by the Developers For the Developers</span>
             </div>
-
             <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6 text-white">
               Turn Code Into{" "}
               <span className="text-indigo-400">Visual Magic</span>
             </h1>
-
             <p className="text-xl text-white/60 mb-12 mt-8 max-w-2xl mx-auto leading-relaxed">
               Transform your database schemas into stunning, interactive
               diagrams that make sense. Built for developers who think
               differently.
-            </p>
-
+            </p>{" "}
             <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
               {!user ? (
                 <>
@@ -52,12 +49,33 @@ export default function HomePage() {
                   </Link>
                 </>
               ) : (
-                <Link href="/live">
-                  <Button className="bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg px-8 py-6 text-lg font-medium">
-                    Create New Diagram
-                    <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                  </Button>
-                </Link>
+                <div className="flex flex-col gap-4 w-full max-w-md">
+                  <Link href="/live" className="w-full">
+                    <Button className="bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg px-8 py-6 text-lg font-medium w-full">
+                      Create New Diagram
+                      <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                    </Button>
+                  </Link>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
+                    <Link href="/dashboard" className="w-full">
+                      <Button
+                        variant="outline"
+                        className="px-4 py-3 border-white/20 text-white hover:bg-white/10 rounded-lg backdrop-blur-sm w-full"
+                      >
+                        Dashboard
+                      </Button>
+                    </Link>
+                    <Link href="/live" className="w-full">
+                      <Button
+                        variant="outline"
+                        className="px-4 py-3 border-white/20 text-white hover:bg-white/10 rounded-lg backdrop-blur-sm w-full"
+                      >
+                        <Sparkles className="mr-2 h-4 w-4" />
+                        Try Demo
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
               )}
             </div>
           </div>

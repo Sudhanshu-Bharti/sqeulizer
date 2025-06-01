@@ -29,19 +29,11 @@ if (envCaCert) {
     "[DB_SETUP] Using CA certificate from POSTGRES_CA_CERT environment variable."
   );
   // Replace escaped newlines if present, Vercel might store it this way
-  caCertContent = envCaCert.replace(/\n/g, "\n");
+  caCertContent = envCaCert.replace(/\\n/g, "\n");
 } else {
-  const certPath = path.join(process.cwd(), "aws-certificate-rds.pem");
-  if (fs.existsSync(certPath)) {
-    caCertContent = fs.readFileSync(certPath).toString();
-    console.log(
-      "[DB_SETUP] CA certificate aws-certificate-rds.pem loaded from file system."
-    );
-  } else {
-    console.warn(
-      `[DB_SETUP] WARNING: CA certificate not found in POSTGRES_CA_CERT env var or at ${certPath}. This may be an issue for sslmode=verify-ca or verify-full if the CA is not in the system trust store.`
-    );
-  }
+  console.log(
+    "[DB_SETUP] POSTGRES_CA_CERT is not set. If SSL is enabled (e.g. sslmode=require), system CAs will be used. For 'verify-ca' or 'verify-full' without POSTGRES_CA_CERT, connection might fail if the server CA is not in the system trust store."
+  );
 }
 
 let sslOptionForClient: postgres.Options<any>["ssl"];
@@ -59,49 +51,42 @@ if (isSslDisabledInUrl) {
     `[DB_SETUP] isProduction: ${isProduction}, isVercel: ${isVercel}`
   );
 
-  let tempConfig: { rejectUnauthorized?: boolean; ca?: string } = {};
+  let tempSslConfig: { rejectUnauthorized?: boolean; ca?: string } = {};
+
+  // Default for SSL connections in 'postgres' library is rejectUnauthorized: true
+  tempSslConfig.rejectUnauthorized = true;
+  console.log(
+    "[DB_SETUP] SSL is enabled, rejectUnauthorized defaults to true."
+  );
+
+  if (caCertContent) {
+    tempSslConfig.ca = caCertContent;
+    console.log(
+      "[DB_SETUP] Custom CA certificate from POSTGRES_CA_CERT will be used."
+    );
+  }
 
   const isConnectingToLocalhost =
     postgresUrl.includes("localhost") || postgresUrl.includes("127.0.0.1");
   const isVerifyCaMode = postgresUrl.includes("sslmode=verify-ca");
   const isVerifyFullMode = postgresUrl.includes("sslmode=verify-full");
 
-  if (isVerifyCaMode || isVerifyFullMode) {
-    console.log(`[DB_SETUP] SSL mode: verify-ca or verify-full detected.`);
-    if (caCertContent) {
-      tempConfig.ca = caCertContent;
-      tempConfig.rejectUnauthorized = true;
-    } else {
-      console.error(
-        "[DB_SETUP] ERROR: sslmode is verify-ca/verify-full but CA certificate (from POSTGRES_CA_CERT or aws-certificate-rds.pem) is not available. Connection will likely fail if server CA is not in system trust store."
-      );
-      // For verify-ca/full, if no CA is provided, it cannot truly verify against a specific CA.
-      // Setting rejectUnauthorized to true is safer but might fail if system CAs don't cover the server's CA.
-      tempConfig.rejectUnauthorized = true;
-    }
-  } else {
-    // For sslmode=require or sslmode=prefer (or if sslmode is not specified, which defaults to prefer)
-    console.log("[DB_SETUP] SSL mode: require, prefer, or default detected.");
-    // For 'require', the server certificate must be valid (e.g., not expired, trusted by system CAs),
-    // but we don't verify it against a *specific* CA unless provided.
-    // rejectUnauthorized: true is the default for postgresjs when SSL is on.
-    tempConfig.rejectUnauthorized = true;
-    if (caCertContent) {
-      // If CA is available, might as well use it for stricter check even in 'require'
-      tempConfig.ca = caCertContent;
-    }
+  if ((isVerifyCaMode || isVerifyFullMode) && !caCertContent) {
+    console.warn(
+      "[DB_SETUP] WARNING: sslmode is verify-ca or verify-full, but POSTGRES_CA_CERT is not set. Verification will rely on system CAs, which might not include the specific CA required by the server. Connection may fail."
+    );
+    // rejectUnauthorized remains true.
   }
 
   // Override for localhost tunnel in local development (non-production and not Vercel)
   // This allows hostname mismatch for the tunnel.
   if (!(isProduction || isVercel) && isConnectingToLocalhost) {
     console.log(
-      "[DB_SETUP] Local development on localhost: Overriding rejectUnauthorized to false for tunnel hostname mismatch (if SSL is not disabled)."
+      "[DB_SETUP] Local development on localhost: Overriding rejectUnauthorized to false for potential tunnel hostname mismatch (if SSL is not disabled)."
     );
-    tempConfig.rejectUnauthorized = false;
-    // tempConfig.ca will still be used if set (e.g. for local testing of verify-ca via tunnel)
+    tempSslConfig.rejectUnauthorized = false;
   }
-  sslOptionForClient = tempConfig;
+  sslOptionForClient = tempSslConfig;
 }
 
 console.log(

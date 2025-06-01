@@ -82,7 +82,7 @@ async function createRazorpayPlans() {
 
 async function seed() {
   try {
-    const email = "test@test.com";
+    const email = "shubham01legend@gmail.com";
 
     // Check if user exists
     const existingUser = await db
@@ -95,7 +95,7 @@ async function seed() {
 
     if (!user) {
       console.log("Creating initial user...");
-      const password = "admin123";
+      const password = "12345678";
       const passwordHash = await hashPassword(password);
 
       [user] = await db
