@@ -8,28 +8,28 @@ import {
 } from "@/lib/db/queries";
 
 // Add logging to debug credentials
-console.log("=== RAZORPAY ENVIRONMENT DEBUG ===");
-console.log(
-  "RAZORPAY_KEY_ID:",
-  process.env.RAZORPAY_KEY_ID?.substring(0, 12) + "..."
-);
-console.log(
-  "NEXT_PUBLIC_RAZORPAY_KEY_ID:",
-  process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID?.substring(0, 12) + "..."
-);
-console.log("RAZORPAY_MODE:", process.env.RAZORPAY_MODE);
-console.log("NODE_ENV:", process.env.NODE_ENV);
-console.log(
-  "Key starts with live?",
-  process.env.RAZORPAY_KEY_ID?.startsWith("rzp_live")
-);
-console.log(
-  "Key starts with test?",
-  process.env.RAZORPAY_KEY_ID?.startsWith("rzp_test")
-);
-console.log("Razorpay Key ID exists:", !!process.env.RAZORPAY_KEY_ID);
-console.log("Razorpay Secret exists:", !!process.env.RAZORPAY_KEY_SECRET);
-console.log("================================");
+// console.log("=== RAZORPAY ENVIRONMENT DEBUG ===");
+// console.log(
+//   "RAZORPAY_KEY_ID:",
+//   process.env.RAZORPAY_KEY_ID?.substring(0, 12) + "..."
+// );
+// console.log(
+//   "NEXT_PUBLIC_RAZORPAY_KEY_ID:",
+//   process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID?.substring(0, 12) + "..."
+// );
+// console.log("RAZORPAY_MODE:", process.env.RAZORPAY_MODE);
+// console.log("NODE_ENV:", process.env.NODE_ENV);
+// console.log(
+//   "Key starts with live?",
+//   process.env.RAZORPAY_KEY_ID?.startsWith("rzp_live")
+// );
+// console.log(
+//   "Key starts with test?",
+//   process.env.RAZORPAY_KEY_ID?.startsWith("rzp_test")
+// );
+// console.log("Razorpay Key ID exists:", !!process.env.RAZORPAY_KEY_ID);
+// console.log("Razorpay Secret exists:", !!process.env.RAZORPAY_KEY_SECRET);
+// console.log("================================");
 
 export const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID!,
@@ -47,10 +47,10 @@ export async function createCheckoutSession({
     console.log("=== CREATE CHECKOUT SESSION DEBUG ===");
     console.log("Creating checkout for planId:", planId);
     console.log("Using Razorpay mode:", process.env.RAZORPAY_MODE);
-    console.log(
-      "Using key ID:",
-      process.env.RAZORPAY_KEY_ID?.substring(0, 12) + "..."
-    );
+    // console.log(
+    //   "Using key ID:",
+    //   process.env.RAZORPAY_KEY_ID?.substring(0, 12) + "..."
+    // );
 
     const user = await getUser();
 
