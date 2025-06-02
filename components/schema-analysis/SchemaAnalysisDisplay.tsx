@@ -1,9 +1,33 @@
 "use client";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+// import {
+//   Dialog,
+//   DialogContent,
+//   DialogHeader,
+//   DialogTitle,
+//   DialogDescription,
+//   DialogFooter,
+// } from "@/components/ui/dialog";
+// import { Label } from "@/components/ui/label";
+// import { Switch } from "@/components/ui/switch";
+// import {
+//   Select,
+//   SelectContent,
+//   SelectItem,
+//   SelectTrigger,
+//   SelectValue,
+// } from "@/components/ui/select";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Shield,
   Database,
@@ -21,20 +45,48 @@ import {
   Zap,
   Eye,
   Download,
-  RefreshCw,
-  Settings,
+  FileJson,
+  FileText,
+  ChevronDown,
 } from "lucide-react";
 import type { SchemaAnalysisResult } from "@/lib/schema-analysis/analyzer";
 
 interface SchemaAnalysisDisplayProps {
   analysis: SchemaAnalysisResult;
   className?: string;
+  onSettingsChange?: (settings: SchemaAnalysisSettings) => void;
 }
+
+export type SchemaAnalysisSettings = {
+  showSecurityIssues: boolean;
+  showNormalizationIssues: boolean;
+  showRobustnessMetrics: boolean;
+  minSeverityLevel: "info" | "warning" | "critical";
+  displayDensity: "comfortable" | "compact" | "spacious";
+};
 
 export function SchemaAnalysisDisplay({
   analysis,
   className = "",
+  onSettingsChange,
 }: SchemaAnalysisDisplayProps) {
+  const [showSettingsDialog, setShowSettingsDialog] = useState(false);
+  const [settings, setSettings] = useState<SchemaAnalysisSettings>({
+    showSecurityIssues: true,
+    showNormalizationIssues: true,
+    showRobustnessMetrics: true,
+    minSeverityLevel: "info",
+    displayDensity: "comfortable",
+  });
+
+  const handleSettingsSave = (newSettings: SchemaAnalysisSettings) => {
+    setSettings(newSettings);
+    setShowSettingsDialog(false);
+    if (onSettingsChange) {
+      onSettingsChange(newSettings);
+    }
+  };
+
   const getScoreColor = (score: number) => {
     if (score >= 80) return "text-emerald-400";
     if (score >= 60) return "text-amber-400";
@@ -68,7 +120,6 @@ export function SchemaAnalysisDisplay({
         return <Info className="h-4 w-4 text-slate-400" />;
     }
   };
-
   const getMetricIcon = (category: string) => {
     switch (category) {
       case "performance":
@@ -82,6 +133,184 @@ export function SchemaAnalysisDisplay({
       default:
         return <Gauge className="h-5 w-5 text-slate-400" />;
     }
+  };
+
+  const exportAsJson = () => {
+    const blob = new Blob([JSON.stringify(analysis, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `schema-analysis-${
+      new Date().toISOString().split("T")[0]
+    }.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const exportAsHtml = () => {
+    // Create a styled HTML report
+    const html = `<!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Schema Analysis Report</title>
+      <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; line-height: 1.6; color: #333; max-width: 1200px; margin: 0 auto; padding: 20px; }
+        h1, h2, h3 { margin-top: 2rem; color: #1a202c; }
+        .score { font-size: 1.2rem; font-weight: bold; }
+        .card { background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 1rem; padding: 1rem; }
+        .excellent { color: #10b981; }
+        .good { color: #3b82f6; }
+        .fair { color: #f59e0b; }
+        .poor { color: #ef4444; }
+        .critical { color: #ef4444; }
+        .warning { color: #f59e0b; }
+        .info { color: #3b82f6; }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 1rem; margin-bottom: 1rem; }
+        .section { margin-top: 2rem; }
+        .issue { margin-bottom: 1.5rem; padding-left: 1rem; border-left: 3px solid #e2e8f0; }
+        .critical-issue { border-left-color: #ef4444; }
+        .warning-issue { border-left-color: #f59e0b; }
+        .info-issue { border-left-color: #3b82f6; }
+        .footer { margin-top: 2rem; text-align: center; font-size: 0.8rem; color: #a0aec0; }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <h1>Database Schema Analysis Report</h1>
+        <div>Generated on: ${new Date().toLocaleDateString()}</div>
+      </div>
+      
+      <div class="card">
+        <h2>Summary</h2>
+        <div><strong>Overall Score:</strong> <span class="${
+          analysis.overallScore >= 80
+            ? "excellent"
+            : analysis.overallScore >= 60
+            ? "good"
+            : analysis.overallScore >= 40
+            ? "fair"
+            : "poor"
+        }">${analysis.overallScore}/100</span></div>
+        <div><strong>Security Score:</strong> <span class="${
+          analysis.summary.securityScore >= 80
+            ? "excellent"
+            : analysis.summary.securityScore >= 60
+            ? "good"
+            : analysis.summary.securityScore >= 40
+            ? "fair"
+            : "poor"
+        }">${analysis.summary.securityScore}/100</span></div>
+        <div><strong>Normalization Score:</strong> <span class="${
+          analysis.summary.normalizationScore >= 80
+            ? "excellent"
+            : analysis.summary.normalizationScore >= 60
+            ? "good"
+            : analysis.summary.normalizationScore >= 40
+            ? "fair"
+            : "poor"
+        }">${analysis.summary.normalizationScore}/100</span></div>
+        <div><strong>Robustness Score:</strong> <span class="${
+          analysis.summary.robustnessScore >= 80
+            ? "excellent"
+            : analysis.summary.robustnessScore >= 60
+            ? "good"
+            : analysis.summary.robustnessScore >= 40
+            ? "fair"
+            : "poor"
+        }">${analysis.summary.robustnessScore}/100</span></div>
+        <div><strong>Tables:</strong> ${analysis.summary.totalTables}</div>
+        <div><strong>Fields:</strong> ${analysis.summary.totalFields}</div>
+        <div><strong>Relationships:</strong> ${
+          analysis.summary.totalRelationships
+        }</div>
+      </div>
+      
+      <div class="section">
+        <h2>Security Issues (${analysis.securityIssues.length})</h2>
+        ${analysis.securityIssues
+          .map(
+            (issue) => `
+          <div class="issue ${issue.type}-issue">
+            <h3 class="${issue.type}">${issue.title}</h3>
+            <div><strong>Type:</strong> ${issue.type}</div>
+            <div><strong>Category:</strong> ${issue.category}</div>
+            <div><strong>Table:</strong> ${issue.table}${
+              issue.field ? `, Field: ${issue.field}` : ""
+            }</div>
+            <div><strong>Description:</strong> ${issue.description}</div>
+            <div><strong>Recommendation:</strong> ${issue.recommendation}</div>
+            <div><strong>Impact:</strong> ${issue.impact}</div>
+          </div>
+        `
+          )
+          .join("")}
+      </div>
+      
+      <div class="section">
+        <h2>Normalization Issues (${analysis.normalizationIssues.length})</h2>
+        ${analysis.normalizationIssues
+          .map(
+            (issue) => `
+          <div class="issue">
+            <h3>${issue.title}</h3>
+            <div><strong>Type:</strong> ${issue.type}</div>
+            <div><strong>Normal Form:</strong> ${issue.normalForm}</div>
+            <div><strong>Table:</strong> ${issue.table}${
+              issue.fields ? `, Fields: ${issue.fields.join(", ")}` : ""
+            }</div>
+            <div><strong>Description:</strong> ${issue.description}</div>
+            <div><strong>Recommendation:</strong> ${issue.recommendation}</div>
+          </div>
+        `
+          )
+          .join("")}
+      </div>
+      
+      <div class="section">
+        <h2>Robustness Metrics</h2>
+        ${analysis.robustnessMetrics
+          .map(
+            (metric) => `
+          <div class="issue">
+            <h3>${metric.metric}</h3>
+            <div><strong>Category:</strong> ${metric.category}</div>
+            <div><strong>Score:</strong> <span class="${metric.status}">${
+              metric.score
+            }/100 (${metric.status})</span></div>
+            <div><strong>Description:</strong> ${metric.description}</div>
+            <h4>Suggestions:</h4>
+            <ul>
+              ${metric.suggestions.map((s) => `<li>${s}</li>`).join("")}
+            </ul>
+          </div>
+        `
+          )
+          .join("")}
+      </div>
+      
+      <div class="footer">
+        <p>Generated by Database Schema Analyzer</p>
+      </div>
+    </body>
+    </html>`;
+
+    const blob = new Blob([html], { type: "text/html" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `schema-analysis-report-${
+      new Date().toISOString().split("T")[0]
+    }.html`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   const criticalIssues = analysis.securityIssues.filter(
@@ -112,31 +341,39 @@ export function SchemaAnalysisDisplay({
                   Database health & optimization report
                 </p>
               </div>
-            </div>
+            </div>{" "}
             <div className="flex items-center gap-3">
-              <Button
-                variant="outline"
-                size="sm"
-                className="border-slate-700 text-slate-300 hover:bg-slate-800"
-              >
-                <RefreshCw className="h-4 w-4 mr-2" />
-                Refresh
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="border-slate-700 text-slate-300 hover:bg-slate-800"
-              >
-                <Download className="h-4 w-4 mr-2" />
-                Export
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="border-slate-700 text-slate-300 hover:bg-slate-800"
-              >
-                <Settings className="h-4 w-4" />
-              </Button>
+              {" "}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="border-slate-700 text-slate-300 hover:bg-slate-800 flex items-center gap-2"
+                  >
+                    <Download className="h-4 w-4" />
+                    Export Analysis
+                    <ChevronDown className="h-3.5 w-3.5 opacity-70" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="bg-slate-800 border border-slate-700">
+                  <DropdownMenuItem
+                    onClick={exportAsJson}
+                    className="text-slate-300 hover:bg-slate-700 cursor-pointer"
+                  >
+                    <FileJson className="h-4 w-4 mr-2 text-blue-400" />
+                    Export as JSON
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={exportAsHtml}
+                    className="text-slate-300 hover:bg-slate-700 cursor-pointer"
+                  >
+                    <FileText className="h-4 w-4 mr-2 text-green-400" />
+                    Export as HTML Report
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
             </div>
           </div>
         </div>
@@ -464,13 +701,6 @@ export function SchemaAnalysisDisplay({
                             </div>
                           )}
                         </div>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="border-slate-600 text-slate-300 hover:bg-slate-800"
-                        >
-                          <Eye className="h-4 w-4" />
-                        </Button>
                       </div>
                     </CardContent>
                   </Card>
@@ -536,13 +766,7 @@ export function SchemaAnalysisDisplay({
                               ` → Fields: ${issue.fields.join(", ")}`}
                           </div>
                         </div>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="border-slate-600 text-slate-300 hover:bg-slate-800"
-                        >
-                          <Eye className="h-4 w-4" />
-                        </Button>
+                  
                       </div>
                     </CardContent>
                   </Card>
