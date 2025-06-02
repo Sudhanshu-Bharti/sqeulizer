@@ -8,6 +8,7 @@ import { Database } from "lucide-react";
 export function SiteHeader({ className }: { className?: string }) {
   const navItems = [
     { label: "Dashboard", href: "/dashboard" },
+    { label: "Schema Analysis", href: "/schema-analysis" },
     { label: "Pricing", href: "/pricing" },
     { label: "Documentation", href: "/docs" },
   ];

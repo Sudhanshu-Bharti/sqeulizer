@@ -1,6 +1,13 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Code2, Share2, Database, Sparkles } from "lucide-react";
+import {
+  ArrowRight,
+  Code2,
+  Share2,
+  Database,
+  Sparkles,
+  Shield,
+} from "lucide-react";
 import { TextEffect } from "@/components/motion-primitives/text-effect";
 import { use } from "react";
 import { useUser } from "@/lib/auth";
@@ -55,14 +62,23 @@ export default function HomePage() {
                       Create New Diagram
                       <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                     </Button>
-                  </Link>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
+                  </Link>{" "}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full">
                     <Link href="/dashboard" className="w-full">
                       <Button
                         variant="outline"
                         className="px-4 py-3 border-white/20 text-white hover:bg-white/10 rounded-lg backdrop-blur-sm w-full"
                       >
                         Dashboard
+                      </Button>
+                    </Link>
+                    <Link href="/schema-analysis" className="w-full">
+                      <Button
+                        variant="outline"
+                        className="px-4 py-3 border-white/20 text-white hover:bg-white/10 rounded-lg backdrop-blur-sm w-full"
+                      >
+                        <Shield className="mr-2 h-4 w-4" />
+                        Analyze Schema
                       </Button>
                     </Link>
                     <Link href="/live" className="w-full">
@@ -92,9 +108,8 @@ export default function HomePage() {
             <p className="text-xl text-white/60">
               Everything you need, nothing you don't
             </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
+          </div>{" "}
+          <div className="grid md:grid-cols-4 gap-8">
             {[
               {
                 icon: <Code2 className="h-6 w-6" />,
@@ -116,6 +131,13 @@ export default function HomePage() {
                 description:
                   "Track schema changes over time, never lose a single modification",
                 color: "bg-violet-500",
+              },
+              {
+                icon: <Shield className="h-6 w-6" />,
+                title: "Schema Analysis",
+                description:
+                  "Analyze your database for security issues, normalization, and robustness",
+                color: "bg-emerald-500",
               },
             ].map((feature, index) => (
               <div
