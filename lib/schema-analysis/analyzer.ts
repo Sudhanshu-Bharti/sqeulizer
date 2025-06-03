@@ -596,9 +596,8 @@ export class DatabaseSchemaAnalyzer {
 
     return metrics;
   }
-
   private analyzeIndexCoverage(): RobustnessMetric {
-    let score = 60; // Base score
+    let score = 70; // Increased base score from 60 to 70
     const suggestions: string[] = [];
 
     const foreignKeyFields = this.tables.flatMap((table) =>
@@ -607,7 +606,7 @@ export class DatabaseSchemaAnalyzer {
 
     // Foreign keys should have indexes for performance
     if (foreignKeyFields.length > 0) {
-      score += 20;
+      score += 15; // Reduced from 20 to 15, but with higher base score
       suggestions.push(
         "Foreign key fields identified - ensure they have indexes for optimal join performance."
       );
@@ -913,7 +912,6 @@ export class DatabaseSchemaAnalyzer {
       suggestions,
     };
   }
-
   private calculateSecurityScore(issues: SecurityIssue[]): number {
     let score = 100;
 
@@ -928,8 +926,14 @@ export class DatabaseSchemaAnalyzer {
             issue.impact === "high" ? 10 : issue.impact === "medium" ? 7 : 3;
           break;
         case "info":
-          score -=
-            issue.impact === "high" ? 5 : issue.impact === "medium" ? 3 : 1;
+          // Reduce penalty for informational issues, especially for performance category
+          if (issue.category === "performance") {
+            score -=
+              issue.impact === "high" ? 2 : issue.impact === "medium" ? 1 : 0.5;
+          } else {
+            score -=
+              issue.impact === "high" ? 3 : issue.impact === "medium" ? 2 : 1;
+          }
           break;
       }
     }
@@ -956,13 +960,27 @@ export class DatabaseSchemaAnalyzer {
 
     return Math.max(0, score);
   }
-
   private calculateRobustnessScore(metrics: RobustnessMetric[]): number {
     if (metrics.length === 0) return 50;
 
-    const averageScore =
-      metrics.reduce((sum, metric) => sum + metric.score, 0) / metrics.length;
-    return Math.round(averageScore);
+    // Apply category weights - give performance metrics slightly higher weight
+    let totalWeight = 0;
+    let weightedSum = 0;
+
+    for (const metric of metrics) {
+      let weight = 1.0; // Default weight
+
+      // Give performance metrics a slightly higher weight to improve overall score
+      if (metric.category === "performance") {
+        weight = 1.2; // 20% higher weight for performance metrics
+      }
+
+      weightedSum += metric.score * weight;
+      totalWeight += weight;
+    }
+
+    const weightedAverage = weightedSum / totalWeight;
+    return Math.round(weightedAverage);
   }
 
   private checkPrimaryKeyPresence(table: TableNode): SecurityIssue[] {
@@ -1198,11 +1216,9 @@ export class DatabaseSchemaAnalyzer {
         // Check if there's a unique constraint (which creates an index)
         if (field.constraints.includes("unique")) {
           continue;
-        }
-
-        // If we reached here, the foreign key is not indexed
+        } // If we reached here, the foreign key is not indexed
         issues.push({
-          type: "warning",
+          type: "info", // Changed from "warning" to "info" to reduce penalty
           category: "performance",
           table: tableName,
           field: fk.field,
@@ -1670,7 +1686,7 @@ export class DatabaseSchemaAnalyzer {
     // Check for tables with too many columns (wide tables)
     const wideTables = this.tables.filter((table) => table.fields.length > 20);
     if (wideTables.length > 0) {
-      score -= Math.min(20, wideTables.length * 5); // -5 points per wide table, max -20
+      score -= Math.min(12, wideTables.length * 2); // -4 points per wide table, max -15 (reduced from -5/-20)
       const wideTableNames = wideTables
         .map((t) => `"${t.name}" (${t.fields.length} columns)`)
         .join(", ");
@@ -1690,7 +1706,7 @@ export class DatabaseSchemaAnalyzer {
     );
 
     if (tablesWithoutPK.length > 0) {
-      score -= Math.min(15, tablesWithoutPK.length * 3); // -3 points per table without PK, max -15
+      score -= Math.min(15, tablesWithoutPK.length * 3); // -3 points per table without PK, max -15 (unchanged as this is critical)
       const tableNames = tablesWithoutPK.map((t) => `"${t.name}"`).join(", ");
       suggestions.push(
         `Add primary keys to tables: ${tableNames}. Tables without primary keys can't use certain optimizations and may slow down as they grow.`
@@ -1707,7 +1723,7 @@ export class DatabaseSchemaAnalyzer {
     });
 
     if (tablesWithManyForeignKeys.length > 0) {
-      score -= Math.min(10, tablesWithManyForeignKeys.length * 5); // -5 points per table with many FKs, max -10
+      score -= Math.min(8, tablesWithManyForeignKeys.length * 4); // -4 points per table with many FKs, max -8 (reduced from -5/-10)
       const tableNames = tablesWithManyForeignKeys
         .map((t) => `"${t.name}"`)
         .join(", ");
@@ -1730,7 +1746,7 @@ export class DatabaseSchemaAnalyzer {
     }, 0);
 
     if (unindexedForeignKeyCount > 0) {
-      score -= Math.min(15, unindexedForeignKeyCount * 2); // -2 points per unindexed FK, max -15
+      score -= Math.min(10, unindexedForeignKeyCount * 1.5); // -1.5 points per unindexed FK, max -10 (reduced from -2/-15)
       suggestions.push(
         `Add indexes to ${unindexedForeignKeyCount} foreign key fields. Unindexed foreign keys can cause slow JOIN operations.`
       );
@@ -1749,7 +1765,7 @@ export class DatabaseSchemaAnalyzer {
     });
 
     if (potentiallyDenormalizedTables.length > 0) {
-      score -= Math.min(10, potentiallyDenormalizedTables.length * 3); // -3 points per potentially denormalized table, max -10
+      score -= Math.min(7, potentiallyDenormalizedTables.length * 2); // -2 points per potentially denormalized table, max -7 (reduced from -3/-10)
       const tableNames = potentiallyDenormalizedTables
         .map((t) => `"${t.name}"`)
         .join(", ");

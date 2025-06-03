@@ -24,13 +24,18 @@ export default function HomePage() {
       <section className="min-h-[90vh] relative overflow-hidden flex items-center">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
           <div className="text-center max-w-3xl mx-auto">
+            {" "}
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 text-indigo-400 text-sm font-medium mb-6 border border-indigo-500/20 backdrop-blur-sm">
-              <Code2 className="h-4 w-4" />
+              <img
+                src="/pandaview.png"
+                alt="PandaView Logo"
+                className="h-5 w-5"
+              />
               <span>Built by the Developers For the Developers</span>
             </div>
             <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6 text-white">
-              Turn Code Into{" "}
-              <span className="text-indigo-400">Visual Magic</span>
+              <span className="text-indigo-400">PandaView</span>: Database{" "}
+              <span className="text-indigo-400">Visualization</span>
             </h1>
             <p className="text-xl text-white/60 mb-12 mt-8 max-w-2xl mx-auto leading-relaxed">
               Transform your database schemas into stunning, interactive
@@ -101,9 +106,10 @@ export default function HomePage() {
       {/* Features Section */}
       <section className="py-32 relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {" "}
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4 text-white">
-              Features that <span className="text-indigo-400">Pop</span>
+              <span className="text-indigo-400">PandaView</span> Features
             </h2>
             <p className="text-xl text-white/60">
               Everything you need, nothing you don't
@@ -113,21 +119,21 @@ export default function HomePage() {
             {[
               {
                 icon: <Code2 className="h-6 w-6" />,
-                title: "AI-Powered Diagrams",
+                title: "ERD Diagrams",
                 description:
-                  "Watch your code transform into beautiful ERD diagrams instantly",
+                  "Watch your schema transform into beautiful ERD diagrams using smart algorithms",
                 color: "bg-indigo-500",
               },
               {
                 icon: <Share2 className="h-6 w-6" />,
-                title: "Real-time Magic",
+                title: "Team Workspace",
                 description:
-                  "Collaborate with your team in real-time, see changes as they happen",
+                  "Create workspaces for your team to share and manage database diagrams together",
                 color: "bg-blue-500",
               },
               {
                 icon: <Database className="h-6 w-6" />,
-                title: "Version Control",
+                title: "Version Control (Coming Soon)",
                 description:
                   "Track schema changes over time, never lose a single modification",
                 color: "bg-violet-500",

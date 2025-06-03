@@ -1,15 +1,20 @@
-"use client"
-import { useState } from "react"
-import type React from "react"
+"use client";
+import { useState } from "react";
+import type React from "react";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { SyntaxTextarea } from "@/components/ui/syntax-textarea"
-import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { toast } from "@/components/ui/use-toast"
-import { SchemaAnalysisDisplay } from "@/components/schema-analysis/SchemaAnalysisDisplay"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { SyntaxTextarea } from "@/components/ui/syntax-textarea";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { toast } from "@/components/ui/use-toast";
+import { SchemaAnalysisDisplay } from "@/components/schema-analysis/SchemaAnalysisDisplay";
 import {
   Database,
   Shield,
@@ -27,12 +32,9 @@ import {
   Search,
   Code,
   AlertTriangle,
-  Sparkles,
   Play,
-  Settings,
-  Download,
-} from "lucide-react"
-import type { SchemaAnalysisResult } from "@/lib/schema-analysis/analyzer"
+} from "lucide-react";
+import type { SchemaAnalysisResult } from "@/lib/schema-analysis/analyzer";
 import {
   Dialog,
   DialogContent,
@@ -40,41 +42,44 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@/components/ui/dialog"
-import { Progress } from "@/components/ui/progress"
+} from "@/components/ui/dialog";
+import { Progress } from "@/components/ui/progress";
 
 export default function SchemaAnalysisPage() {
-  const [schema, setSchema] = useState("")
-  const [dialect, setDialect] = useState<"mysql" | "postgres" | "mssql">("postgres")
-  const [isAnalyzing, setIsAnalyzing] = useState(false)
-  const [analysisResult, setAnalysisResult] = useState<SchemaAnalysisResult | null>(null)
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const [isUpgradeDialogOpen, setIsUpgradeDialogOpen] = useState(false)
-  const [showQuotaDialog, setShowQuotaDialog] = useState(false)
+  const [schema, setSchema] = useState("");
+  const [dialect, setDialect] = useState<"mysql" | "postgres" | "mssql">(
+    "postgres"
+  );
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analysisResult, setAnalysisResult] =
+    useState<SchemaAnalysisResult | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isUpgradeDialogOpen, setIsUpgradeDialogOpen] = useState(false);
+  const [showQuotaDialog, setShowQuotaDialog] = useState(false);
   const [analysisStats, setAnalysisStats] = useState<{
-    used: number
-    limit: number
-    remainingDays: number
-    plan: string
-  } | null>(null)
+    used: number;
+    limit: number;
+    remainingDays: number;
+    plan: string;
+  } | null>(null);
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
+    const file = event.target.files?.[0];
     if (file && file.name.endsWith(".sql")) {
-      setSelectedFile(file)
-      const reader = new FileReader()
+      setSelectedFile(file);
+      const reader = new FileReader();
       reader.onload = (e) => {
-        setSchema(e.target?.result as string)
-      }
-      reader.readAsText(file)
+        setSchema(e.target?.result as string);
+      };
+      reader.readAsText(file);
     } else {
       toast({
         title: "Invalid File",
         description: "Please upload a .sql file",
         variant: "destructive",
-      })
+      });
     }
-  }
+  };
 
   const analyzeSchema = async () => {
     if (!schema.trim()) {
@@ -82,11 +87,11 @@ export default function SchemaAnalysisPage() {
         title: "Empty Schema",
         description: "Please enter your database schema or upload a SQL file.",
         variant: "destructive",
-      })
-      return
+      });
+      return;
     }
 
-    setIsAnalyzing(true)
+    setIsAnalyzing(true);
 
     try {
       const response = await fetch("/api/analyze-schema", {
@@ -98,9 +103,9 @@ export default function SchemaAnalysisPage() {
           sql: schema,
           dialect,
         }),
-      })
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (!response.ok) {
         if (response.status === 403 && data.used !== undefined) {
@@ -109,34 +114,35 @@ export default function SchemaAnalysisPage() {
             limit: data.limit,
             remainingDays: data.remainingDays,
             plan: data.plan,
-          })
-          setIsUpgradeDialogOpen(true)
-          throw new Error(data.message)
+          });
+          setIsUpgradeDialogOpen(true);
+          throw new Error(data.message);
         }
-        throw new Error(data.message || "Failed to analyze schema")
+        throw new Error(data.message || "Failed to analyze schema");
       }
-      setAnalysisResult(data.analysis)
+      setAnalysisResult(data.analysis);
 
       if (data.analysisStats) {
-        setAnalysisStats(data.analysisStats)
+        setAnalysisStats(data.analysisStats);
       }
 
       toast({
         title: "Analysis Complete",
         description: `Schema analyzed successfully! Overall score: ${data.analysis.overallScore}/100`,
         variant: "default",
-      })
+      });
     } catch (error) {
-      console.error("Analysis error:", error)
+      console.error("Analysis error:", error);
       toast({
         title: "Analysis Failed",
-        description: error instanceof Error ? error.message : "Failed to analyze schema",
+        description:
+          error instanceof Error ? error.message : "Failed to analyze schema",
         variant: "destructive",
-      })
+      });
     } finally {
-      setIsAnalyzing(false)
+      setIsAnalyzing(false);
     }
-  }
+  };
 
   const exampleSchema = `-- Example E-commerce Database Schema
 CREATE TABLE users (
@@ -182,41 +188,75 @@ CREATE TABLE order_items (
   quantity INTEGER NOT NULL,
   unit_price DECIMAL(10, 2) NOT NULL,
   total_price DECIMAL(10, 2) NOT NULL
-);`
+);`;
 
   const analysisFeatures = [
     {
       icon: <Shield className="h-6 w-6" />,
       title: "Security Vulnerabilities",
-      description: "Detect password storage issues, data exposure risks, and access control gaps",
+      description:
+        "Detect password storage issues, data exposure risks, and access control gaps",
       color: "from-red-500/20 to-red-600/5",
       iconColor: "text-red-400",
-      items: ["Password vulnerabilities", "Sensitive data exposure", "Missing audit trails", "SQL injection risks"],
+      items: [
+        "Password vulnerabilities",
+        "Sensitive data exposure",
+        "Missing audit trails",
+        "SQL injection risks",
+      ],
     },
     {
       icon: <Layers className="h-6 w-6" />,
       title: "Normalization Analysis",
-      description: "Evaluate compliance with database normal forms and optimization opportunities",
+      description:
+        "Evaluate compliance with database normal forms and optimization opportunities",
       color: "from-blue-500/20 to-blue-600/5",
       iconColor: "text-blue-400",
-      items: ["1NF, 2NF, 3NF compliance", "BCNF validation", "Redundancy detection", "Optimization suggestions"],
+      items: [
+        "1NF, 2NF, 3NF compliance",
+        "BCNF validation",
+        "Redundancy detection",
+        "Optimization suggestions",
+      ],
     },
     {
       icon: <Gauge className="h-6 w-6" />,
       title: "Performance Metrics",
-      description: "Assess scalability, maintainability, and reliability indicators",
+      description:
+        "Assess scalability, maintainability, and reliability indicators",
       color: "from-emerald-500/20 to-emerald-600/5",
       iconColor: "text-emerald-400",
-      items: ["Index coverage", "Foreign key integrity", "Naming conventions", "Data type optimization"],
+      items: [
+        "Index coverage",
+        "Foreign key integrity",
+        "Naming conventions",
+        "Data type optimization",
+      ],
     },
-  ]
+  ];
 
   const quickStats = [
-    { label: "Schemas Analyzed", value: "1M+", icon: <Database className="h-5 w-5 text-cyan-400" /> },
-    { label: "Issues Detected", value: "500K+", icon: <AlertTriangle className="h-5 w-5 text-amber-400" /> },
-    { label: "Avg. Score Improvement", value: "35%", icon: <TrendingUp className="h-5 w-5 text-emerald-400" /> },
-    { label: "Analysis Time", value: "<30s", icon: <Zap className="h-5 w-5 text-purple-400" /> },
-  ]
+    {
+      label: "Schemas Analyzed",
+      value: "1M+",
+      icon: <Database className="h-5 w-5 text-cyan-400" />,
+    },
+    {
+      label: "Issues Detected",
+      value: "500K+",
+      icon: <AlertTriangle className="h-5 w-5 text-amber-400" />,
+    },
+    {
+      label: "Avg. Score Improvement",
+      value: "35%",
+      icon: <TrendingUp className="h-5 w-5 text-emerald-400" />,
+    },
+    {
+      label: "Analysis Time",
+      value: "<30s",
+      icon: <Zap className="h-5 w-5 text-purple-400" />,
+    },
+  ];
 
   return (
     <div className="min-h-screen bg-slate-950">
@@ -229,8 +269,12 @@ CREATE TABLE order_items (
                 <Search className="h-6 w-6 text-slate-300" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-slate-100">Schema Analysis</h1>
-                <p className="text-slate-400">Powerful database optimization and security analysis</p>
+                <h1 className="text-3xl font-bold text-slate-100">
+                  Schema Analysis
+                </h1>
+                <p className="text-slate-400">
+                  Powerful database optimization and security analysis
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -242,12 +286,14 @@ CREATE TABLE order_items (
                   className="border-slate-700 text-slate-300 hover:bg-slate-800"
                 >
                   <Gauge className="h-4 w-4 mr-2" />
-                  {analysisStats.plan === "Free" ? `${analysisStats.used}/${analysisStats.limit}` : "Unlimited"}
+                  {analysisStats.plan === "Free"
+                    ? `${analysisStats.used}/${analysisStats.limit}`
+                    : "Unlimited"}
                 </Button>
               )}
-              <Button variant="outline" size="sm" className="border-slate-700 text-slate-300 hover:bg-slate-800">
+              {/* <Button variant="outline" size="sm" className="border-slate-700 text-slate-300 hover:bg-slate-800">
                 <Settings className="h-4 w-4" />
-              </Button>
+              </Button> */}
             </div>
           </div>
         </div>
@@ -273,8 +319,9 @@ CREATE TABLE order_items (
                       </span>
                     </h2>
                     <p className="text-xl text-slate-300 mb-6 max-w-2xl">
-                      Get comprehensive insights into security vulnerabilities, normalization issues, and performance
-                      bottlenecks in seconds.
+                      Get comprehensive insights into security vulnerabilities,
+                      normalization issues, and performance bottlenecks in
+                      seconds.
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-4">
@@ -299,10 +346,15 @@ CREATE TABLE order_items (
           {/* Quick Stats */}
           <div className="col-span-12 lg:col-span-4 grid grid-cols-2 gap-4">
             {quickStats.map((stat, index) => (
-              <Card key={index} className="bg-slate-900/50 border-slate-700/50 backdrop-blur-sm">
+              <Card
+                key={index}
+                className="bg-slate-900/50 border-slate-700/50 backdrop-blur-sm"
+              >
                 <CardContent className="p-6 text-center">
                   <div className="flex justify-center mb-3">{stat.icon}</div>
-                  <div className="text-2xl font-bold text-slate-100 mb-1">{stat.value}</div>
+                  <div className="text-2xl font-bold text-slate-100 mb-1">
+                    {stat.value}
+                  </div>
                   <div className="text-slate-400 text-sm">{stat.label}</div>
                 </CardContent>
               </Card>
@@ -323,7 +375,9 @@ CREATE TABLE order_items (
                     <div className={feature.iconColor}>{feature.icon}</div>
                   </div>
                   <div>
-                    <CardTitle className="text-slate-100 text-lg">{feature.title}</CardTitle>
+                    <CardTitle className="text-slate-100 text-lg">
+                      {feature.title}
+                    </CardTitle>
                   </div>
                 </div>
                 <p className="text-slate-300 text-sm">{feature.description}</p>
@@ -331,7 +385,10 @@ CREATE TABLE order_items (
               <CardContent>
                 <div className="space-y-2">
                   {feature.items.map((item, itemIndex) => (
-                    <div key={itemIndex} className="flex items-center gap-2 text-slate-400 text-sm">
+                    <div
+                      key={itemIndex}
+                      className="flex items-center gap-2 text-slate-400 text-sm"
+                    >
                       <ChevronRight className="h-3 w-3" />
                       <span>{item}</span>
                     </div>
@@ -345,11 +402,17 @@ CREATE TABLE order_items (
         {/* Analysis Interface */}
         <Tabs defaultValue="input" className="space-y-6">
           <TabsList className="grid w-full grid-cols-2 bg-slate-900/50 border border-slate-700/50">
-            <TabsTrigger value="input" className="data-[state=active]:bg-slate-800 data-[state=active]:text-slate-100">
+            <TabsTrigger
+              value="input"
+              className="data-[state=active]:bg-slate-800 data-[state=active]:text-slate-100"
+            >
               <Code className="h-4 w-4 mr-2" />
               Schema Input
             </TabsTrigger>
-            <TabsTrigger value="demo" className="data-[state=active]:bg-slate-800 data-[state=active]:text-slate-100">
+            <TabsTrigger
+              value="demo"
+              className="data-[state=active]:bg-slate-800 data-[state=active]:text-slate-100"
+            >
               <Play className="h-4 w-4 mr-2" />
               Try Demo
             </TabsTrigger>
@@ -367,7 +430,12 @@ CREATE TABLE order_items (
                         SQL Schema Input
                       </CardTitle>
                       <div className="flex items-center gap-3">
-                        <Select value={dialect} onValueChange={(v: "mysql" | "postgres" | "mssql") => setDialect(v)}>
+                        <Select
+                          value={dialect}
+                          onValueChange={(v: "mysql" | "postgres" | "mssql") =>
+                            setDialect(v)
+                          }
+                        >
                           <SelectTrigger className="w-[140px] border-slate-700 bg-slate-800">
                             <SelectValue />
                           </SelectTrigger>
@@ -380,7 +448,9 @@ CREATE TABLE order_items (
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => document.getElementById("sql-upload")?.click()}
+                          onClick={() =>
+                            document.getElementById("sql-upload")?.click()
+                          }
                           className="border-slate-700 text-slate-300 hover:bg-slate-800"
                         >
                           <Upload className="h-4 w-4 mr-2" />
@@ -438,29 +508,43 @@ CREATE TABLE order_items (
               <div className="space-y-6">
                 <Card className="bg-slate-900/50 border-slate-700/50 backdrop-blur-sm">
                   <CardHeader>
-                    <CardTitle className="text-slate-100">Analysis Overview</CardTitle>
+                    <CardTitle className="text-slate-100">
+                      Analysis Overview
+                    </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="space-y-3">
                       <div className="flex items-center gap-3 p-3 rounded-lg bg-slate-800/30">
                         <Lock className="h-5 w-5 text-red-400" />
                         <div>
-                          <div className="font-medium text-slate-200">Security Scan</div>
-                          <div className="text-sm text-slate-400">Vulnerability detection</div>
+                          <div className="font-medium text-slate-200">
+                            Security Scan
+                          </div>
+                          <div className="text-sm text-slate-400">
+                            Vulnerability detection
+                          </div>
                         </div>
                       </div>
                       <div className="flex items-center gap-3 p-3 rounded-lg bg-slate-800/30">
                         <Layers className="h-5 w-5 text-blue-400" />
                         <div>
-                          <div className="font-medium text-slate-200">Normalization</div>
-                          <div className="text-sm text-slate-400">Structure optimization</div>
+                          <div className="font-medium text-slate-200">
+                            Normalization
+                          </div>
+                          <div className="text-sm text-slate-400">
+                            Structure optimization
+                          </div>
                         </div>
                       </div>
                       <div className="flex items-center gap-3 p-3 rounded-lg bg-slate-800/30">
                         <Activity className="h-5 w-5 text-emerald-400" />
                         <div>
-                          <div className="font-medium text-slate-200">Performance</div>
-                          <div className="text-sm text-slate-400">Robustness metrics</div>
+                          <div className="font-medium text-slate-200">
+                            Performance
+                          </div>
+                          <div className="text-sm text-slate-400">
+                            Robustness metrics
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -473,8 +557,12 @@ CREATE TABLE order_items (
                       <div className="flex items-center gap-3">
                         <CheckCircle className="h-5 w-5 text-emerald-400" />
                         <div>
-                          <div className="font-medium text-emerald-300">File Loaded</div>
-                          <div className="text-sm text-emerald-400">{selectedFile.name}</div>
+                          <div className="font-medium text-emerald-300">
+                            File Loaded
+                          </div>
+                          <div className="text-sm text-emerald-400">
+                            {selectedFile.name}
+                          </div>
                         </div>
                       </div>
                     </CardContent>
@@ -490,16 +578,19 @@ CREATE TABLE order_items (
                 <div className="space-y-6">
                   <div>
                     <Play className="h-16 w-16 text-indigo-400 mx-auto mb-4" />
-                    <h3 className="text-2xl font-bold text-slate-100 mb-2">Interactive Demo</h3>
+                    <h3 className="text-2xl font-bold text-slate-100 mb-2">
+                      Interactive Demo
+                    </h3>
                     <p className="text-slate-300 max-w-2xl mx-auto">
-                      Try our schema analysis with a pre-loaded e-commerce database example. See how we detect issues
-                      and provide optimization recommendations.
+                      Try our schema analysis with a pre-loaded e-commerce
+                      database example. See how we detect issues and provide
+                      optimization recommendations.
                     </p>
                   </div>
                   <Button
                     onClick={() => {
-                      setSchema(exampleSchema)
-                      analyzeSchema()
+                      setSchema(exampleSchema);
+                      analyzeSchema();
                     }}
                     className="bg-indigo-500 hover:bg-indigo-600 text-white px-8 py-6 text-lg"
                   >
@@ -516,7 +607,9 @@ CREATE TABLE order_items (
         {analysisResult && (
           <div className="mt-12">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-slate-100">Analysis Results</h2>
+              <h2 className="text-2xl font-bold text-slate-100">
+                Analysis Results
+              </h2>
               {/* <Button variant="outline" className="border-slate-700 text-slate-300 hover:bg-slate-800">
                 <Download className="h-4 w-4 mr-2" />
                 Export Report
@@ -527,21 +620,34 @@ CREATE TABLE order_items (
         )}
 
         {/* Upgrade Dialog */}
-        <Dialog open={isUpgradeDialogOpen} onOpenChange={setIsUpgradeDialogOpen}>
+        <Dialog
+          open={isUpgradeDialogOpen}
+          onOpenChange={setIsUpgradeDialogOpen}
+        >
           <DialogContent className="bg-slate-900 border-slate-700">
             <DialogHeader>
-              <DialogTitle className="text-slate-100">Analysis Limit Reached</DialogTitle>
+              <DialogTitle className="text-slate-100">
+                Analysis Limit Reached
+              </DialogTitle>
               <DialogDescription className="text-slate-300">
-                You've used {analysisStats?.used} out of {analysisStats?.limit} schema analyses in your free plan. Your
-                limit will reset in {analysisStats?.remainingDays} days. Upgrade now to get unlimited analyses and
-                additional features!
+                You've used {analysisStats?.used} out of {analysisStats?.limit}{" "}
+                schema analyses in your free plan. Your limit will reset in{" "}
+                {analysisStats?.remainingDays} days. Upgrade now to get
+                unlimited analyses and additional features!
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setIsUpgradeDialogOpen(false)} className="border-slate-700">
+              <Button
+                variant="outline"
+                onClick={() => setIsUpgradeDialogOpen(false)}
+                className="border-slate-700"
+              >
                 Cancel
               </Button>
-              <Button onClick={() => (window.location.href = "/pricing")} className="bg-indigo-500 hover:bg-indigo-600">
+              <Button
+                onClick={() => (window.location.href = "/pricing")}
+                className="bg-indigo-500 hover:bg-indigo-600"
+              >
                 View Plans
               </Button>
             </DialogFooter>
@@ -552,9 +658,13 @@ CREATE TABLE order_items (
         <Dialog open={showQuotaDialog} onOpenChange={setShowQuotaDialog}>
           <DialogContent className="bg-slate-900 border-slate-700">
             <DialogHeader>
-              <DialogTitle className="text-slate-100">Analysis Quota</DialogTitle>
+              <DialogTitle className="text-slate-100">
+                Analysis Quota
+              </DialogTitle>
               <DialogDescription className="text-slate-300">
-                {analysisStats?.plan === "Free" ? "Free tier usage and limits" : `${analysisStats?.plan} plan benefits`}
+                {analysisStats?.plan === "Free"
+                  ? "Free tier usage and limits"
+                  : `${analysisStats?.plan} plan benefits`}
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-6 py-4">
@@ -562,7 +672,9 @@ CREATE TABLE order_items (
                 <div className="flex items-center justify-between">
                   <div className="space-y-0.5">
                     <h4 className="text-sm font-medium text-slate-200">
-                      {analysisStats?.plan === "Free" ? "Free Tier" : `${analysisStats?.plan} Plan`}
+                      {analysisStats?.plan === "Free"
+                        ? "Free Tier"
+                        : `${analysisStats?.plan} Plan`}
                     </h4>
                     <p className="text-sm text-slate-400">
                       {analysisStats?.plan === "Free"
@@ -575,8 +687,8 @@ CREATE TABLE order_items (
                       variant="outline"
                       size="sm"
                       onClick={() => {
-                        setShowQuotaDialog(false)
-                        window.location.href = "/pricing"
+                        setShowQuotaDialog(false);
+                        window.location.href = "/pricing";
                       }}
                       className="border-slate-700"
                     >
@@ -594,19 +706,26 @@ CREATE TABLE order_items (
                     </span>
                   </div>
                   <Progress
-                    value={analysisStats?.plan === "Free" ? (analysisStats.used / analysisStats.limit) * 100 : 100}
+                    value={
+                      analysisStats?.plan === "Free"
+                        ? (analysisStats.used / analysisStats.limit) * 100
+                        : 100
+                    }
                     className="h-2 bg-slate-800"
                   />
                   {analysisStats?.plan === "Free" && (
                     <p className="text-xs text-slate-500">
-                      {analysisStats.limit - analysisStats.used} analyses remaining
+                      {analysisStats.limit - analysisStats.used} analyses
+                      remaining
                     </p>
                   )}
                 </div>
               </div>
               {analysisStats?.plan === "Free" && (
                 <div className="rounded-lg bg-slate-800/50 p-4 border border-slate-700">
-                  <h5 className="text-sm font-medium mb-2 text-slate-200">Upgrade to get more</h5>
+                  <h5 className="text-sm font-medium mb-2 text-slate-200">
+                    Upgrade to get more
+                  </h5>
                   <ul className="text-sm space-y-2 text-slate-300">
                     <li className="flex items-center">
                       <ChevronRight className="h-3 w-3 mr-2" />
@@ -625,7 +744,11 @@ CREATE TABLE order_items (
               )}
             </div>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setShowQuotaDialog(false)} className="border-slate-700">
+              <Button
+                variant="outline"
+                onClick={() => setShowQuotaDialog(false)}
+                className="border-slate-700"
+              >
                 Close
               </Button>
             </DialogFooter>
@@ -633,5 +756,5 @@ CREATE TABLE order_items (
         </Dialog>
       </div>
     </div>
-  )
+  );
 }

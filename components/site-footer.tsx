@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { Database } from "lucide-react";
 
 export function SiteFooter({ className }: { className?: string }) {
   return (
@@ -8,10 +7,16 @@ export function SiteFooter({ className }: { className?: string }) {
       <div className="container py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="space-y-4">
+            {" "}
             <Link href="/" className="flex items-center gap-2">
-              <Database className="h-6 w-6 text-white" />
-              <span className="font-semibold text-lg text-white">
-                dbdiagram
+              <img
+                src="/pandaview.png"
+                alt="PandaView Logo"
+                className="h-6 w-6"
+              />
+              <span className="font-semibold text-lg">
+                <span className="text-white">Panda</span>
+                <span className="text-indigo-400">View</span>
               </span>
             </Link>
             <p className="text-sm text-white/60 max-w-xs">
@@ -70,8 +75,9 @@ export function SiteFooter({ className }: { className?: string }) {
         </div>
 
         <div className="mt-16 pt-8 border-t border-white/10">
+          {" "}
           <div className="text-center text-sm text-white/60">
-            © {new Date().getFullYear()} dbdiagram. All rights reserved.
+            © {new Date().getFullYear()} PandaView. All rights reserved.
           </div>
         </div>
       </div>

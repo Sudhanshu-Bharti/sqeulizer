@@ -16,19 +16,23 @@ export function SiteHeader({ className }: { className?: string }) {
   return (
     <header className={cn("z-50", className)}>
       <nav className="container flex h-16 items-center justify-between p-6">
+        {" "}
         <Link href="/" className="flex items-center gap-2 group">
           <div className="relative ml-8">
-            <div className="absolute -inset-0.5 rounded-lg bg-gradient-to-r from-blue-600 to-emerald-600 opacity-20 blur transition-opacity group-hover:opacity-40" />
-            <div className="relative flex items-center justify-center h-8 w-8 bg-slate-900 rounded-lg border border-slate-800 ">
-              <Database className="h-4 w-4 text-blue-400" />
+            <div className="absolute -inset-0.5 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 opacity-20 blur transition-opacity group-hover:opacity-40" />
+            <div className="relative flex items-center justify-center h-8 w-8 bg-slate-900 rounded-lg border border-slate-800">
+              <img
+                src="/pandaview.png"
+                alt="PandaView Logo"
+                className="h-6 w-6"
+              />
             </div>
           </div>
-          <span className="font-semibold text-lg ">
-            <span className="text-white">db</span>
-            <span className="text-blue-400">diagram</span>
+          <span className="font-semibold text-lg">
+            <span className="text-white">Panda</span>
+            <span className="text-indigo-400">View</span>
           </span>
         </Link>
-
         <div className="hidden md:flex items-center gap-1 ml-8">
           {navItems.map((item) => (
             <Link
@@ -46,7 +50,6 @@ export function SiteHeader({ className }: { className?: string }) {
             </div>
           </Link>
         </div>
-
         <div className="flex items-center gap-4">
           <UserMenu />
         </div>
