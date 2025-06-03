@@ -19,14 +19,12 @@ export function SiteHeader({ className }: { className?: string }) {
         {" "}
         <Link href="/" className="flex items-center gap-2 group">
           <div className="relative ml-8">
-            <div className="absolute -inset-0.5 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 opacity-20 blur transition-opacity group-hover:opacity-40" />
-            <div className="relative flex items-center justify-center h-8 w-8 bg-slate-900 rounded-lg border border-slate-800">
+            <div className="absolute -inset-0.5 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 opacity-20 blur transition-opacity group-hover:opacity-20" />
               <img
                 src="/pandaview.png"
                 alt="PandaView Logo"
-                className="h-6 w-6"
+                className="h-10 w-10"
               />
-            </div>
           </div>
           <span className="font-semibold text-lg">
             <span className="text-white">Panda</span>

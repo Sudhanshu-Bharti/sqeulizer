@@ -27,7 +27,7 @@ export function SiteFooter({ className }: { className?: string }) {
           <div>
             <h3 className="font-medium text-white mb-4">Product</h3>
             <ul className="space-y-3">
-              {["Features", "Pricing", "Documentation"].map((item) => (
+              {["Features", "Pricing", "Docs"].map((item) => (
                 <li key={item}>
                   <Link
                     href={`/${item.toLowerCase()}`}
@@ -42,7 +42,7 @@ export function SiteFooter({ className }: { className?: string }) {
           <div>
             <h3 className="font-medium text-white mb-4">Company</h3>
             <ul className="space-y-3">
-              {["Blog", "Careers"].map((item) => (
+              {["Blog"].map((item) => (
                 <li key={item}>
                   <Link
                     href={`/${item.toLowerCase()}`}
@@ -53,17 +53,21 @@ export function SiteFooter({ className }: { className?: string }) {
                 </li>
               ))}
             </ul>
-          </div>
+          </div>{" "}
           <div>
             <h3 className="font-medium text-white mb-4">Legal</h3>
             <ul className="space-y-3">
-              {["Privacy", "Terms", "Cookie Policy"].map((item) => (
-                <li key={item}>
+              {[
+                { name: "Privacy", href: "/legal#privacy" },
+                { name: "Terms", href: "/legal#terms" },
+                { name: "Cookie Policy", href: "/legal#cookie-policy" },
+              ].map((item) => (
+                <li key={item.name}>
                   <Link
-                    href={`/${item.toLowerCase().replace(" ", "-")}`}
+                    href={item.href}
                     className="text-sm text-white/60 hover:text-white transition-colors"
                   >
-                    {item}
+                    {item.name}
                   </Link>
                 </li>
               ))}

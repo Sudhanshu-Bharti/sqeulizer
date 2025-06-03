@@ -85,13 +85,7 @@ export default function DashboardLayout({
               </Button>
               <div className="flex items-center gap-2 sm:gap-3">
                 {" "}
-                <div className="p-1.5 sm:p-2 rounded-lg bg-slate-800/50">
-                  <img
-                    src="/pandaview.png"
-                    alt="PandaView Logo"
-                    className="h-5 w-5 sm:h-6 sm:w-6"
-                  />
-                </div>
+
                 <div>
                   <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-slate-100 truncate">
                     {getPageTitle()}
