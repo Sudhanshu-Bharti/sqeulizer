@@ -24,7 +24,6 @@ export function SiteFooter({ className }: { className?: string }) {
               diagrams
             </p>
           </div>
-
           <div>
             <h3 className="font-medium text-white mb-4">Product</h3>
             <ul className="space-y-3">
@@ -39,12 +38,11 @@ export function SiteFooter({ className }: { className?: string }) {
                 </li>
               ))}
             </ul>
-          </div>
-
+          </div>{" "}
           <div>
             <h3 className="font-medium text-white mb-4">Company</h3>
             <ul className="space-y-3">
-              {["About", "Blog", "Careers"].map((item) => (
+              {["Blog", "Careers"].map((item) => (
                 <li key={item}>
                   <Link
                     href={`/${item.toLowerCase()}`}
@@ -56,7 +54,6 @@ export function SiteFooter({ className }: { className?: string }) {
               ))}
             </ul>
           </div>
-
           <div>
             <h3 className="font-medium text-white mb-4">Legal</h3>
             <ul className="space-y-3">
