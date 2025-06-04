@@ -1,6 +1,13 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Code2, Share2, Database, Sparkles } from "lucide-react";
+import {
+  ArrowRight,
+  Code2,
+  Share2,
+  Database,
+  Sparkles,
+  Shield,
+} from "lucide-react";
 import { TextEffect } from "@/components/motion-primitives/text-effect";
 import { use } from "react";
 import { useUser } from "@/lib/auth";
@@ -17,22 +24,24 @@ export default function HomePage() {
       <section className="min-h-[90vh] relative overflow-hidden flex items-center">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
           <div className="text-center max-w-3xl mx-auto">
+            {" "}
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 text-indigo-400 text-sm font-medium mb-6 border border-indigo-500/20 backdrop-blur-sm">
-              <Code2 className="h-4 w-4" />
+              <img
+                src="/pandaview.png"
+                alt="PandaView Logo"
+                className="h-5 w-5"
+              />
               <span>Built by the Developers For the Developers</span>
             </div>
-
             <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6 text-white">
-              Turn Code Into{" "}
-              <span className="text-indigo-400">Visual Magic</span>
+              <span className="text-indigo-400">PandaView</span>: Database{" "}
+              <span className="text-indigo-400">Visualization</span>
             </h1>
-
             <p className="text-xl text-white/60 mb-12 mt-8 max-w-2xl mx-auto leading-relaxed">
               Transform your database schemas into stunning, interactive
               diagrams that make sense. Built for developers who think
               differently.
-            </p>
-
+            </p>{" "}
             <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
               {!user ? (
                 <>
@@ -52,12 +61,42 @@ export default function HomePage() {
                   </Link>
                 </>
               ) : (
-                <Link href="/live">
-                  <Button className="bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg px-8 py-6 text-lg font-medium">
-                    Create New Diagram
-                    <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                  </Button>
-                </Link>
+                <div className="flex flex-col gap-4 w-full max-w-md">
+                  <Link href="/live" className="w-full">
+                    <Button className="bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg px-8 py-6 text-lg font-medium w-full">
+                      Create New Diagram
+                      <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                    </Button>
+                  </Link>{" "}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full">
+                    <Link href="/dashboard" className="w-full">
+                      <Button
+                        variant="outline"
+                        className="px-4 py-3 border-white/20 text-white hover:bg-white/10 rounded-lg backdrop-blur-sm w-full"
+                      >
+                        Dashboard
+                      </Button>
+                    </Link>
+                    <Link href="/schema-analysis" className="w-full">
+                      <Button
+                        variant="outline"
+                        className="px-4 py-3 border-white/20 text-white hover:bg-white/10 rounded-lg backdrop-blur-sm w-full"
+                      >
+                        <Shield className="mr-2 h-4 w-4" />
+                        Analyze Schema
+                      </Button>
+                    </Link>
+                    <Link href="/live" className="w-full">
+                      <Button
+                        variant="outline"
+                        className="px-4 py-3 border-white/20 text-white hover:bg-white/10 rounded-lg backdrop-blur-sm w-full"
+                      >
+                        <Sparkles className="mr-2 h-4 w-4" />
+                        Try Demo
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
               )}
             </div>
           </div>
@@ -67,37 +106,44 @@ export default function HomePage() {
       {/* Features Section */}
       <section className="py-32 relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {" "}
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4 text-white">
-              Features that <span className="text-indigo-400">Pop</span>
+              <span className="text-indigo-400">PandaView</span> Features
             </h2>
             <p className="text-xl text-white/60">
               Everything you need, nothing you don't
             </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
+          </div>{" "}
+          <div className="grid md:grid-cols-4 gap-8">
             {[
               {
                 icon: <Code2 className="h-6 w-6" />,
-                title: "AI-Powered Diagrams",
+                title: "ERD Diagrams",
                 description:
-                  "Watch your code transform into beautiful ERD diagrams instantly",
+                  "Watch your schema transform into beautiful ERD diagrams using smart algorithms",
                 color: "bg-indigo-500",
               },
               {
                 icon: <Share2 className="h-6 w-6" />,
-                title: "Real-time Magic",
+                title: "Team Workspace",
                 description:
-                  "Collaborate with your team in real-time, see changes as they happen",
+                  "Create workspaces for your team to share and manage database diagrams together",
                 color: "bg-blue-500",
               },
               {
                 icon: <Database className="h-6 w-6" />,
-                title: "Version Control",
+                title: "Version Control (Coming Soon)",
                 description:
                   "Track schema changes over time, never lose a single modification",
                 color: "bg-violet-500",
+              },
+              {
+                icon: <Shield className="h-6 w-6" />,
+                title: "Schema Analysis",
+                description:
+                  "Analyze your database for security issues, normalization, and robustness",
+                color: "bg-emerald-500",
               },
             ].map((feature, index) => (
               <div

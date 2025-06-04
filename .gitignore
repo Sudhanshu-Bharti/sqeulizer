@@ -27,6 +27,21 @@ yarn-error.log*
 
 # local env files
 .env
+.env.local
+.env*.local
+.env.development.local
+.env.production.local
+
+# Environment configuration files (contains sensitive API keys)
+.env.development
+.env.production
+.env.test
+
+# Environment switching scripts and backups
+scripts/switch-env.js
+scripts/env-backup-*.env
+.env.backup*
+.env.temp*
 
 # vercel
 .vercel
@@ -34,8 +49,42 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-.vscode
+
+# IDE and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
 
 # Docker
 postgres_data/
-.env*.local
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+logs/
+*.log
+
+# Certificate files (already covered by *.pem but being explicit)
+*.pem
+*.key
+*.crt
+*.p12
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+temp/
+tmp/
+*.tmp

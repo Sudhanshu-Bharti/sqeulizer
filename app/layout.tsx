@@ -7,7 +7,7 @@ import { getUser } from "@/lib/db/queries";
 import { UserProvider } from "@/lib/auth";
 
 export const metadata: Metadata = {
-  title: "Mermaid DB",
+  title: "PandaView",
   description: "Visualize your database schema like never before",
 };
 

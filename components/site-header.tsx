@@ -8,6 +8,7 @@ import { Database } from "lucide-react";
 export function SiteHeader({ className }: { className?: string }) {
   const navItems = [
     { label: "Dashboard", href: "/dashboard" },
+    { label: "Schema Analysis", href: "/schema-analysis" },
     { label: "Pricing", href: "/pricing" },
     { label: "Documentation", href: "/docs" },
   ];
@@ -15,19 +16,21 @@ export function SiteHeader({ className }: { className?: string }) {
   return (
     <header className={cn("z-50", className)}>
       <nav className="container flex h-16 items-center justify-between p-6">
+        {" "}
         <Link href="/" className="flex items-center gap-2 group">
           <div className="relative ml-8">
-            <div className="absolute -inset-0.5 rounded-lg bg-gradient-to-r from-blue-600 to-emerald-600 opacity-20 blur transition-opacity group-hover:opacity-40" />
-            <div className="relative flex items-center justify-center h-8 w-8 bg-slate-900 rounded-lg border border-slate-800 ">
-              <Database className="h-4 w-4 text-blue-400" />
-            </div>
+            <div className="absolute -inset-0.5 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 opacity-20 blur transition-opacity group-hover:opacity-20" />
+              <img
+                src="/pandaview.png"
+                alt="PandaView Logo"
+                className="h-10 w-10"
+              />
           </div>
-          <span className="font-semibold text-lg ">
-            <span className="text-white">db</span>
-            <span className="text-blue-400">diagram</span>
+          <span className="font-semibold text-lg">
+            <span className="text-white">Panda</span>
+            <span className="text-indigo-400">View</span>
           </span>
         </Link>
-
         <div className="hidden md:flex items-center gap-1 ml-8">
           {navItems.map((item) => (
             <Link
@@ -45,7 +48,6 @@ export function SiteHeader({ className }: { className?: string }) {
             </div>
           </Link>
         </div>
-
         <div className="flex items-center gap-4">
           <UserMenu />
         </div>

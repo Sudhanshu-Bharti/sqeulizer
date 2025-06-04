@@ -118,13 +118,27 @@ export async function GET(request: NextRequest) {
         updateResult[0]
       );
     }
-
     console.log("Setting user session");
     await setSession(user[0]);
-    console.log("Redirecting to dashboard");
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+    console.log("Redirecting to live page");
+    return NextResponse.redirect(new URL("/live", request.url));
   } catch (error) {
     console.error("Error in checkout route:", error);
-    return NextResponse.redirect(new URL("/error", request.url));
+
+    // Add more detailed error logging
+    if (error instanceof Error) {
+      console.error("Error message:", error.message);
+      console.error("Error stack:", error.stack);
+    }
+
+    // Create error URL with error details for debugging
+    const errorUrl = new URL("/error", request.url);
+    errorUrl.searchParams.set(
+      "message",
+      error instanceof Error ? error.message : "Unknown error"
+    );
+    errorUrl.searchParams.set("type", "payment_processing");
+
+    return NextResponse.redirect(errorUrl);
   }
 }

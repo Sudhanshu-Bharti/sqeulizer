@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { RazorpayCheckout } from "@/components/razorpay-checkout";
+import { PaymentOptionSelector } from "@/components/payment-option-selector";
 import { cn } from "@/lib/utils";
 
 interface SubmitButtonProps
@@ -43,9 +44,20 @@ export function SubmitButton({
             e.preventDefault();
             const formData = new FormData(form);
             startTransition(async () => {
-              const data = await action(formData); // Call the action directly
-              if (data) {
-                setCheckoutData(data);
+              try {
+                const data = await action(formData); // Call the action directly
+                // If we get data back (non-subscription plans), show checkout
+                if (data && data.orderId) {
+                  setCheckoutData(data);
+                }
+                // If no data is returned, it means we were redirected to short_url
+              } catch (error: any) {
+                // Check if this is a redirect error (expected behavior)
+                if (error?.digest?.includes("NEXT_REDIRECT")) {
+                  // This is expected when redirect() is called, don't treat as error
+                  return;
+                }
+                console.error("Error during checkout:", error);
               }
             });
           }
@@ -56,14 +68,15 @@ export function SubmitButton({
       </Button>
 
       {checkoutData && (
-        <RazorpayCheckout
+        <PaymentOptionSelector
           orderId={checkoutData.orderId}
           amount={checkoutData.amount}
           currency={checkoutData.currency}
           razorpayKey={checkoutData.key}
           subscriptionId={checkoutData.subscriptionId}
+          shortUrl={checkoutData.short_url}
           onSuccess={() => {
-            router.push("/dashboard");
+            router.push("/live");
           }}
         />
       )}
