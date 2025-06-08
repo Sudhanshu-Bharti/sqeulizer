@@ -179,7 +179,8 @@ export class DatabaseSchemaAnalyzer {
     for (const field of passwordFields) {
       if (
         !field.name.toLowerCase().includes("hash") &&
-        !field.name.toLowerCase().includes("encrypted")
+        !field.name.toLowerCase().includes("encrypted") &&
+        !field.name.toLowerCase().includes("_digest")
       ) {
         issues.push({
           type: "critical",
@@ -189,7 +190,7 @@ export class DatabaseSchemaAnalyzer {
           title: "Potential Plain Text Password Storage",
           description: `Field "${field.name}" appears to store passwords but doesn't indicate hashing or encryption.`,
           recommendation:
-            "Use password_hash, password_encrypted, or similar naming. Store only hashed passwords using bcrypt, scrypt, or Argon2.",
+            "Use password_hash, password_encrypted, password_digest, or similar naming. Store only hashed passwords using bcrypt, scrypt, or Argon2.",
           impact: "high",
         });
       }
@@ -360,6 +361,18 @@ export class DatabaseSchemaAnalyzer {
     const issues: SecurityIssue[] = [];
 
     for (const field of table.fields) {
+      // Skip password fields from this check
+      const fieldNameLower = field.name.toLowerCase();
+      const isPasswordField =
+        fieldNameLower.includes("password") ||
+        fieldNameLower.includes("passwd") ||
+        fieldNameLower.includes("pwd") ||
+        fieldNameLower.includes("_digest");
+
+      if (isPasswordField) {
+        continue; // Skip to the next field
+      }
+
       // Check for very large text fields that might be vulnerable to injection
       if (
         field.type.toLowerCase() === "text" ||
@@ -1036,7 +1049,8 @@ export class DatabaseSchemaAnalyzer {
       // for optional relationships or fields with default values
       if (
         field.constraints.includes("fk") &&
-        !field.constraints.includes("pk")
+        !field.constraints.includes("pk") &&
+        !field.constraints.includes("composite-pk")
       ) {
         continue;
       }
@@ -1048,7 +1062,13 @@ export class DatabaseSchemaAnalyzer {
         fieldNameLower.includes(cf.pattern)
       );
 
-      if (matchedCriticalField && !field.constraints.includes("not null")) {
+      // Issue if it's a critical field, doesn't have NOT NULL, AND is not a primary key
+      if (
+        matchedCriticalField &&
+        !field.constraints.includes("not null") &&
+        !field.constraints.includes("pk") &&
+        !field.constraints.includes("composite-pk")
+      ) {
         issues.push({
           type: "warning",
           category: matchedCriticalField.category as any, // Type cast to satisfy TypeScript

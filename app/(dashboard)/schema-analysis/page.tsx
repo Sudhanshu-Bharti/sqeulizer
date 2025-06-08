@@ -265,9 +265,7 @@ CREATE TABLE order_items (
         <div className="max-w-7xl mx-auto px-6 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="p-3 rounded-xl bg-slate-800/50">
-                <Search className="h-6 w-6 text-slate-300" />
-              </div>
+
               <div>
                 <h1 className="text-3xl font-bold text-slate-100">
                   Schema Analysis
@@ -325,16 +323,16 @@ CREATE TABLE order_items (
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-4">
-                    <div className="flex items-center gap-2 text-slate-300">
-                      <CheckCircle className="h-5 w-5 text-emerald-400" />
+                    <div className="flex items-center gap-2 text-slate-200">
+                      <CheckCircle className="h-5 w-5 text-emerald-300" />
                       <span>Instant Analysis</span>
                     </div>
-                    <div className="flex items-center gap-2 text-slate-300">
-                      <CheckCircle className="h-5 w-5 text-emerald-400" />
+                    <div className="flex items-center gap-2 text-slate-200">
+                      <CheckCircle className="h-5 w-5 text-emerald-300" />
                       <span>Actionable Insights</span>
                     </div>
-                    <div className="flex items-center gap-2 text-slate-300">
-                      <CheckCircle className="h-5 w-5 text-emerald-400" />
+                    <div className="flex items-center gap-2 text-slate-200">
+                      <CheckCircle className="h-5 w-5 text-emerald-300" />
                       <span>Multi-Database Support</span>
                     </div>
                   </div>
@@ -348,14 +346,14 @@ CREATE TABLE order_items (
             {quickStats.map((stat, index) => (
               <Card
                 key={index}
-                className="bg-slate-900/50 border-slate-700/50 backdrop-blur-sm"
+                className="bg-slate-900/80 border-slate-700 backdrop-blur-sm"
               >
                 <CardContent className="p-6 text-center">
                   <div className="flex justify-center mb-3">{stat.icon}</div>
-                  <div className="text-2xl font-bold text-slate-100 mb-1">
+                  <div className="text-2xl font-bold text-white mb-1">
                     {stat.value}
                   </div>
-                  <div className="text-slate-400 text-sm">{stat.label}</div>
+                  <div className="text-slate-200 text-sm">{stat.label}</div>
                 </CardContent>
               </Card>
             ))}
@@ -451,7 +449,7 @@ CREATE TABLE order_items (
                           onClick={() =>
                             document.getElementById("sql-upload")?.click()
                           }
-                          className="border-slate-700 text-slate-300 hover:bg-slate-800"
+                          className="border-slate-700 bg-emerald-600 text-white hover:bg-emerald-700"
                         >
                           <Upload className="h-4 w-4 mr-2" />
                           Upload
@@ -477,7 +475,7 @@ CREATE TABLE order_items (
                       <Button
                         onClick={analyzeSchema}
                         disabled={!schema.trim() || isAnalyzing}
-                        className="bg-indigo-500 hover:bg-indigo-600 text-white flex-1"
+                        className="bg-emerald-600 hover:bg-emerald-700 text-white flex-1"
                       >
                         {isAnalyzing ? (
                           <>
@@ -496,7 +494,6 @@ CREATE TABLE order_items (
                         onClick={() => setSchema(exampleSchema)}
                         className="border-slate-700 text-slate-300 hover:bg-slate-800"
                       >
-                        <Database className="h-4 w-4 mr-2" />
                         Load Example
                       </Button>
                     </div>

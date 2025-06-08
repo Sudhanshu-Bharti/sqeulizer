@@ -70,6 +70,7 @@ export function SchemaAnalysisDisplay({
   className = "",
   onSettingsChange,
 }: SchemaAnalysisDisplayProps) {
+  console.log("Analysis prop received by SchemaAnalysisDisplay:", analysis);
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
   const [settings, setSettings] = useState<SchemaAnalysisSettings>({
     showSecurityIssues: true,
@@ -325,7 +326,6 @@ export function SchemaAnalysisDisplay({
 
   return (
     <div className={`min-h-screen bg-slate-950 ${className}`}>
-      {/* Header */}
       <div className="border-b border-slate-800/50 bg-slate-900/30 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
@@ -349,7 +349,7 @@ export function SchemaAnalysisDisplay({
                   <Button
                     variant="outline"
                     size="sm"
-                    className="border-slate-700 text-slate-300 hover:bg-slate-800 flex items-center gap-2"
+                    className="border-slate-700 text-white bg-emerald-600 hover:bg-emerald-700 flex items-center gap-2"
                   >
                     <Download className="h-4 w-4" />
                     Export Analysis

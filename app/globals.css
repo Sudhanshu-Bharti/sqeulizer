@@ -1,4 +1,5 @@
-@import 'tailwindcss';
+@import "tailwindcss";
+@import "./animations.css";
 /*
   ---break---
 */
@@ -77,14 +78,18 @@
 
 @layer utilities {
   body {
-    font-family: 'Manrope', Arial, Helvetica, sans-serif;
+    font-family: "Manrope", Arial, Helvetica, sans-serif;
   }
-  
+
   /* Orange schema styling classes */
   .orange-gradient {
-    background: linear-gradient(135deg, hsl(20, 78%, 45%) 0%, hsl(16, 77%, 40%) 100%);
+    background: linear-gradient(
+      135deg,
+      hsl(20, 78%, 45%) 0%,
+      hsl(16, 77%, 40%) 100%
+    );
   }
-  
+
   .card-glass {
     backdrop-filter: blur(8px);
     background: rgba(255, 255, 255, 0.7);
@@ -92,22 +97,22 @@
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
     transition: all 0.3s ease;
   }
-  
+
   .card-glass:hover {
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
     transform: translateY(-2px);
   }
-  
+
   .dark .card-glass {
     background: rgba(20, 20, 20, 0.7);
     border-color: rgba(50, 50, 50, 0.2);
   }
-  
+
   .pulse-button {
     animation: pulse 2s infinite;
     box-shadow: 0 0 0 0 rgba(217, 76, 26, 0.7);
   }
-  
+
   @keyframes pulse {
     0% {
       box-shadow: 0 0 0 0 rgba(217, 76, 26, 0.7);
@@ -119,33 +124,33 @@
       box-shadow: 0 0 0 0 rgba(217, 76, 26, 0);
     }
   }
-  
+
   .schema-input {
-    font-family: 'Fira Code', monospace;
+    font-family: "Fira Code", monospace;
     font-size: 0.9rem;
     transition: all 0.2s ease;
     background: rgba(250, 250, 250, 0.8);
     border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 0.75rem;
   }
-  
+
   .dark .schema-input {
     background: rgba(30, 30, 30, 0.7);
     border-color: rgba(80, 80, 80, 0.3);
     color: rgba(255, 255, 255, 0.9);
   }
-  
+
   .loading-skeleton {
     background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
     background-size: 200% 100%;
     animation: loading 1.5s infinite;
   }
-  
+
   .dark .loading-skeleton {
     background: linear-gradient(90deg, #303030 25%, #252525 50%, #303030 75%);
     background-size: 200% 100%;
   }
-  
+
   @keyframes loading {
     0% {
       background-position: 200% 0;
@@ -154,52 +159,52 @@
       background-position: -200% 0;
     }
   }
-  
+
   .schema-editor {
     position: relative;
-    font-family: 'Fira Code', 'Courier New', monospace;
+    font-family: "Fira Code", "Courier New", monospace;
     line-height: 1.5;
   }
-  
+
   .schema-display {
-    font-family: 'Fira Code', 'Courier New', monospace;
+    font-family: "Fira Code", "Courier New", monospace;
     line-height: 1.5;
     tab-size: 2;
   }
-  
+
   /* Custom scrollbar for code areas */
-  .schema-input::-webkit-scrollbar, 
+  .schema-input::-webkit-scrollbar,
   .schema-display::-webkit-scrollbar {
     width: 8px;
     height: 8px;
   }
-  
+
   .schema-input::-webkit-scrollbar-track,
   .schema-display::-webkit-scrollbar-track {
     background: transparent;
   }
-  
+
   .schema-input::-webkit-scrollbar-thumb,
   .schema-display::-webkit-scrollbar-thumb {
     background: rgba(0, 0, 0, 0.1);
     border-radius: 8px;
   }
-  
+
   .dark .schema-input::-webkit-scrollbar-thumb,
   .dark .schema-display::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.1);
   }
-  
+
   .schema-input::-webkit-scrollbar-thumb:hover,
   .schema-display::-webkit-scrollbar-thumb:hover {
     background: rgba(0, 0, 0, 0.2);
   }
-  
+
   .dark .schema-input::-webkit-scrollbar-thumb:hover,
   .dark .schema-display::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.2);
   }
-  
+
   /* Animation utilities */
   @keyframes blob {
     0% {
@@ -215,15 +220,15 @@
       transform: translate(0, 0) scale(1);
     }
   }
-  
+
   .animate-blob {
     animation: blob 15s infinite ease-in-out;
   }
-  
+
   .animation-delay-2000 {
     animation-delay: 2s;
   }
-  
+
   .animation-delay-4000 {
     animation-delay: 4s;
   }
@@ -232,38 +237,38 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 0 0% 0%;
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 0 0% 0%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 16 85% 35%;
+    --popover-foreground: 0 0% 0%;
+    --primary: 144 30% 30%;
     --primary-foreground: 0 0% 98%;
-    --secondary: 20 100% 95%;
-    --secondary-foreground: 16 85% 35%;
-    --muted: 20 20% 96%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 16 85% 95%;
-    --accent-foreground: 16 85% 35%;
+    --secondary: 33 40% 80%;
+    --secondary-foreground: 144 30% 30%;
+    --muted: 144 10% 96%;
+    --muted-foreground: 144 10% 40%;
+    --accent: 33 40% 90%;
+    --accent-foreground: 144 30% 30%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
-    --border: 20 10% 91.4%;
-    --input: 20 10% 91.4%;
-    --ring: 16 85% 35%;
-    --chart-1: 16 85% 45%;
-    --chart-2: 20 70% 55%;
-    --chart-3: 30 80% 45%;
-    --chart-4: 10 75% 60%;
-    --chart-5: 25 85% 50%;
-    --radius: 1rem;
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 16 85% 35%;
+    --border: 144 10% 91.4%;
+    --input: 144 10% 91.4%;
+    --ring: 144 30% 30%;
+    --chart-1: 144 40% 45%;
+    --chart-2: 33 50% 70%;
+    --chart-3: 0 0% 30%;
+    --chart-4: 0 0% 90%;
+    --chart-5: 144 30% 60%;
+    --radius: 1.5rem;
+    --sidebar-background: 144 20% 98%;
+    --sidebar-foreground: 144 30% 20%;
+    --sidebar-primary: 144 30% 30%;
     --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 20 10% 95.9%;
-    --sidebar-accent-foreground: 16 85% 35%;
-    --sidebar-border: 20 13% 91%;
-    --sidebar-ring: 16 85% 35%;
+    --sidebar-accent: 33 30% 90%;
+    --sidebar-accent-foreground: 144 30% 30%;
+    --sidebar-border: 144 20% 91%;
+    --sidebar-ring: 144 30% 30%;
   }
 
   .dark {

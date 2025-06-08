@@ -15,7 +15,7 @@ export function BorderButton({ children }: BorderButtonProps) {
       <Button variant="outline" className="rounded-full text-lg px-8 py-4">
         {" "}
         <BorderTrail
-          className="bg-linear-to-l from-orange-200 via-orange-500 to-red-200 dark:from-blue-400 dark:via-blue-500 dark:to-blue-700"
+          className="bg-linear-to-l from-emerald-300 via-emerald-500 to-emerald-700 dark:from-emerald-400 dark:via-emerald-500 dark:to-emerald-600"
           size={50}
         />
         {children}

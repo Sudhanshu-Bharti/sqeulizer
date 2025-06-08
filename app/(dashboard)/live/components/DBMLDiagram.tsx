@@ -560,7 +560,7 @@ export default function DBMLDiagram({ nodes, edges }: DBMLDiagramProps) {
               panOnScroll
               preventScrolling={false}
             >
-              <Background gap={20} size={1} />
+              <Background className="bg-white/20" gap={20} size={1} />
               <Controls position="bottom-right" />
               <Panel
                 position="top-left"

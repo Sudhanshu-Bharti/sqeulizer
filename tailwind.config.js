@@ -1,7 +1,11 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ["class"],
-  content: ["app/**/*.{ts,tsx}", "components/**/*.{ts,tsx}"],
+  content: [
+    './pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './components/**/*.{js,ts,jsx,tsx,mdx}',
+    './app/**/*.{js,ts,jsx,tsx,mdx}',
+  ],
   theme: {
     container: {
       center: true,
@@ -69,8 +73,8 @@ module.exports = {
           to: { height: 0 },
         },
         float: {
-          "0%, 100%": { transform: "translateY(0)" },
-          "50%": { transform: "translateY(-10px)" },
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-20px)' },
         },
         orbit: {
           "0%": { transform: "rotate(0deg) translateX(100px)" },
@@ -84,6 +88,20 @@ module.exports = {
           "0%": { backgroundPosition: "-200% 0" },
           "100%": { backgroundPosition: "200% 0" },
         },
+        'border-pulse': {
+          '0%, 100%': { opacity: 1 },
+          '50%': { opacity: 0.5 },
+        },
+        'gradient-x': {
+          '0%, 100%': {
+            'background-size': '200% 200%',
+            'background-position': 'left center',
+          },
+          '50%': {
+            'background-size': '200% 200%',
+            'background-position': 'right center',
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -92,6 +110,11 @@ module.exports = {
         orbit: "orbit 12s linear infinite",
         "pulse-slow": "pulse-slow 4s ease-in-out infinite",
         shimmer: "shimmer 8s linear infinite",
+        'float-slow': 'float 8s ease-in-out infinite',
+        'float-slower': 'float 10s ease-in-out infinite',
+        'pulse-slowest': 'pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'border-pulse': 'border-pulse 2s ease-in-out infinite',
+        'gradient-x': 'gradient-x 15s ease infinite',
       },
     },
   },

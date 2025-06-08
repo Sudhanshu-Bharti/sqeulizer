@@ -1,0 +1,9 @@
+{
+  "name": "PandaView - Database Schema Visualization & Security",
+  "short_name": "PandaView",
+  "description": "Transform your database workflow with PandaView. Generate ERD diagrams, detect vulnerabilities, analyze performance, and optimize your database schema.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#10b981"
+} 

@@ -65,7 +65,7 @@ export function UserMenu() {
           <Button
             variant="outline"
             size="sm"
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 bg-emerald-600 text-white hover:bg-emerald-600/80"
           >
             <LogIn className="h-4 w-4" />
             <span className="hidden sm:inline">Sign In</span>

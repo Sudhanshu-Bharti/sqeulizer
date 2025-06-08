@@ -107,7 +107,7 @@ export default function DashboardLayout({
             </div>
             <div className="flex items-center">
               <Link href="/live">
-                <Button className="bg-indigo-500 hover:bg-indigo-600 text-white px-2 sm:px-4">
+                <Button className="bg-emerald-600 hover:bg-emerald-700 text-white px-2 sm:px-4">
                   <Plus className="h-4 w-4 sm:mr-2" />
                   <span className="hidden sm:inline">New Diagram</span>
                 </Button>
@@ -151,7 +151,7 @@ export default function DashboardLayout({
                       <div
                         className={`flex items-center gap-3 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-colors ${
                           pathname === item.href
-                            ? "bg-indigo-500/10 text-indigo-400 border border-indigo-500/20"
+                            ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
                             : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"
                         }`}
                       >
@@ -160,7 +160,7 @@ export default function DashboardLayout({
                           {item.label}
                         </span>
                         {item.badge && (
-                          <Badge className="ml-auto bg-red-500/10 text-red-400 border-red-500/20 text-xs">
+                          <Badge className="ml-auto bg-emerald-500/10 text-emerald-400 border-emerald-500/20 text-xs">
                             {item.badge}
                           </Badge>
                         )}
@@ -170,44 +170,37 @@ export default function DashboardLayout({
                 </div>
               </div>
               {/* Quick Actions */}
-              <div className="mt-auto">
-                <div className="p-4 sm:p-5 rounded-xl bg-gradient-to-br from-slate-800/50 to-slate-900/50 border border-slate-600/30 shadow-lg">
-                  <div className="flex items-center mb-3 sm:mb-4">
-                    <div className="h-1.5 w-1.5 rounded-full bg-indigo-500 mr-2"></div>
-                    <h3 className="text-xs sm:text-sm font-semibold text-indigo-300 uppercase tracking-wider">
-                      Quick Actions
-                    </h3>
-                  </div>
-                  <div className="space-y-2 sm:space-y-3">
-                    <Link href="/live" className="block group">
-                      <div className="relative overflow-hidden rounded-lg transition-all duration-300 group-hover:shadow-md">
-                        <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/20 to-purple-600/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="w-full justify-start border-slate-600/50 text-slate-200 hover:text-white hover:border-indigo-400/50 bg-slate-800/50 group-hover:bg-slate-800/80 text-xs sm:text-sm py-1.5 px-2 sm:px-3"
-                        >
-                          <PlusSquare className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 sm:mr-2 text-indigo-400" />
-                          Create Diagram
-                        </Button>
-                      </div>
-                    </Link>
-                    <Link href="/schema-analysis" className="block group">
-                      <div className="relative overflow-hidden rounded-lg transition-all duration-300 group-hover:shadow-md">
-                        <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-blue-600/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="w-full justify-start border-slate-600/50 text-slate-200 hover:text-white hover:border-indigo-400/50 bg-slate-800/50 group-hover:bg-slate-800/80 text-xs sm:text-sm py-1.5 px-2 sm:px-3"
-                        >
-                          <Shield className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 sm:mr-2 text-purple-400" />
-                          Analyze Schema
-                        </Button>
-                      </div>
-                    </Link>
+              <div className="mt-auto ">
+                  <div className="p-4 sm:p-6 rounded-xl">
+
+                    <div className="space-y-3 sm:space-y-4">
+                      <Link href="/live" className="block group">
+                        <div className="relative overflow-hidden rounded-lg transition-all duration-300 group-hover:shadow-lg group-hover:shadow-emerald-500/10">
+                          <div className=" text-center absolute inset-0 bg-gradient-to-r from-emerald-600/15 to-teal-600/15 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="w-full justify-start border-slate-600/40 text-slate-200 hover:text-white hover:border-emerald-400/60 bg-slate-800/40 group-hover:bg-slate-800/70 text-sm py-3 px-4 font-medium transition-all duration-300"
+                          >
+                            Create Diagram
+                          </Button>
+                        </div>
+                      </Link>
+                      <Link href="/schema-analysis" className="block group">
+                        <div className="relative overflow-hidden rounded-lg transition-all duration-300 group-hover:shadow-lg group-hover:shadow-emerald-500/10">
+                          <div className="absolute inset-0 bg-gradient-to-r from-emerald-600/15 to-cyan-600/15 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="w-full justify-start border-slate-600/40 text-slate-200 hover:text-white hover:border-emerald-400/60 bg-slate-800/40 group-hover:bg-slate-800/70 text-sm py-3 px-4 font-medium transition-all duration-300"
+                          >
+                            Analyze Schema
+                          </Button>
+                        </div>
+                      </Link>
+                    </div>
                   </div>
                 </div>
-              </div>
             </nav>
           </div>
         </aside>{" "}

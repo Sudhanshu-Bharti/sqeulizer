@@ -7,8 +7,44 @@ import { getUser } from "@/lib/db/queries";
 import { UserProvider } from "@/lib/auth";
 
 export const metadata: Metadata = {
-  title: "PandaView",
-  description: "Visualize your database schema like never before",
+  title: {
+    default: "PandaView - Database Schema Visualization & Security",
+    template: "%s | PandaView"
+  },
+  description: "Transform your database workflow with PandaView. Generate ERD diagrams, detect vulnerabilities, analyze performance, and optimize your database schema with our powerful visualization tools.",
+  keywords: ["database visualization", "ERD diagrams", "database security", "schema analysis", "database optimization", "SQL visualization"],
+  authors: [{ name: "PandaView Team" }],
+  creator: "PandaView",
+  publisher: "PandaView",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  metadataBase: new URL("https://pandaview.site"),
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://pandaview.site",
+    title: "PandaView - Database Schema Visualization & Security",
+    description: "Transform your database workflow with PandaView. Generate ERD diagrams, detect vulnerabilities, analyze performance, and optimize your database schema.",
+    siteName: "PandaView",
+  },
+
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
 const inter = Inter({ subsets: ["latin"] });

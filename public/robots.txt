@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://pandaview.site/sitemap.xml
+
+Disallow: /api/
+Disallow: /dashboard/
+Disallow: /_next/
+Disallow: /static/
+
+Crawl-delay: 10 

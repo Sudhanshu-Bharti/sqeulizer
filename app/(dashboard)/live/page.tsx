@@ -218,7 +218,7 @@ export default function DBSchemaVisualizer() {
               variant="ghost"
               size="sm"
               onClick={() => document.getElementById("sql-upload")?.click()}
-              className="hover:bg-orange-900/50 dark:hover:text-orange-400 transition-colors"
+              className="bg-emerald-900/50 ml-2 text-emerald-400 transition-colors"
             >
               <Import className="mr-2" size={16} /> Import SQL
             </Button>
@@ -236,7 +236,7 @@ export default function DBSchemaVisualizer() {
                 variant="outline"
                 size="sm"
                 onClick={() => setShowQuotaDialog(true)}
-                className="flex items-center gap-2  hover:border-orange-600 border-gray-700"
+                className="flex items-center gap-2  hover:border-emerald-600 border-gray-700"
               >
                 <Gauge className="h-4 w-4" />
                 <span className="font-medium">
@@ -250,7 +250,7 @@ export default function DBSchemaVisualizer() {
               value={dialect}
               onValueChange={(v: "mysql" | "postgres" | "mssql") => setDialect(v)}
             >
-              <SelectTrigger className="w-[140px] hover:border-orange-600 border-gray-700">
+              <SelectTrigger className="w-[140px] hover:border-emerald-600 border-gray-700">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -262,13 +262,13 @@ export default function DBSchemaVisualizer() {
             <Button
               variant="outline"
               size="sm"
-              className="hover:border-orange-600 border-gray-700"
+              className="hover:border-emerald-600 border-gray-700"
             >
               Save
             </Button>
             <Button
               size="sm"
-              className=" bg-orange-700 hover:bg-orange-800"
+              className=" bg-emerald-600 hover:bg-emerald-700 text-white"
               onClick={() => setIsShareDialogOpen(true)}
             >
               Share
@@ -292,18 +292,17 @@ export default function DBSchemaVisualizer() {
                 placeholder="Enter your SQL schema here..."
                 value={schema}
                 onValueChange={setSchema}
-                className="min-h-[300px] resize-none font-mono text-sm  border-gray-700 hover:border-orange-600 focus:border-orange-500 focus:ring-orange-500/20 bg-gray-800/50 text-gray-100"
+                className="min-h-[300px] resize-none font-mono text-sm  border-gray-700 hover:border-emerald-600 focus:border-emerald-500 focus:ring-orange-500/20 bg-gray-800/50 text-gray-100"
               />
             </div>
             <Button
-              className="w-full  bg-orange-700 hover:bg-orange-800"
+              className="w-full  bg-emerald-600 hover:bg-emerald-700 text-white"
               onClick={generateDiagram}
               disabled={!schema.trim()}
               isLoading={isLoading}
               variant="default"
             >
               {isLoading ? "Generating..." : "Generate Diagram"}
-              <Database className="ml-2 h-4 w-4" />
             </Button>
           </div>
 

@@ -7,6 +7,7 @@ import { Database } from "lucide-react";
 
 export function SiteHeader({ className }: { className?: string }) {
   const navItems = [
+    { label: "Home", href: "/" },
     { label: "Dashboard", href: "/dashboard" },
     { label: "Schema Analysis", href: "/schema-analysis" },
     { label: "Pricing", href: "/pricing" },
@@ -19,7 +20,7 @@ export function SiteHeader({ className }: { className?: string }) {
         {" "}
         <Link href="/" className="flex items-center gap-2 group">
           <div className="relative ml-8">
-            <div className="absolute -inset-0.5 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 opacity-20 blur transition-opacity group-hover:opacity-20" />
+            <div className="absolute -inset-0.5 rounded-lg  opacity-20 blur transition-opacity group-hover:opacity-20" />
               <img
                 src="/pandaview.png"
                 alt="PandaView Logo"
@@ -28,7 +29,7 @@ export function SiteHeader({ className }: { className?: string }) {
           </div>
           <span className="font-semibold text-lg">
             <span className="text-white">Panda</span>
-            <span className="text-indigo-400">View</span>
+            <span className="text-emerald-400">View</span>
           </span>
         </Link>
         <div className="hidden md:flex items-center gap-1 ml-8">
@@ -42,7 +43,7 @@ export function SiteHeader({ className }: { className?: string }) {
             </Link>
           ))}
           <Link href="/live" className="ml-2 relative group">
-            <div className="absolute -inset-0.5 rounded-lg bg-gradient-to-r from-blue-600 to-emerald-600 opacity-20 blur group-hover:opacity-40 transition-opacity" />
+            <div className="absolute -inset-0.5 rounded-lg bg-gradient-to-r from-sky-600 to-emerald-600 opacity-20 blur group-hover:opacity-40 transition-opacity" />
             <div className="relative px-3 py-2 bg-slate-900 rounded-md border border-slate-800 text-sm font-medium text-white">
               Try Live Demo
             </div>

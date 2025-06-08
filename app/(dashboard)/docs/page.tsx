@@ -4,6 +4,9 @@ export default function DocsComingSoon() {
   return (
     <div className="container mx-auto py-12 min-h-screen flex items-center justify-center">
       <div className="text-center space-y-8">
+        <div className="flex justify-center">
+          <img src="/panda-peeking.png" className="-mb-22 h-30 w-20" />
+        </div>
         <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
           Documentation
         </h1>
