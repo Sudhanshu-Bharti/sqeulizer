@@ -12,9 +12,9 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith(route)
   );
 
-  // Skip middleware for admin routes - they handle their own authentication
-  if (pathname.startsWith("/admin")) {
-    return NextResponse.next();
+  // Force HTTPS redirect
+  if (process.env.NODE_ENV === "production" && request.headers.get("x-forwarded-proto") === "http") {
+    return NextResponse.redirect(`https://${request.headers.get("host")}${request.nextUrl.pathname}`, 301);
   }
 
   if (isProtectedRoute && !sessionCookie) {
