@@ -330,9 +330,7 @@ export function SchemaAnalysisDisplay({
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="p-2 rounded-lg bg-slate-800/50">
-                <Database className="h-6 w-6 text-slate-300" />
-              </div>
+
               <div>
                 <h1 className="text-2xl font-bold text-slate-100">
                   Schema Analysis
@@ -352,7 +350,7 @@ export function SchemaAnalysisDisplay({
                     className="border-slate-700 text-white bg-emerald-600 hover:bg-emerald-700 flex items-center gap-2"
                   >
                     <Download className="h-4 w-4" />
-                    Export Analysis
+                    Export
                     <ChevronDown className="h-3.5 w-3.5 opacity-70" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -619,27 +617,30 @@ export function SchemaAnalysisDisplay({
 
         {/* Detailed Analysis Tabs */}
         <Tabs defaultValue="security" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 bg-slate-900/50 border border-slate-700/50">
+          <TabsList className="grid w-full grid-cols-3 bg-slate-900/50 border border-slate-700/50 p-1 rounded-lg overflow-hidden">
             <TabsTrigger
               value="security"
-              className="data-[state=active]:bg-slate-800 data-[state=active]:text-slate-100"
+              className="data-[state=active]:bg-slate-800 data-[state=active]:text-slate-100 flex items-center justify-center outline-none ring-0 data-[state=active]:shadow-none rounded-md focus-visible:outline-none focus-visible:ring-0 flex-1"
+              title="Security Analysis"
             >
-              <Lock className="h-4 w-4 mr-2" />
-              Security
+              <Lock className="h-4 w-4 sm:mr-2" />
+              <span className="hidden sm:inline">Security</span>
             </TabsTrigger>
             <TabsTrigger
               value="normalization"
-              className="data-[state=active]:bg-slate-800 data-[state=active]:text-slate-100"
+              className="data-[state=active]:bg-slate-800 data-[state=active]:text-slate-100 flex items-center justify-center outline-none ring-0 data-[state=active]:shadow-none rounded-md focus-visible:outline-none focus-visible:ring-0 flex-1"
+              title="Normalization Analysis"
             >
-              <Layers className="h-4 w-4 mr-2" />
-              Normalization
+              <Layers className="h-4 w-4 sm:mr-2" />
+              <span className="hidden sm:inline">Normalization</span>
             </TabsTrigger>
             <TabsTrigger
               value="robustness"
-              className="data-[state=active]:bg-slate-800 data-[state=active]:text-slate-100"
+              className="data-[state=active]:bg-slate-800 data-[state=active]:text-slate-100 flex items-center justify-center outline-none ring-0 data-[state=active]:shadow-none rounded-md focus-visible:outline-none focus-visible:ring-0 flex-1"
+              title="Robustness Analysis"
             >
-              <Activity className="h-4 w-4 mr-2" />
-              Robustness
+              <Activity className="h-4 w-4 sm:mr-2" />
+              <span className="hidden sm:inline">Robustness</span>
             </TabsTrigger>
           </TabsList>
 

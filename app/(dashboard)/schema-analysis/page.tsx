@@ -262,15 +262,14 @@ CREATE TABLE order_items (
     <div className="min-h-screen bg-slate-950">
       {/* Header */}
       <div className="border-b border-slate-800/50 bg-slate-900/30 backdrop-blur-sm">
-        <div className="max-w-7xl mx-auto px-6 py-6">
-          <div className="flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center gap-4">
-
               <div>
-                <h1 className="text-3xl font-bold text-slate-100">
+                <h1 className="text-2xl sm:text-3xl font-bold text-slate-100">
                   Schema Analysis
                 </h1>
-                <p className="text-slate-400">
+                <p className="text-sm sm:text-base text-slate-400">
                   Powerful database optimization and security analysis
                 </p>
               </div>
@@ -289,51 +288,45 @@ CREATE TABLE order_items (
                     : "Unlimited"}
                 </Button>
               )}
-              {/* <Button variant="outline" size="sm" className="border-slate-700 text-slate-300 hover:bg-slate-800">
-                <Settings className="h-4 w-4" />
-              </Button> */}
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
         {/* Hero Bento Grid */}
-        <div className="grid grid-cols-12 gap-6 mb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 mb-8 sm:mb-12">
           {/* Main CTA Card */}
-          <div className="col-span-12 lg:col-span-8">
+          <div className="col-span-1 lg:col-span-8">
             <Card className="h-full bg-gradient-to-br from-indigo-500/10 to-purple-600/5 border-slate-700/50 backdrop-blur-sm">
-              <CardContent className="p-8">
-                <div className="space-y-6">
+              <CardContent className="p-4 sm:p-8">
+                <div className="space-y-4 sm:space-y-6">
                   <div>
-                    {/* <Badge className="bg-indigo-500/10 text-indigo-400 border-indigo-500/20 mb-4">
-                      <Sparkles className="h-4 w-4 mr-2" />
-                      AI-Powered Analysis
-                    </Badge> */}
-                    <h2 className="text-4xl font-bold text-slate-100 mb-4">
+                    <h2 className="text-2xl sm:text-4xl font-bold text-slate-100 mb-2 sm:mb-4">
                       Optimize Your Database{" "}
                       <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
                         Architecture
                       </span>
                     </h2>
-                    <p className="text-xl text-slate-300 mb-6 max-w-2xl">
+                    <p className="text-base sm:text-xl text-slate-300 mb-4 sm:mb-6 max-w-2xl">
                       Get comprehensive insights into security vulnerabilities,
                       normalization issues, and performance bottlenecks in
                       seconds.
                     </p>
                   </div>
-                  <div className="flex flex-wrap gap-4">
+                  
+                  <div className="space-y-2">
                     <div className="flex items-center gap-2 text-slate-200">
-                      <CheckCircle className="h-5 w-5 text-emerald-300" />
-                      <span>Instant Analysis</span>
+                      <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-300" />
+                      <span className="text-sm sm:text-base">Instant Analysis</span>
                     </div>
                     <div className="flex items-center gap-2 text-slate-200">
-                      <CheckCircle className="h-5 w-5 text-emerald-300" />
-                      <span>Actionable Insights</span>
+                      <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-300" />
+                      <span className="text-sm sm:text-base">Actionable Insights</span>
                     </div>
                     <div className="flex items-center gap-2 text-slate-200">
-                      <CheckCircle className="h-5 w-5 text-emerald-300" />
-                      <span>Multi-Database Support</span>
+                      <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-300" />
+                      <span className="text-sm sm:text-base">Multi-Database Support</span>
                     </div>
                   </div>
                 </div>
@@ -342,18 +335,18 @@ CREATE TABLE order_items (
           </div>
 
           {/* Quick Stats */}
-          <div className="col-span-12 lg:col-span-4 grid grid-cols-2 gap-4">
+          <div className="col-span-1 lg:col-span-4 grid grid-cols-2 gap-3 sm:gap-4">
             {quickStats.map((stat, index) => (
               <Card
                 key={index}
                 className="bg-slate-900/80 border-slate-700 backdrop-blur-sm"
               >
-                <CardContent className="p-6 text-center">
-                  <div className="flex justify-center mb-3">{stat.icon}</div>
-                  <div className="text-2xl font-bold text-white mb-1">
+                <CardContent className="p-3 sm:p-6 text-center">
+                  <div className="flex justify-center mb-2 sm:mb-3">{stat.icon}</div>
+                  <div className="text-lg sm:text-2xl font-bold text-white mb-1">
                     {stat.value}
                   </div>
-                  <div className="text-slate-200 text-sm">{stat.label}</div>
+                  <div className="text-xs sm:text-sm text-slate-200">{stat.label}</div>
                 </CardContent>
               </Card>
             ))}
@@ -361,7 +354,7 @@ CREATE TABLE order_items (
         </div>
 
         {/* Analysis Features */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-12">
           {analysisFeatures.map((feature, index) => (
             <Card
               key={index}
@@ -369,23 +362,23 @@ CREATE TABLE order_items (
             >
               <CardHeader className="pb-4">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="p-3 rounded-xl bg-slate-800/50">
+                  <div className="p-2 sm:p-3 rounded-xl bg-slate-800/50">
                     <div className={feature.iconColor}>{feature.icon}</div>
                   </div>
                   <div>
-                    <CardTitle className="text-slate-100 text-lg">
+                    <CardTitle className="text-slate-100 text-base sm:text-lg">
                       {feature.title}
                     </CardTitle>
                   </div>
                 </div>
-                <p className="text-slate-300 text-sm">{feature.description}</p>
+                <p className="text-xs sm:text-sm text-slate-300">{feature.description}</p>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
                   {feature.items.map((item, itemIndex) => (
                     <div
                       key={itemIndex}
-                      className="flex items-center gap-2 text-slate-400 text-sm"
+                      className="flex items-center gap-2 text-slate-400 text-xs sm:text-sm"
                     >
                       <ChevronRight className="h-3 w-3" />
                       <span>{item}</span>
@@ -398,219 +391,217 @@ CREATE TABLE order_items (
         </div>
 
         {/* Analysis Interface */}
-        <Tabs defaultValue="input" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 bg-slate-900/50 border border-slate-700/50">
-            <TabsTrigger
-              value="input"
-              className="data-[state=active]:bg-slate-800 data-[state=active]:text-slate-100"
-            >
-              <Code className="h-4 w-4 mr-2" />
-              Schema Input
-            </TabsTrigger>
-            <TabsTrigger
-              value="demo"
-              className="data-[state=active]:bg-slate-800 data-[state=active]:text-slate-100"
-            >
-              <Play className="h-4 w-4 mr-2" />
-              Try Demo
-            </TabsTrigger>
-          </TabsList>
+        <div className="space-y-4 sm:space-y-6">
+          <Tabs defaultValue="input">
+            <TabsList className="grid w-full grid-cols-2 bg-slate-900/50 border border-slate-700/50">
+              <TabsTrigger
+                value="input"
+                className="data-[state=active]:bg-slate-800 data-[state=active]:text-slate-100 text-sm sm:text-base"
+              >
+                <Code className="h-4 w-4 mr-2" />
+                Schema Input
+              </TabsTrigger>
+              <TabsTrigger
+                value="demo"
+                className="data-[state=active]:bg-slate-800 data-[state=active]:text-slate-100 text-sm sm:text-base"
+              >
+                <Play className="h-4 w-4 mr-2" />
+                Try Demo
+              </TabsTrigger>
+            </TabsList>
 
-          <TabsContent value="input" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Input Section */}
-              <div className="lg:col-span-2">
-                <Card className="bg-slate-900/50 border-slate-700/50 backdrop-blur-sm">
-                  <CardHeader>
-                    <div className="flex items-center justify-between">
-                      <CardTitle className="flex items-center gap-2 text-slate-100">
-                        <FileText className="h-5 w-5" />
-                        SQL Schema Input
-                      </CardTitle>
-                      <div className="flex items-center gap-3">
-                        <Select
-                          value={dialect}
-                          onValueChange={(v: "mysql" | "postgres" | "mssql") =>
-                            setDialect(v)
-                          }
+            <TabsContent value="input" className="space-y-4 sm:space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+                {/* Input Section */}
+                <div className="lg:col-span-2">
+                  <Card className="bg-slate-900/50 border-slate-700/50 backdrop-blur-sm">
+                    <CardHeader>
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                        <CardTitle className="flex items-center gap-2 text-slate-100">
+                          <FileText className="h-5 w-5" />
+                          SQL Schema Input
+                        </CardTitle>
+                        <div className="flex items-center gap-3">
+                          <Select
+                            value={dialect}
+                            onValueChange={(v: "mysql" | "postgres" | "mssql") =>
+                              setDialect(v)
+                            }
+                          >
+                            <SelectTrigger className="w-[140px] border-slate-700 bg-slate-800">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="postgres">PostgreSQL</SelectItem>
+                              <SelectItem value="mysql">MySQL</SelectItem>
+                              <SelectItem value="mssql">MS SQL Server</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() =>
+                              document.getElementById("sql-upload")?.click()
+                            }
+                            className="border-slate-700 bg-emerald-600 text-white hover:bg-emerald-700"
+                          >
+                            <Upload className="h-4 w-4 mr-2" />
+                            Upload
+                          </Button>
+                          <input
+                            id="sql-upload"
+                            type="file"
+                            accept=".sql"
+                            onChange={handleFileUpload}
+                            className="hidden"
+                          />
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <SyntaxTextarea
+                        placeholder="Paste your SQL schema here or upload a .sql file..."
+                        value={schema}
+                        onValueChange={setSchema}
+                        className="min-h-[300px] sm:min-h-[400px] font-mono text-sm bg-slate-800/50 border-slate-700"
+                      />
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <Button
+                          onClick={analyzeSchema}
+                          disabled={!schema.trim() || isAnalyzing}
+                          className="bg-emerald-600 hover:bg-emerald-700 text-white flex-1"
                         >
-                          <SelectTrigger className="w-[140px] border-slate-700 bg-slate-800">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="postgres">PostgreSQL</SelectItem>
-                            <SelectItem value="mysql">MySQL</SelectItem>
-                            <SelectItem value="mssql">MS SQL Server</SelectItem>
-                          </SelectContent>
-                        </Select>
+                          {isAnalyzing ? (
+                            <>
+                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                              Analyzing Schema...
+                            </>
+                          ) : (
+                            <>
+                              <BarChart3 className="h-4 w-4 mr-2" />
+                              Analyze Schema
+                            </>
+                          )}
+                        </Button>
                         <Button
                           variant="outline"
-                          size="sm"
-                          onClick={() =>
-                            document.getElementById("sql-upload")?.click()
-                          }
-                          className="border-slate-700 bg-emerald-600 text-white hover:bg-emerald-700"
+                          onClick={() => setSchema(exampleSchema)}
+                          className="border-slate-700 text-slate-300 hover:bg-slate-800"
                         >
-                          <Upload className="h-4 w-4 mr-2" />
-                          Upload
+                          Load Example
                         </Button>
-                        <input
-                          id="sql-upload"
-                          type="file"
-                          accept=".sql"
-                          onChange={handleFileUpload}
-                          className="hidden"
-                        />
                       </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <SyntaxTextarea
-                      placeholder="Paste your SQL schema here or upload a .sql file..."
-                      value={schema}
-                      onValueChange={setSchema}
-                      className="min-h-[400px] font-mono text-sm bg-slate-800/50 border-slate-700"
-                    />
-                    <div className="flex gap-3">
-                      <Button
-                        onClick={analyzeSchema}
-                        disabled={!schema.trim() || isAnalyzing}
-                        className="bg-emerald-600 hover:bg-emerald-700 text-white flex-1"
-                      >
-                        {isAnalyzing ? (
-                          <>
-                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                            Analyzing Schema...
-                          </>
-                        ) : (
-                          <>
-                            <BarChart3 className="h-4 w-4 mr-2" />
-                            Analyze Schema
-                          </>
-                        )}
-                      </Button>
-                      <Button
-                        variant="outline"
-                        onClick={() => setSchema(exampleSchema)}
-                        className="border-slate-700 text-slate-300 hover:bg-slate-800"
-                      >
-                        Load Example
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
+                    </CardContent>
+                  </Card>
+                </div>
 
-              {/* Analysis Info */}
-              <div className="space-y-6">
-                <Card className="bg-slate-900/50 border-slate-700/50 backdrop-blur-sm">
-                  <CardHeader>
-                    <CardTitle className="text-slate-100">
-                      Analysis Overview
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-3 p-3 rounded-lg bg-slate-800/30">
-                        <Lock className="h-5 w-5 text-red-400" />
-                        <div>
-                          <div className="font-medium text-slate-200">
-                            Security Scan
-                          </div>
-                          <div className="text-sm text-slate-400">
-                            Vulnerability detection
-                          </div>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-3 p-3 rounded-lg bg-slate-800/30">
-                        <Layers className="h-5 w-5 text-blue-400" />
-                        <div>
-                          <div className="font-medium text-slate-200">
-                            Normalization
-                          </div>
-                          <div className="text-sm text-slate-400">
-                            Structure optimization
+                {/* Analysis Info */}
+                <div className="space-y-4 sm:space-y-6">
+                  <Card className="bg-slate-900/50 border-slate-700/50 backdrop-blur-sm">
+                    <CardHeader>
+                      <CardTitle className="text-slate-100">
+                        Analysis Overview
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-3 p-3 rounded-lg bg-slate-800/30">
+                          <Lock className="h-5 w-5 text-red-400" />
+                          <div>
+                            <div className="font-medium text-slate-200">
+                              Security Scan
+                            </div>
+                            <div className="text-xs sm:text-sm text-slate-400">
+                              Vulnerability detection
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      <div className="flex items-center gap-3 p-3 rounded-lg bg-slate-800/30">
-                        <Activity className="h-5 w-5 text-emerald-400" />
-                        <div>
-                          <div className="font-medium text-slate-200">
-                            Performance
-                          </div>
-                          <div className="text-sm text-slate-400">
-                            Robustness metrics
+                        <div className="flex items-center gap-3 p-3 rounded-lg bg-slate-800/30">
+                          <Layers className="h-5 w-5 text-blue-400" />
+                          <div>
+                            <div className="font-medium text-slate-200">
+                              Normalization
+                            </div>
+                            <div className="text-xs sm:text-sm text-slate-400">
+                              Structure optimization
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {selectedFile && (
-                  <Card className="bg-emerald-500/10 border-emerald-500/20 backdrop-blur-sm">
-                    <CardContent className="p-4">
-                      <div className="flex items-center gap-3">
-                        <CheckCircle className="h-5 w-5 text-emerald-400" />
-                        <div>
-                          <div className="font-medium text-emerald-300">
-                            File Loaded
-                          </div>
-                          <div className="text-sm text-emerald-400">
-                            {selectedFile.name}
+                        <div className="flex items-center gap-3 p-3 rounded-lg bg-slate-800/30">
+                          <Activity className="h-5 w-5 text-emerald-400" />
+                          <div>
+                            <div className="font-medium text-slate-200">
+                              Performance
+                            </div>
+                            <div className="text-xs sm:text-sm text-slate-400">
+                              Robustness metrics
+                            </div>
                           </div>
                         </div>
                       </div>
                     </CardContent>
                   </Card>
-                )}
-              </div>
-            </div>
-          </TabsContent>
 
-          <TabsContent value="demo" className="space-y-6">
-            <Card className="bg-slate-900/50 border-slate-700/50 backdrop-blur-sm">
-              <CardContent className="p-8 text-center">
-                <div className="space-y-6">
-                  <div>
-                    <Play className="h-16 w-16 text-indigo-400 mx-auto mb-4" />
-                    <h3 className="text-2xl font-bold text-slate-100 mb-2">
-                      Interactive Demo
-                    </h3>
-                    <p className="text-slate-300 max-w-2xl mx-auto">
-                      Try our schema analysis with a pre-loaded e-commerce
-                      database example. See how we detect issues and provide
-                      optimization recommendations.
-                    </p>
-                  </div>
-                  <Button
-                    onClick={() => {
-                      setSchema(exampleSchema);
-                      analyzeSchema();
-                    }}
-                    className="bg-indigo-500 hover:bg-indigo-600 text-white px-8 py-6 text-lg"
-                  >
-                    <Play className="h-5 w-5 mr-2" />
-                    Run Demo Analysis
-                  </Button>
+                  {selectedFile && (
+                    <Card className="bg-emerald-500/10 border-emerald-500/20 backdrop-blur-sm">
+                      <CardContent className="p-4">
+                        <div className="flex items-center gap-3">
+                          <CheckCircle className="h-5 w-5 text-emerald-400" />
+                          <div>
+                            <div className="font-medium text-emerald-300">
+                              File Loaded
+                            </div>
+                            <div className="text-xs sm:text-sm text-emerald-400">
+                              {selectedFile.name}
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
                 </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="demo">
+              <Card className="bg-slate-900/50 border-slate-700/50 backdrop-blur-sm">
+                <CardContent className="p-4 sm:p-8 text-center">
+                  <div className="space-y-4 sm:space-y-6">
+                    <div>
+                      <Play className="h-12 w-12 sm:h-16 sm:w-16 text-indigo-400 mx-auto mb-4" />
+                      <h3 className="text-xl sm:text-2xl font-bold text-slate-100 mb-2">
+                        Interactive Demo
+                      </h3>
+                      <p className="text-sm sm:text-base text-slate-300 max-w-2xl mx-auto">
+                        Try our schema analysis with a pre-loaded e-commerce
+                        database example. See how we detect issues and provide
+                        optimization recommendations.
+                      </p>
+                    </div>
+                    <Button
+                      onClick={() => {
+                        setSchema(exampleSchema);
+                        analyzeSchema();
+                      }}
+                      className="bg-indigo-500 hover:bg-indigo-600 text-white px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg"
+                    >
+                      <Play className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
+                      Run Demo Analysis
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </div>
 
         {/* Analysis Results */}
         {analysisResult && (
-          <div className="mt-12">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-slate-100">
+          <div className="mt-8 sm:mt-12">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+              <h2 className="text-xl sm:text-2xl font-bold text-slate-100">
                 Analysis Results
               </h2>
-              {/* <Button variant="outline" className="border-slate-700 text-slate-300 hover:bg-slate-800">
-                <Download className="h-4 w-4 mr-2" />
-                Export Report
-              </Button> */}
             </div>
             <SchemaAnalysisDisplay analysis={analysisResult} />
           </div>

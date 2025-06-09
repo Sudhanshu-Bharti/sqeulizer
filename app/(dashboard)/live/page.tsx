@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { SyntaxTextarea } from "@/components/ui/syntax-textarea";
-import { ChevronRight, Import, Database, ChevronLeft, Gauge } from "lucide-react";
+import { ChevronRight, Import, Database, ChevronLeft, Gauge, Share2, FileText, Upload, Layout, Play, Eye, AlertTriangle } from "lucide-react";
 import Examples from "./examples";
 import { toast } from "@/components/ui/use-toast";
 import DBMLDiagram from "./components/DBMLDiagram";
+// import { useDBMLStructure } from "./hooks/use-dbml-structure";
 import {
   Select,
   SelectContent,
@@ -26,6 +27,11 @@ import {
 } from "@/components/ui/dialog";
 import { DbmlStructure } from "@/lib/types";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Copy } from "lucide-react";
+import { DialogClose } from "@/components/ui/dialog";
 
 export default function DBSchemaVisualizer() {
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
@@ -52,6 +58,72 @@ export default function DBSchemaVisualizer() {
   const [error, setError] = useState<string | null>(null);
   const [showUpgradeDialog, setShowUpgradeDialog] = useState(false);
   const [showQuotaDialog, setShowQuotaDialog] = useState(false);
+  const [isInputCollapsed, setIsInputCollapsed] = useState(true);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  useEffect(() => {
+    if (isMobile && dbmlStructure.nodes.length > 0) {
+      setIsSidebarCollapsed(true);
+    }
+  }, [dbmlStructure.nodes.length, isMobile]);
+
+  const exampleSchema = `-- Example E-commerce Database Schema
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  username VARCHAR(50) NOT NULL UNIQUE,
+  email VARCHAR(100) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE categories (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  description TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE products (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(200) NOT NULL,
+  description TEXT,
+  price DECIMAL(10, 2) NOT NULL,
+  stock_quantity INTEGER NOT NULL DEFAULT 0,
+  category_id INTEGER REFERENCES categories(id),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE orders (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER REFERENCES users(id),
+  status VARCHAR(20) NOT NULL DEFAULT 'pending',
+  total_amount DECIMAL(10, 2) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE order_items (
+  id SERIAL PRIMARY KEY,
+  order_id INTEGER REFERENCES orders(id),
+  product_id INTEGER REFERENCES products(id),
+  quantity INTEGER NOT NULL,
+  unit_price DECIMAL(10, 2) NOT NULL,
+  total_price DECIMAL(10, 2) NOT NULL
+);`;
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -210,147 +282,228 @@ export default function DBSchemaVisualizer() {
 
   return (
     <div className="h-screen flex flex-col bg-gradient-to-b from-gray-900 to-gray-800">
-      {/* Top Navigation */}
-      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 border-gray-800">
-        <div className="container flex h-14 items-center justify-between">
-          <div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => document.getElementById("sql-upload")?.click()}
-              className="bg-emerald-900/50 ml-2 text-emerald-400 transition-colors"
-            >
-              <Import className="mr-2" size={16} /> Import SQL
-            </Button>
-            <input
-              id="sql-upload"
-              type="file"
-              accept=".sql"
-              onChange={handleFileUpload}
-              className="hidden"
-            />
-          </div>
-          <div className="flex items-center gap-2">
-            {generationStats && (
+      {/* Header */}
+      <header className="border-b border-gray-800 bg-gray-900/50 backdrop-blur-sm">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <h1 className="text-xl font-semibold text-white">Live Schema Visualization</h1>
+              <div className="hidden sm:block h-6 w-px bg-gray-700"></div>
+              <p className="hidden sm:block text-sm text-gray-400">
+                Real-time database schema visualization
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setShowQuotaDialog(true)}
-                className="flex items-center gap-2  hover:border-emerald-600 border-gray-700"
+                onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+                className="border-gray-700 bg-gray-800 text-gray-300 hover:bg-gray-700"
+                title={isSidebarCollapsed ? "Show Input" : "Hide Input"}
               >
-                <Gauge className="h-4 w-4" />
-                <span className="font-medium">
-                  {generationStats.plan === "Free" 
-                    ? `${generationStats.used}/${generationStats.limit}`
-                    : "Unlimited"}
-                </span>
+                {isSidebarCollapsed ? (
+                  <>
+                    <Eye className="h-4 w-4 mr-2" />
+                    <span className="hidden sm:inline">Show Input</span>
+                  </>
+                ) : (
+                  <>
+                    <Eye className="h-4 w-4 mr-2" />
+                    <span className="hidden sm:inline">Hide Input</span>
+                  </>
+                )}
               </Button>
-            )}
-            <Select
-              value={dialect}
-              onValueChange={(v: "mysql" | "postgres" | "mssql") => setDialect(v)}
-            >
-              <SelectTrigger className="w-[140px] hover:border-emerald-600 border-gray-700">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="mysql">MySQL</SelectItem>
-                <SelectItem value="postgres">PostgreSQL</SelectItem>
-                <SelectItem value="mssql">MS SQL Server</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button
-              variant="outline"
-              size="sm"
-              className="hover:border-emerald-600 border-gray-700"
-            >
-              Save
-            </Button>
-            <Button
-              size="sm"
-              className=" bg-emerald-600 hover:bg-emerald-700 text-white"
-              onClick={() => setIsShareDialogOpen(true)}
-            >
-              Share
-            </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => document.getElementById("sql-upload")?.click()}
+                className="text-gray-300 hover:bg-gray-800"
+                title="Import SQL"
+              >
+                <Upload className="h-4 w-4" />
+              </Button>
+              <input
+                id="sql-upload"
+                type="file"
+                accept=".sql"
+                onChange={handleFileUpload}
+                className="hidden"
+              />
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsShareDialogOpen(true)}
+                className="text-gray-300 hover:bg-gray-800"
+                title="Share"
+              >
+                <Share2 className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <div className="flex-1 grid grid-cols-[320px_1fr] overflow-hidden">
-        {/* Left Sidebar */}
-        <div className="border-r  flex flex-col h-[calc(100vh-3.5rem)] overflow-hidden border-gray-800 bg-gray-900/50">
-          <div className="flex-none p-4 space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-sm font-medium text-gray-100">
-                SQL Input
-              </h2>
-            </div>
-            <div className="relative">
-              <SyntaxTextarea
-                placeholder="Enter your SQL schema here..."
-                value={schema}
-                onValueChange={setSchema}
-                className="min-h-[300px] resize-none font-mono text-sm  border-gray-700 hover:border-emerald-600 focus:border-emerald-500 focus:ring-orange-500/20 bg-gray-800/50 text-gray-100"
-              />
-            </div>
+      <div className="flex-1 flex overflow-hidden">
+        {/* Collapsible Sidebar */}
+        <div className={`relative transition-all duration-300 ease-in-out ${isSidebarCollapsed ? 'w-0' : 'w-96'}`}>
+          <div className="absolute right-0 top-4 z-10">
             <Button
-              className="w-full  bg-emerald-600 hover:bg-emerald-700 text-white"
-              onClick={generateDiagram}
-              disabled={!schema.trim()}
-              isLoading={isLoading}
-              variant="default"
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+              className="bg-gray-800/80 hover:bg-gray-700/80 text-gray-300 rounded-l-none"
             >
-              {isLoading ? "Generating..." : "Generate Diagram"}
+              {isSidebarCollapsed ? (
+                <ChevronRight className="h-4 w-4" />
+              ) : (
+                <ChevronLeft className="h-4 w-4" />
+              )}
             </Button>
           </div>
-
-          <div className="flex-1 overflow-y-auto border-t bg-background/50 dark:border-gray-800 dark:bg-gray-900/30">
-            <div className="p-4">
-              <h2 className="text-sm font-medium mb-3 text-gray-900 dark:text-gray-100">
-                Example Schemas
-              </h2>
-              <Examples onSelectExample={handleExampleSelect} vertical />
+          <div className="h-full overflow-y-auto bg-gray-900/50 backdrop-blur-sm border-r border-gray-800">
+            <div className="p-4 space-y-4">
+              {/* Input Section */}
+              <Card className="bg-gray-800/50 border-gray-700/50">
+                <CardHeader>
+                  <CardTitle className="text-sm font-medium text-gray-200">
+                    SQL Schema Input
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <Select
+                    value={dialect}
+                    onValueChange={(v: "mysql" | "postgres" | "mssql") => setDialect(v)}
+                  >
+                    <SelectTrigger className="w-full border-gray-700 bg-gray-800">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="postgres">PostgreSQL</SelectItem>
+                      <SelectItem value="mysql">MySQL</SelectItem>
+                      <SelectItem value="mssql">MS SQL Server</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <SyntaxTextarea
+                    placeholder="Paste your SQL schema here..."
+                    value={schema}
+                    onValueChange={setSchema}
+                    className="min-h-[200px] font-mono text-sm bg-gray-800/50 border-gray-700"
+                  />
+                  <div className="space-y-2">
+                    <Button
+                      onClick={generateDiagram}
+                      disabled={!schema.trim() || isGenerating}
+                      className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
+                    >
+                      {isGenerating ? (
+                        <>
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                          Generating...
+                        </>
+                      ) : (
+                        <>
+                          <Eye className="h-4 w-4 mr-2" />
+                          Generate Diagram
+                        </>
+                      )}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setSchema(exampleSchema)}
+                      className="w-full border-gray-700 bg-gray-800 text-gray-300 hover:bg-gray-700"
+                    >
+                      <Play className="h-4 w-4 mr-2" />
+                      Load Example
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </div>
 
-        <div className="relative overflow-hidden dark:bg-transparent">
-          <div className="flex flex-col lg:flex-row gap-4">
-            <div className="flex-1 min-h-[500px] relative">
-              {renderError ? (
-                <div className="flex items-center justify-center h-full p-4 text-red-400">
-                  <p>{renderError}</p>
-                </div>
-              ) : isGenerating ? (
-                <div className="flex items-center justify-center h-full">
-                  <div className="loading-skeleton h-full w-full bg-gray-800/50" />
-                </div>
-              ) : !dbmlStructure.nodes.length ? (
-                <div className="flex flex-col items-center justify-center h-full text-gray-400 gap-3">
-                  <div className="bg-orange-900/50 p-4 rounded-full">
-                    <ChevronRight className="h-10 w-10 text-orange-400" />
+        {/* Visualization Area */}
+        <div className="flex-1 overflow-hidden">
+          <div className="h-full p-4">
+            <Card className="h-full bg-gray-900/50 border-gray-800 backdrop-blur-sm">
+              <CardContent className="h-full p-4">
+                {renderError ? (
+                  <div className="h-full flex items-center justify-center">
+                    <div className="text-center">
+                      <AlertTriangle className="h-12 w-12 text-red-400 mx-auto mb-4" />
+                      <h3 className="text-lg font-semibold text-red-400 mb-2">
+                        Error Generating Diagram
+                      </h3>
+                      <p className="text-sm text-gray-400">{renderError}</p>
+                    </div>
                   </div>
-                  <p>Enter your SQL schema and click Generate</p>
-                </div>
-              ) : (
-                <DBMLDiagram
-                  nodes={dbmlStructure.nodes}
-                  edges={dbmlStructure.edges}
-                />
-              )}
-            </div>
+                ) : isLoading ? (
+                  <div className="h-full flex items-center justify-center">
+                    <div className="text-center">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-400 mx-auto mb-4"></div>
+                      <p className="text-sm text-gray-400">Generating diagram...</p>
+                    </div>
+                  </div>
+                ) : !dbmlStructure.nodes.length ? (
+                  <div className="h-full flex items-center justify-center">
+                    <div className="text-center">
+                      <Database className="h-12 w-12 text-gray-600 mx-auto mb-4" />
+                      <h3 className="text-lg font-semibold text-gray-300 mb-2">
+                        No Schema Entered
+                      </h3>
+                      <p className="text-sm text-gray-400">
+                        Enter a SQL schema or load the example to generate a diagram
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <DBMLDiagram
+                    nodes={dbmlStructure.nodes}
+                    edges={dbmlStructure.edges}
+                  />
+                )}
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
 
-      <ShareDialog
-        isOpen={isShareDialogOpen}
-        onClose={() => setIsShareDialogOpen(false)}
-        schema={schema}
-        dialect={dialect}
-      />
+      {/* Share Dialog */}
+      <Dialog open={isShareDialogOpen} onOpenChange={setIsShareDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Share Schema</DialogTitle>
+            <DialogDescription>
+              Share this schema with others by copying the link below.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex items-center space-x-2">
+            <div className="grid flex-1 gap-2">
+              <Label htmlFor="link" className="sr-only">
+                Link
+              </Label>
+              <Input
+                id="link"
+                defaultValue="https://example.com/share/123"
+                readOnly
+              />
+            </div>
+            <Button type="submit" size="sm" className="px-3">
+              <span className="sr-only">Copy</span>
+              <Copy className="h-4 w-4" />
+            </Button>
+          </div>
+          <DialogFooter className="sm:justify-start">
+            <DialogClose asChild>
+              <Button type="button" variant="secondary">
+                Close
+              </Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Upgrade Dialog */}
       <Dialog open={isUpgradeDialogOpen} onOpenChange={setIsUpgradeDialogOpen}>
