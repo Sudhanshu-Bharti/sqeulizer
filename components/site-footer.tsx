@@ -22,10 +22,10 @@ export function SiteFooter({ className }: { className?: string }) {
             <div className="mt-4">
               <p className="text-sm text-white/60">Have an idea? Say Hi!</p>
               <a
-                href="mailto:hi@pandaview.com"
+                href="mailto:support@pandaview.site"
                 className="text-white font-medium hover:text-indigo-400 transition-colors"
               >
-                hi@pandaview.com
+                support@pandaview.site
               </a>
             </div>
           </div>

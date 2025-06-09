@@ -5,14 +5,23 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import { getUser } from "@/lib/db/queries";
 import { UserProvider } from "@/lib/auth";
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   title: {
     default: "PandaView - Database Schema Visualization & Security",
-    template: "%s | PandaView"
+    template: "%s | PandaView",
   },
-  description: "Transform your database workflow with PandaView. Generate ERD diagrams, detect vulnerabilities, analyze performance, and optimize your database schema with our powerful visualization tools.",
-  keywords: ["database visualization", "ERD diagrams", "database security", "schema analysis", "database optimization", "SQL visualization"],
+  description:
+    "Transform your database workflow with PandaView. Generate ERD diagrams, detect vulnerabilities, analyze performance, and optimize your database schema with our powerful visualization tools.",
+  keywords: [
+    "database visualization",
+    "ERD diagrams",
+    "database security",
+    "schema analysis",
+    "database optimization",
+    "SQL visualization",
+  ],
   authors: [{ name: "PandaView Team" }],
   creator: "PandaView",
   publisher: "PandaView",
@@ -30,7 +39,8 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://pandaview.site",
     title: "PandaView - Database Schema Visualization & Security",
-    description: "Transform your database workflow with PandaView. Generate ERD diagrams, detect vulnerabilities, analyze performance, and optimize your database schema.",
+    description:
+      "Transform your database workflow with PandaView. Generate ERD diagrams, detect vulnerabilities, analyze performance, and optimize your database schema.",
     siteName: "PandaView",
   },
 
@@ -67,6 +77,7 @@ export default async function RootLayout({
         >
           <UserProvider userPromise={userPromise}>
             {children}
+            <Analytics />
             <Toaster />
           </UserProvider>
         </ThemeProvider>
