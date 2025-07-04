@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import { getUser } from "@/lib/db/queries";
 import { UserProvider } from "@/lib/auth";
+import { SessionProvider } from "@/components/session-provider";
 import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
@@ -75,11 +76,13 @@ export default async function RootLayout({
           forcedTheme="dark"
           disableTransitionOnChange
         >
-          <UserProvider userPromise={userPromise}>
-            {children}
-            <Analytics />
-            <Toaster />
-          </UserProvider>
+          <SessionProvider>
+            <UserProvider userPromise={userPromise}>
+              {children}
+              <Analytics />
+              <Toaster />
+            </UserProvider>
+          </SessionProvider>
         </ThemeProvider>
       </body>
     </html>

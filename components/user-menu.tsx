@@ -1,6 +1,7 @@
 "use client";
 
-import { signOut } from "@/app/(login)/actions";
+import { signOut as customSignOut } from "@/app/(login)/actions";
+import { signOut as nextAuthSignOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { User, LogIn } from "lucide-react";
 import { use } from "react";
@@ -20,7 +21,20 @@ import Link from "next/link";
 export function UserMenu() {
   const router = useRouter();
   const { userPromise } = useUser();
+  const { data: session } = useSession();
   const user = use(userPromise);
+
+  const handleSignOut = async () => {
+    if (session) {
+      // NextAuth session - use NextAuth sign out
+      await nextAuthSignOut({ redirect: false });
+    } else {
+      // Custom session - use custom sign out
+      await customSignOut();
+    }
+    router.push("/sign-in");
+  };
+
   return (
     <>
       {user ? (
@@ -50,14 +64,7 @@ export function UserMenu() {
               Create Diagram
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={async () => {
-                await signOut();
-                router.push("/sign-in");
-              }}
-            >
-              Log out
-            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleSignOut}>Log out</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       ) : (

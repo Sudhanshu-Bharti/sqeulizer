@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { getToken } from "next-auth/jwt";
 import { signToken, verifyToken } from "@/lib/auth/session";
 
 const protectedRoutes = ["/dashboard", "/live"];
@@ -13,17 +14,31 @@ export async function middleware(request: NextRequest) {
   );
 
   // Force HTTPS redirect
-  if (process.env.NODE_ENV === "production" && request.headers.get("x-forwarded-proto") === "http") {
-    return NextResponse.redirect(`https://${request.headers.get("host")}${request.nextUrl.pathname}`, 301);
+  if (
+    process.env.NODE_ENV === "production" &&
+    request.headers.get("x-forwarded-proto") === "http"
+  ) {
+    return NextResponse.redirect(
+      `https://${request.headers.get("host")}${request.nextUrl.pathname}`,
+      301
+    );
   }
 
-  if (isProtectedRoute && !sessionCookie) {
+  // Check for NextAuth session (for OAuth users)
+  const token = await getToken({
+    req: request,
+    secret: process.env.AUTH_SECRET,
+  });
+
+  // If it's a protected route and no authentication is found, redirect to sign-in
+  if (isProtectedRoute && !sessionCookie && !token) {
     return NextResponse.redirect(new URL("/sign-in", request.url));
   }
 
   let res = NextResponse.next();
 
-  if (sessionCookie && request.method === "GET") {
+  // Handle custom session refresh (for credential users)
+  if (sessionCookie && request.method === "GET" && !token) {
     try {
       const parsed = await verifyToken(sessionCookie.value);
       const expiresInOneDay = new Date(Date.now() + 24 * 60 * 60 * 1000);

@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { RazorpayCheckout } from "@/components/razorpay-checkout";
+// import { RazorpayCheckout } from "@/components/razorpay-checkout";
 import { PaymentOptionSelector } from "@/components/payment-option-selector";
 import { cn } from "@/lib/utils";
 
@@ -16,14 +16,14 @@ interface SubmitButtonProps
     | "secondary"
     | "ghost"
     | "link";
-  action?: (formData: FormData) => Promise<any>; // Add action prop
+  action?: (formData: FormData) => Promise<any>;
 }
 
 export function SubmitButton({
   children,
   className,
   variant = "default",
-  action, // Accept the server action as a prop
+  action,
   ...props
 }: SubmitButtonProps) {
   const router = useRouter();

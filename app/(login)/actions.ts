@@ -72,6 +72,15 @@ export const signIn = validatedAction(signInSchema, async (data, formData) => {
 
   const { user: foundUser, team: foundTeam } = userWithTeam[0];
 
+  // Check if user has a password (they might have signed up with OAuth)
+  if (!foundUser.passwordHash) {
+    return {
+      error: "Please sign in with the method you used to create your account.",
+      email,
+      password,
+    };
+  }
+
   const isPasswordValid = await comparePasswords(
     password,
     foundUser.passwordHash
@@ -243,6 +252,11 @@ export const updatePassword = validatedActionWithUser(
   async (data, _, user) => {
     const { currentPassword, newPassword } = data;
 
+    // Check if user has a password (they might have signed up with OAuth)
+    if (!user.passwordHash) {
+      return { error: "You cannot update password for OAuth accounts." };
+    }
+
     const isPasswordValid = await comparePasswords(
       currentPassword,
       user.passwordHash
@@ -281,6 +295,13 @@ export const deleteAccount = validatedActionWithUser(
   deleteAccountSchema,
   async (data, _, user) => {
     const { password } = data;
+
+    // Check if user has a password (they might have signed up with OAuth)
+    if (!user.passwordHash) {
+      return {
+        error: "OAuth accounts cannot be deleted with password verification.",
+      };
+    }
 
     const isPasswordValid = await comparePasswords(password, user.passwordHash);
     if (!isPasswordValid) {
