@@ -3,7 +3,7 @@ import { sqlToDbml } from "@/lib/parsing/parser";
 import { db } from "@/lib/db/drizzle";
 import { and, eq, gte, count } from "drizzle-orm";
 import { diagramGenerations, users, teams, teamMembers } from "@/lib/db/schema";
-import { getSession } from "@/lib/auth/session";
+import { getHybridUser } from "@/lib/auth/hybrid-session";
 
 const FREE_USER_LIMIT = 3;
 const GENERATION_WINDOW_DAYS = 30;
@@ -11,14 +11,14 @@ const GENERATION_WINDOW_DAYS = 30;
 export async function POST(req: NextRequest) {
   try {
     // Get authenticated user
-    const session = await getSession();
-    if (!session?.user?.id) {
+    const user = await getHybridUser();
+    if (!user?.id) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
     // Get user's team and check plan
     const userTeam = await db.query.teamMembers.findFirst({
-      where: eq(teamMembers.userId, session.user.id),
+      where: eq(teamMembers.userId, user.id),
       with: {
         team: true
       }
@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
       .from(diagramGenerations)
       .where(
         and(
-          eq(diagramGenerations.userId, session.user.id),
+          eq(diagramGenerations.userId, user.id),
           gte(diagramGenerations.generatedAt, thirtyDaysAgo)
         )
       );
@@ -102,7 +102,7 @@ export async function POST(req: NextRequest) {
 
       // Record the generation
       await db.insert(diagramGenerations).values({
-        userId: session.user.id,
+        userId: user.id,
         generatedAt: new Date(),
       });
 

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession } from "@/lib/auth/session";
+import { getHybridUser } from "@/lib/auth/hybrid-session";
 import { db } from "@/lib/db/drizzle";
 import { and, eq, gte, count } from "drizzle-orm";
 import { diagramGenerations, teamMembers } from "@/lib/db/schema";
@@ -15,13 +15,13 @@ const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-preview-05-20"
 
 export async function POST(req: NextRequest) {
   try {
-    const session = await getSession();
-    if (!session?.user?.id) {
+    const user = await getHybridUser();
+    if (!user?.id) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
     const userTeam = await db.query.teamMembers.findFirst({
-      where: eq(teamMembers.userId, session.user.id),
+      where: eq(teamMembers.userId, user.id),
       with: { team: true },
     });
 
@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
       .from(diagramGenerations)
       .where(
         and(
-          eq(diagramGenerations.userId, session.user.id),
+          eq(diagramGenerations.userId, user.id),
           gte(diagramGenerations.generatedAt, thirtyDaysAgo)
         )
       );
@@ -159,7 +159,7 @@ ${sql}
 
       // Log the analysis attempt
       await db.insert(diagramGenerations).values({
-        userId: session.user.id,
+        userId: user.id,
         generatedAt: new Date(),
       });
 
