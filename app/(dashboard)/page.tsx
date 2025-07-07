@@ -26,26 +26,27 @@ export default function HomePage() {
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    "name": "PandaView",
-    "applicationCategory": "DeveloperApplication",
-    "operatingSystem": "Web",
-    "offers": {
+    name: "PandaView",
+    applicationCategory: "DeveloperApplication",
+    operatingSystem: "Web",
+    offers: {
       "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD"
+      price: "0",
+      priceCurrency: "USD",
     },
-    "description": "Transform your database workflow with PandaView. Generate ERD diagrams, detect vulnerabilities, analyze performance, and optimize your database schema with our powerful visualization tools.",
-    "featureList": [
+    description:
+      "Transform your database workflow with PandaView. Generate ERD diagrams, detect vulnerabilities, analyze performance, and optimize your database schema with our powerful visualization tools.",
+    featureList: [
       "ERD Generation",
       "Vulnerability Detection",
       "Performance Analysis",
-      "Schema Optimization"
+      "Schema Optimization",
     ],
-    "aggregateRating": {
+    aggregateRating: {
       "@type": "AggregateRating",
-      "ratingValue": "4.8",
-      "ratingCount": "1000"
-    }
+      ratingValue: "4.8",
+      ratingCount: "1000",
+    },
   };
 
   return (
@@ -73,7 +74,7 @@ export default function HomePage() {
                 left: `${Math.random() * 100}%`,
                 top: `${Math.random() * 100}%`,
                 animationDelay: `${Math.random() * 5}s`,
-                animationDuration: `${5 + Math.random() * 10}s`
+                animationDuration: `${5 + Math.random() * 10}s`,
               }}
             />
           ))}
@@ -102,7 +103,10 @@ export default function HomePage() {
               />
               <div className="flex flex-col relative z-10">
                 <span className="tracking-wider flex items-center font-semibold text-base">
-                  PandaView <span className="uppercase text-emerald-300 ml-2 animate-pulse">Beta</span>
+                  PandaView{" "}
+                  <span className="uppercase text-emerald-300 ml-2 animate-pulse">
+                    Beta
+                  </span>
                 </span>
                 <span className="text-sm text-slate-200">
                   SQL Visualization & Security
@@ -126,6 +130,33 @@ export default function HomePage() {
                 <span className="text-slate-200">
                   Instantly. Clearly. Securely.
                 </span>
+                
+              </div>
+              <div className="flex justify-center mt-6">
+                <a
+                  href="https://www.producthunt.com/products/pandaview?embed=true&utm_source=badge-featured&utm_medium=badge&utm_source=badge-pandaview"
+                  target="_blank"
+                  className="mt-4 m-2"
+                >
+                  <img
+                    src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=988372&theme=light&t=1751868533767"
+                    alt="PandaView - Database&#0032;schema&#0032;visualization&#0032;&#0038;&#0032;security | Product Hunt"
+                    style={{ width: "250px", height: "54px" }}
+                    width="270"
+                    height="60"
+                  />
+                </a>
+                <a
+                  href="https://peelrlist.io/sudhanshu/project/pandaview--a-schema-visualization-and-analysis-tool"
+                  target="_blank"
+                >
+                  <img
+                    src="https://r2w8bs08bn.ufs.sh/f/RnU7TL81beNUbPnfiZ1jxvm6tYa3ykSLA8QicJDdWqEKgNo5"
+                    alt="PandaView - Database&#0032;schema&#0032;visualization&#0032;&#0038;&#0032;security | Peerlist"
+                    width="250"
+                    height="54"
+                  />
+                </a>
               </div>
             </h1>
 
@@ -133,17 +164,20 @@ export default function HomePage() {
             <p className="text-xl text-slate-200 mb-8 max-w-3xl mx-auto leading-relaxed animate-fade-in-delayed font-normal">
               Copy and paste your SQL schema, and instantly get beautiful
               <span className="text-emerald-300 relative group">
-                {" "}interactive ERD diagrams
+                {" "}
+                interactive ERD diagrams
                 <span className="absolute -bottom-1 left-0 w-full h-px bg-gradient-to-r from-transparent via-emerald-300 to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
-              </span>,
-              detect
+              </span>
+              , detect
               <span className="text-emerald-300 relative group">
-                {" "}SQL injection vulnerabilities
+                {" "}
+                SQL injection vulnerabilities
                 <span className="absolute -bottom-1 left-0 w-full h-px bg-gradient-to-r from-transparent via-emerald-300 to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
-              </span>,
-              and receive
+              </span>
+              , and receive
               <span className="text-emerald-300 relative group">
-                {" "}index optimization recommendations
+                {" "}
+                index optimization recommendations
                 <span className="absolute -bottom-1 left-0 w-full h-px bg-gradient-to-r from-transparent via-emerald-300 to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
               </span>{" "}
               in seconds.
@@ -154,7 +188,9 @@ export default function HomePage() {
               <code className="bg-slate-900/90 px-6 py-3 rounded-full border border-slate-700 group-hover:border-emerald-500/50 transition-all duration-300">
                 SELECT * FROM users
               </code>
-              <span className="text-xl group-hover:translate-x-1 transition-transform duration-300">→</span>
+              <span className="text-xl group-hover:translate-x-1 transition-transform duration-300">
+                →
+              </span>
               <code className="bg-emerald-500/20 px-6 py-3 rounded-full border border-emerald-500/40 group-hover:border-emerald-500/60 transition-all duration-300">
                 Visual ERD + Security Report
               </code>
@@ -245,7 +281,10 @@ export default function HomePage() {
                     </Button>
                   </Link>
                   {/* Show Analyze Schema button if user is logged in */}
-                   <Link href="/schema-analysis" className="w-full sm:w-auto group">
+                  <Link
+                    href="/schema-analysis"
+                    className="w-full sm:w-auto group"
+                  >
                     <Button
                       size="lg"
                       variant="outline"
@@ -256,7 +295,7 @@ export default function HomePage() {
                     </Button>
                   </Link>
                   {/* Show Get Started button if user is logged in (as per instruction) */}
-                   <Link href="/live" className="w-full sm:w-auto group">
+                  <Link href="/live" className="w-full sm:w-auto group">
                     <Button
                       size="lg"
                       variant="outline"
@@ -288,7 +327,7 @@ export default function HomePage() {
             {/* Terminal frame grid pattern */}
             <div className="absolute -left-16 top-1/3 w-48 h-48 bg-emerald-500/5 rounded-full blur-3xl"></div>
             <div className="absolute -right-16 top-1/4 w-48 h-48 bg-emerald-500/5 rounded-full blur-3xl"></div>
-            
+
             <div className="w-full max-w-5xl mx-auto rounded-lg overflow-hidden border border-slate-800 shadow-xl relative">
               {/* Input Section - SQL Console */}
               <div className="bg-slate-900/90 border-b border-slate-800 flex items-center px-4 py-3">
@@ -300,15 +339,15 @@ export default function HomePage() {
                 <div className="flex-1 flex justify-center">
                   <div className="px-3 py-1 rounded-md bg-slate-950/80 text-emerald-400/90 text-xs font-mono border border-slate-800 flex items-center gap-2">
                     <span className="inline-block w-2 h-2 rounded-full bg-emerald-500/50 animate-pulse"></span>
-                    <span className="hidden sm:inline">PandaView Live Demo</span>
+                    <span className="hidden sm:inline">
+                      PandaView Live Demo
+                    </span>
                     <span className="sm:hidden">Live Demo</span>
                   </div>
                 </div>
               </div>
 
               <div className="relative">
-
-
                 <div className="relative pb-[56.25%] h-0">
                   <iframe
                     src="https://www.loom.com/embed/df7d5353d76d4a9f9e886f4a867e2749?sid=aad34d7c-b822-4672-a9bc-e26a874a9b59&hide_title=true&hide_owner=true&hide_share=true&hideEmbedTopBar=true&hide_seek=true"
@@ -327,7 +366,7 @@ export default function HomePage() {
           <div className="absolute top-1/4 right-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl -z-10"></div>
           <div className="absolute bottom-1/4 left-0 w-96 h-96 bg-slate-800/10 rounded-full blur-3xl -z-10"></div>
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[40rem] h-[40rem] bg-gradient-to-br from-emerald-500/5 via-slate-800/5 to-emerald-400/5 rounded-full blur-3xl -z-10"></div>
-          
+
           <div className="text-center mb-20 relative">
             <div className="inline-flex items-center gap-2 px-4 py-1 rounded-md bg-slate-900/80 text-emerald-400 text-xs font-mono mb-8 border border-slate-800">
               <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500/70 mr-1 animate-pulse"></span>
@@ -451,15 +490,27 @@ export default function HomePage() {
             </div>
             <div className="relative max-w-md w-full">
               <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-8 shadow-lg backdrop-blur-md">
-                <h3 className="text-2xl font-bold text-white mb-4">Why PandaView?</h3>
+                <h3 className="text-2xl font-bold text-white mb-4">
+                  Why PandaView?
+                </h3>
                 <p className="text-slate-400 leading-relaxed mb-4">
-                  Instantly turn your SQL schema into a beautiful, interactive ERD.
-                  Spot relationships, catch vulnerabilities, and share insights with your team in seconds.
+                  Instantly turn your SQL schema into a beautiful, interactive
+                  ERD. Spot relationships, catch vulnerabilities, and share
+                  insights with your team in seconds.
                 </p>
                 <ul className="text-slate-300 text-sm space-y-2">
-                  <li className="flex items-center"><CircleCheckBig className="h-5 w-5 mr-2"/> 1-click export to PNG, SVG, or HTML</li>
-                  <li className="flex items-center"><CircleCheckBig className="h-5 w-5 mr-2"/> Security & performance insights</li>
-                  <li className="flex items-center"><CircleCheckBig className="h-5 w-5 mr-2"/> Shareable, interactive diagrams</li>
+                  <li className="flex items-center">
+                    <CircleCheckBig className="h-5 w-5 mr-2" /> 1-click export
+                    to PNG, SVG, or HTML
+                  </li>
+                  <li className="flex items-center">
+                    <CircleCheckBig className="h-5 w-5 mr-2" /> Security &
+                    performance insights
+                  </li>
+                  <li className="flex items-center">
+                    <CircleCheckBig className="h-5 w-5 mr-2" /> Shareable,
+                    interactive diagrams
+                  </li>
                 </ul>
               </div>
               {/* Decorative dots */}
@@ -475,7 +526,7 @@ export default function HomePage() {
         <section className="container mx-auto py-12 lg:py-20 relative">
           {/* Decorative gradient */}
           <div className="absolute left-0 top-1/2 -translate-y-1/2 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl -z-10"></div>
-          
+
           <div className="text-center mb-16 relative">
             <div className="inline-flex items-center gap-2 px-4 py-1 rounded-md bg-slate-900/80 text-emerald-400 text-xs font-mono mb-8 border border-slate-800">
               <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500/70 mr-1"></span>
@@ -492,8 +543,8 @@ export default function HomePage() {
             <p className="text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed font-light">
               Our machine learning algorithms detect vulnerabilities and
               performance bottlenecks with
-              <span className="text-emerald-300"> 99.7% accuracy</span> before they
-              impact production.
+              <span className="text-emerald-300"> 99.7% accuracy</span> before
+              they impact production.
             </p>
           </div>
 
@@ -513,12 +564,13 @@ export default function HomePage() {
                 </div>
               </div>
               <p className="text-slate-400 mb-8 leading-relaxed text-sm border-l-2 border-slate-800 pl-4">
-                Identify data exposure risks, permission issues, and SQL injection
-                vulnerabilities in your schema design with real-time monitoring.
+                Identify data exposure risks, permission issues, and SQL
+                injection vulnerabilities in your schema design with real-time
+                monitoring.
               </p>
               <div className="rounded-lg overflow-hidden border border-slate-800 shadow-[0_10px_30px_rgba(0,0,0,0.3)] transition-transform duration-500 group-hover:scale-[1.02] group-hover:shadow-[0_10px_30px_rgba(16,185,129,0.1)] relative">
                 {/* Technical frame overlay */}
-        
+
                 <img
                   src="/robustness.png"
                   alt="Security Analysis Feature"
@@ -546,7 +598,6 @@ export default function HomePage() {
                 performance to make your database up to 300% faster.
               </p>
               <div className="rounded-lg overflow-hidden border border-slate-800 shadow-[0_10px_30px_rgba(0,0,0,0.3)] transition-transform duration-500 group-hover:scale-[1.02] group-hover:shadow-[0_10px_30px_rgba(16,185,129,0.1)] relative">
-
                 <img
                   src="/analysis.png"
                   alt="Performance Analysis"
@@ -559,13 +610,15 @@ export default function HomePage() {
           {/* CTA for Schema Analysis */}
           <div className="text-center mt-20">
             <Link href="/schema-analysis">
-              <Button size="lg" className="bg-emerald-500 hover:bg-emerald-600 text-white rounded-full shadow-lg transition-all duration-300 group">
+              <Button
+                size="lg"
+                className="bg-emerald-500 hover:bg-emerald-600 text-white rounded-full shadow-lg transition-all duration-300 group"
+              >
                 <span>Analyze Your Schema</span>
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
               </Button>
             </Link>
           </div>
-
         </section>
 
         {/* Testimonials Section */}
@@ -692,11 +745,11 @@ export default function HomePage() {
                     Ready to transform your database?
                   </span>
                 </div>
-                
+
                 <h2 className="text-4xl md:text-6xl font-bold text-white mb-8 leading-tight">
                   Transform your{" "}
-                  <span className="text-emerald-300">database workflow</span>, in
-                  minutes.
+                  <span className="text-emerald-300">database workflow</span>,
+                  in minutes.
                 </h2>
                 <p className="text-2xl text-slate-200 mb-8 max-w-3xl mx-auto leading-relaxed font-normal">
                   From ERD diagrams to security analysis, PandaView gives your
@@ -737,8 +790,7 @@ export default function HomePage() {
         </section>
 
         <div className="absolute inset-0 z-0 bg-noise opacity-10 pointer-events-none"></div>
-
-      </div >
+      </div>
     </>
   );
 }
